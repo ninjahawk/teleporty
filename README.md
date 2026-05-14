@@ -47,22 +47,49 @@ These aren't "hard problems we haven't solved yet." These hit **fundamental** wa
 
 ## 🔬 The Five Alleyways
 
-Nobody ruled these out. Nobody did the work. That's why we're here.
+We went through all of them. Here's what happened.
 
-**🟢 Direction 1 — Reframe what you're actually copying** ← *active now*
-Every approach assumes you need the quantum state of every particle (~10²⁸ bits). You don't. A person's functional identity is encoded in their connectome + biochemistry — classical information, ~10¹⁶ bits. The quantum barriers completely disappear. Nobody built the rigorous information model. We did: [→ math/direction1_functional_teleportation.md](math/direction1_functional_teleportation.md)
+| Direction | Verdict | Why |
+|-----------|---------|-----|
+| 🟢 **1 — Reframe the information requirement** | **Active** | Classical info approach. Quantum barriers gone. Real path. |
+| 🔴 **2 — CM tunneling of bound states** | **Closed** | Tunneling probability is exp(−10⁸) for 100 nm sphere. Decoherence wins by 30+ orders of magnitude. |
+| 🔴 **3 — Quantum Cheshire Cat** | **Closed** | Post-selection is passive — you can't force outcomes. No-communication theorem holds. |
+| 🟡 **4 — Penrose-Diósi threshold** | **Calculated** | Sets hard ceiling for all quantum approaches. Confirms Direction 1. |
+| ⚪ **5 — Quantum Darwinism** | **Feeds into 1** | Encodes pointer states only, not molecular structure. Narrows the info budget question. |
 
-**🟡 Direction 2 — Center-of-mass tunneling of bound states**
-Superconductors and BECs already exhibit macroscopic quantum tunneling. Levitated nanoparticle experiments have put 10⁷-atom objects into genuine spatial superpositions. The scaling math for composite objects with internal temperature hasn't been done. We're going to do it.
+**All five directions have been worked.** Three are closed. One confirms the only viable path. One is that path.
 
-**🟡 Direction 3 — Quantum Cheshire Cat**
-Denkmayr et al. (2014) experimentally separated a neutron's spin from the neutron itself. Verified. Measured. Nobody asked whether it scales or whether it constitutes a physically meaningful form of property transport. Probably a dead end but needs the math first.
+---
 
-**🟡 Direction 4 — Gravitational decoherence ceiling**
-If the Penrose-Diósi model is correct, gravity collapses wavefunctions. That sets a hard calculable mass limit on all quantum approaches. If it's wrong, the ceiling is much higher. Experiments are live right now (AION, MAGIS-100). We need the teleportation-specific predictions extracted from the model.
+## 📐 Direction 4: The Quantum Ceiling
 
-**⚪ Direction 5 — Quantum Darwinism reconstruction**
-Every object continuously broadcasts classical copies of its state into the environment via scattered photons and air molecule interactions. A proper analysis of how much is recoverable and at what fidelity has never been done. May feed into Direction 1.
+*From [math/direction4_penrose_diosi_threshold.md](math/direction4_penrose_diosi_threshold.md)*
+
+This was the most important calculation before committing to any quantum approach. The Penrose-Diósi model predicts wavefunction collapse from gravitational self-energy:
+
+```
+τ_PD = ℏ / E_G     where     E_G = 6Gm² / (5R)     (fully separated superposition)
+```
+
+| Object | Mass | τ_PD | τ_thermal (10⁻¹⁰ Pa vacuum) |
+|--------|------|------|------------------------------|
+| Large virus (100 nm) | 10⁻¹⁸ kg | **26 minutes** | ~5 minutes |
+| Bacterium (1 μm) | 10⁻¹⁵ kg | **15 ms** | ~0.3 s |
+| Small cell (10 μm) | 10⁻¹² kg | **155 ns** | ~1.4 ms |
+| Human body | 70 kg | **6.7 × 10⁻²⁹ s** | **3.8 × 10⁻²³ s** |
+
+The human body emits ~2.6 × 10²² thermal photons per second at body temperature. Each one collapses a quantum superposition. At room temperature in vacuum, a human-scale quantum superposition cannot exist for even 10⁻²² seconds. No vacuum pump fixes this — the body itself is the thermal source.
+
+**The ceiling, regardless of Penrose-Diósi:**
+
+| Condition | Max mass for quantum teleportation |
+|-----------|-----------------------------------|
+| Room temp, best achievable vacuum | ~10⁻¹⁸ kg (~100 nm sphere) |
+| 0 K, perfect vacuum, PD real | ~7.5 × 10⁻¹⁶ kg (~430 nm sphere) |
+| 0 K, perfect vacuum, PD false | ~10⁻⁸ kg (~50 μm sphere) |
+| **Human (70 kg)** | **Impossible by any quantum approach** |
+
+**This closes Directions 2 and 3, and confirms Direction 1 is the only viable path.**
 
 ---
 
@@ -118,6 +145,17 @@ For comparison, the rest-mass energy (E = mc²) of a 70 kg person is 6.3 × 10¹
 
 A human being costs $42 in raw ingredients. The universe is doing something impressive with that $42.
 
+### The Identity Question
+
+Does connectome-level fidelity make a functionally equivalent person? Honestly: probably yes, but it's unresolved.
+
+- Neurons replace their molecules every few weeks while identity persists — suggesting function > quantum state
+- No known mechanism for single-particle quantum states to influence cognition
+- Decoherence in warm wet neurons: ~10⁻¹³ s — orders of magnitude faster than any neural computation
+- Counter-argument: philosophical (Penrose-Hameroff). Not supported by experimental evidence.
+
+We proceed with connectome-level = functional equivalence as a working hypothesis. If this is wrong, the project terminates — no classical approach works. We'll say so if evidence changes.
+
 ### The Actual Bottleneck
 
 It's not transmission. It's not energy. It's not materials.
@@ -157,12 +195,31 @@ Single EM setup: 3.6 million years
 
 ---
 
+---
+
+## 🗺️ Where We Are
+
+```
+Phase 1: Survey existing approaches          ✅ done — all dead or lead to Direction 1
+Phase 2: Work all five alleyways             ✅ done — 3 closed, 1 active, 1 feeds in
+Phase 3: Full math for Direction 1           ✅ done — info budget, energy, scanner analysis
+Phase 4: Rate-distortion lower bound         ← next
+Phase 5: Scanner technology roadmap          ← next
+Phase 6: Reconstruction system design        ← architecture/
+Phase 7: Testable simulation                 ← end goal
+```
+
+---
+
 ## 📂 Files
 
 ### Math & Calculations
-| File | What's In It |
-|------|-------------|
-| [math/direction1_functional_teleportation.md](math/direction1_functional_teleportation.md) | Full information budget, transmission times, assembly energy, scanner analysis, identity discussion |
+| File | Status | What's In It |
+|------|--------|-------------|
+| [math/direction1_functional_teleportation.md](math/direction1_functional_teleportation.md) | ✅ Done | Info budget (L0–L2), transmission times, assembly energy, scanner analysis |
+| [math/direction4_penrose_diosi_threshold.md](math/direction4_penrose_diosi_threshold.md) | ✅ Done | Full PD calculation, thermal decoherence, quantum ceiling table |
+| [math/direction2_cm_tunneling.md](math/direction2_cm_tunneling.md) | ✅ Closed | Why CM tunneling doesn't work — the numbers |
+| [math/direction3_quantum_cheshire_cat.md](math/direction3_quantum_cheshire_cat.md) | ✅ Closed | TSVF formalism, post-selection constraint, why it can't transport anything |
 
 ### Background Research
 | File | What's In It |
