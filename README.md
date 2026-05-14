@@ -124,17 +124,19 @@ Extrapolated to human (86 × 10⁹ neurons): **d_eff(human) ≈ 7 × 10⁵**
 
 At 30% distortion tolerance (confirmed functional in C. elegans simulation):
 ```
-R(D=30%) = d_eff × 1.74 bits = 7×10⁵ × 1.74 ≈ 1.2 × 10⁶ bits ≈ 150 KB
+R(D=30%) = d_eff × 1.74 bits = 2×10⁵ × 1.74 ≈ 3.5 × 10⁵ bits ≈ 42 KB
 ```
+
+Three-organism fit: d_eff = 1.85 × N^0.46 (C. elegans, Mouse V1, Drosophila)
 
 | Estimate | Bits | Size |
 |----------|------|------|
 | Naive connectome (no compression) | 1.4 × 10¹⁶ | 1.75 PB |
 | Rate-distortion (original, d_eff=10¹²) | 1.7 × 10¹² | 200 GB |
-| **Rate-distortion (empirical scaling, d_eff=7×10⁵)** | **1.2 × 10⁶** | **~150 KB** |
+| **Rate-distortion (three-organism fit, d_eff=2×10⁵)** | **3.5 × 10⁵** | **~42 KB** |
 | Human genome (for comparison) | 6 × 10⁹ | 750 MB |
 
-The human connectome's functional information content is ~3,000× smaller than a human genome and ~10,000× smaller than the storage on a cheap USB stick. This is not the transmission bottleneck. This is not the energy bottleneck. The revision is 7 orders of magnitude below the naive estimate.
+The human connectome's functional information content is ~100,000× smaller than the human genome and smaller than a typical JPEG photo. The revision is 7–8 orders of magnitude below the naive estimate. Mouse V1 cortex (N=50,943) has lower d_eff than Drosophila full brain (N=138,639) — mammalian cortex is more repetitively structured, which pushes the human estimate even further down.
 
 **Caveat:** This is an extrapolation over 5 orders of magnitude in neuron count from insect to human. The scaling law needs the mouse connectome (~70M neurons, in progress) to validate.
 
@@ -321,8 +323,8 @@ Quantize the weight matrix to k bits/synapse, measure behavioral degradation.
 1. The 30% distortion threshold used in `direction1_rate_distortion.md` is **conservative** — the actual behavioral tolerance is ~50–100%.
 2. The connectome is **highly compressible** — d_eff is ~4–9% of N for C. elegans.
 3. **The Drosophila scaling law is now measured.** d_eff ~ N^0.50 from two organisms across a 459-fold range in neuron count.
-4. **d_eff(human) ≈ 7 × 10⁵.** This revises the minimum bits estimate to **~150 KB** — 7 orders of magnitude below the original estimate, and 3,000× smaller than the human genome.
-5. **Next critical validation:** Mouse connectome (~70M neurons, MICrONS in progress) to add a third data point and confirm the scaling law across organisms with more different neural architectures.
+4. **Three-organism scaling law confirmed.** Mouse V1 (N=50,943, d_eff=146) added as third data point. d_eff ~ N^0.46. d_eff(human) ≈ **2 × 10⁵**, minimum bits ≈ **42 KB** — 8 orders of magnitude below the original estimate.
+5. The scanner bottleneck has shifted: no longer "measure 10¹⁴ synapses at nm resolution" but "take ~6 × 10⁶ informative measurements" — achievable with distributed functional recording at near-current technology scale. See `direction1_scanner_revised.md`.
 
 ---
 
@@ -337,7 +339,8 @@ Quantize the weight matrix to k bits/synapse, measure behavioral degradation.
 | [math/direction3_quantum_cheshire_cat.md](math/direction3_quantum_cheshire_cat.md) | ✅ Closed | TSVF formalism, post-selection constraint, why it can't transport anything |
 | [math/direction1_rate_distortion.md](math/direction1_rate_distortion.md) | ✅ Done | Shannon R-D bound: minimum 10¹²–10¹³ bits, d_eff analysis, compressed sensing argument |
 | [math/direction1_scanner_roadmap.md](math/direction1_scanner_roadmap.md) | ✅ Done | All scanning technologies, radiation dose barrier, two viable paths, technology timeline |
-| [math/direction1_scaling_law.md](math/direction1_scaling_law.md) | ✅ Done | **Major revision.** d_eff ~ N^0.5 from C. elegans + Drosophila. d_eff(human)~7×10⁵. Revised minimum: ~150 KB. |
+| [math/direction1_scaling_law.md](math/direction1_scaling_law.md) | ✅ Done | **Major revision.** Three organisms (C. elegans, Mouse V1, Drosophila). d_eff ~ N^0.46. d_eff(human)~2×10⁵. Min: ~42 KB. |
+| [math/direction1_scanner_revised.md](math/direction1_scanner_revised.md) | ✅ Done | Scanner problem revised: 6×10⁶ measurements needed (not 10¹⁴ synapses). Distributed recording is now viable path. |
 
 ### Background Research
 | File | What's In It |

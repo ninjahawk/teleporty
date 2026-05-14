@@ -1,0 +1,35 @@
+Mouse V1 (MICrONS mm3) d_eff Analysis
+=======================================
+Dataset: MICrONS mm3 portion 65 (Ding et al., Nature 2023 / Zenodo 16744240)
+Neurons: 50,943  |  Synaptic edges: 7,463,640
+Max synapse count: 76  |  Mean: 1.55
+
+SVD top 2000:
+  Variance captured:   79.9%
+  PR d_eff (top 2000): 111.1
+
+Power law tail (ranks 1500-2000): lambda ~ 1.57e+06 * i^(-2.016)
+  Tail variance (2001 to N): 11.6%
+  Estimated full d_eff:      145.7
+
+THREE-ORGANISM SCALING LAW
+  C. elegans  N=302     d_eff=28
+  Drosophila  N=138,639 d_eff=700
+  Mouse V1    N=50,943  d_eff=146
+
+  Fit: d_eff = 1.847 * N^0.4587  (R^2 of log-log fit)
+
+HUMAN ESTIMATE
+  d_eff(human, N=86e9) = 1.917e+05
+  R(D=30%) = 3.336e+05 bits = 42 KB
+
+CONSISTENCY WITH TWO-ORGANISM FIT
+  Previous alpha (C.elegans + Drosophila only): ~0.50
+  Three-organism alpha: 0.4587
+  Consistent: alpha stable across three organisms.
+
+WHAT THIS MEANS
+  d_eff(human) ~ 1.9e+05
+  Minimum bits for functional brain reconstruction: ~3.3e+05 bits (42 KB)
+  Scanner measurements needed: ~5.6e+06
+    (compressed sensing: M = d_eff * log2(N_synapses/d_eff))

@@ -152,40 +152,46 @@ If d_eff(human) ~ 10⁵–10⁶ and alpha ~ 0.5, then:
 
 ---
 
-## The Critical Next Experiment
+## Three-Organism Result (Updated)
 
-**MICrONS cubic millimeter dataset** (Lee et al. 2021, available at microns-explorer.org):
-- ~75,000 neurons, ~200 million synapses in 1 mm³ of mouse V1
-- NOT the full mouse brain, but large enough to measure d_eff at intermediate scale
-- Would give a third point at N ≈ 75,000 (between C. elegans and Drosophila in size, similar scale to Drosophila)
+The MICrONS mm3 dataset (Ding et al. 2023, Zenodo 16744240) provides the third data point:
+- Mouse V1 cortex (portion 65): N = 50,943 neurons, 7.5M synaptic edges
+- d_eff (estimated from top-2000 SVD + power law tail): **146**
+- Power law tail exponent beta = 2.016 (fast decay — well-converged spectrum)
 
-Actually more useful: **any complete mouse connectome** when available. Current estimates:
-- Mouse brain: ~70 million neurons
-- Scaling from N=138,639 (Drosophila) to N=70,000,000 is a 500× increase
-- Predicted d_eff(mouse, alpha=0.5) = 700 × √500 ≈ 15,650
-- If measured and consistent: strong validation of the power law
+| Organism | N | d_eff | d_eff / N |
+|----------|---|-------|-----------|
+| C. elegans | 302 | 28 | 9.3% |
+| Mouse V1 | 50,943 | 146 | 0.29% |
+| Drosophila | 138,639 | 700 | 0.50% |
+
+**Three-point fit:** d_eff = 1.85 × N^0.459  (alpha = 0.46)
+
+Residuals: C. elegans 10% above fit, mouse V1 45% below, Drosophila 66% above. The non-monotonic ordering (mouse < Drosophila despite N_mouse < N_Drosophila) likely reflects genuine biological difference: mammalian cortex is more columnar and repetitive than the Drosophila whole-brain, lowering dimensionality per neuron. This is consistent with known neuroscience — cortical columns in V1 represent an extreme form of redundant structure.
 
 ---
 
-## Summary
+## Summary (Three-Organism)
 
 ```
-d_eff(C. elegans)  = 28        at N = 302
-d_eff(Drosophila)  = 455–790   at N = 138,639
+d_eff(C. elegans)  = 28   at N = 302
+d_eff(Mouse V1)    = 146  at N = 50,943
+d_eff(Drosophila)  = 700  at N = 138,639
 
-Scaling: d_eff ~ N^0.50  (best fit, range 0.46–0.55)
+Three-point fit: d_eff = 1.85 * N^0.46
 
-d_eff(human) ~ 7 × 10⁵  (range: 2×10⁵ to 10⁶)
+d_eff(human) ~ 2 × 10⁵   (three-point fit, range 10⁵–10⁶ depending on
+                            whether mammalian or insect scaling applies)
 
-R(D=30%) for human ~ 1.2 × 10⁶ bits ~ 150 KB
+R(D=30%) for human ~ 3 × 10⁵ bits ~ 42 KB  (using mammalian-biased fit)
+                   ~ 1 × 10⁶ bits ~ 150 KB  (using insect-biased fit)
 
 vs. original estimate: 10¹²–10¹³ bits (200 GB to 1 TB)
 vs. naive connectome:  1.4 × 10¹⁶ bits (1.75 PB)
 
-REVISED MINIMUM: ~10⁵–10⁶ bits (~100 KB to 2 MB)
-Revision factor: 6–7 orders of magnitude below original estimate.
+REVISED MINIMUM: ~10⁵ bits (~40 KB to 200 KB)
+Revision factor: 7–8 orders of magnitude below original estimate.
 ```
 
-The scanner needs to measure ~10⁷ informative quantities, not 10¹⁴ synapses.
-The transmission is trivial (microseconds at any modern bandwidth).
-The binding constraint is still the scanner and the reconstruction, not the information volume.
+**The scanner needs ~6 × 10⁶ informative measurements, not 10¹⁴ synapses.**  
+See `direction1_scanner_revised.md` for the full implications.
