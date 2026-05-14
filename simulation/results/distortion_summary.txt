@@ -1,0 +1,40 @@
+C. elegans Distortion Experiment — Phase 7B
+============================================
+Network: 300 neurons, 3707 connections
+Model params: gain=2.5, w_chem=0.25, w_gap=0.1
+Trials per distortion level: 20
+Noise model: W_distorted = W_original + N(0, D^2 * W^2) per synapse (multiplicative)
+
+Behavioral metric: 1 - cosine_similarity(r_original[t], r_distorted[t])
+                   over response window 100-500ms
+
+RESULTS:
+D      Tap div    +/-      Chem div   +/-
+0.00   0.0000     0.0000    0.0000     0.0000
+0.05   0.0005     0.0004    0.0002     0.0000
+0.10   0.0018     0.0008    0.0006     0.0002
+0.20   0.0076     0.0056    0.0025     0.0006
+0.30   0.0153     0.0072    0.0051     0.0020
+0.40   0.0313     0.0288    0.0097     0.0021
+0.50   0.0630     0.0877    0.0166     0.0060
+0.60   0.1283     0.1657    0.0203     0.0074
+0.75   0.1766     0.2050    0.0247     0.0077
+1.00   0.3530     0.2592    0.0387     0.0093
+
+
+Divergence > 5% threshold:
+  Tap withdrawal: D = 0.5
+  Chemotaxis:     D = >1.0
+
+Rate-distortion analysis prediction: D = 0.30 is functionally tolerable.
+This means divergence at D=0.30 should be small (below natural variability threshold).
+
+PREDICTION STATUS at D=0.30:
+  Tap:  div = 0.0153  -> CONFIRMED: small divergence
+  Chem: div = 0.0051 -> CONFIRMED: small divergence
+
+NOTE: C. elegans has only 300 neurons. The 30% threshold was derived from mammalian
+in-vivo neural noise (Fano factor ~1). C. elegans neurons may be less noisy,
+suggesting the actual functional threshold might be lower for C. elegans.
+This is a testable refinement: compare predicted threshold to observed divergence
+in actual C. elegans with synaptic weight perturbations.

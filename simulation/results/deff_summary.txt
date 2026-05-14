@@ -1,0 +1,46 @@
+C. elegans d_eff Analysis — Phase 7C
+======================================
+Network: 300 neurons, 3707 chemical synapses
+
+METHOD 1+2: PCA of weight matrix (row vectors)
+  Each neuron treated as a point in output-weight space.
+  Total dimensions available: 300
+
+  Participation ratio d_eff:    28.0
+  Dims for 90% variance:        64
+  Dims for 99% variance:        146
+  Dims for 99.9% variance:      205
+
+METHOD 3: Activity manifold PCA
+  200 diverse random stimuli, activity pattern recorded.
+  Activity matrix: (200 x 300)
+
+  Participation ratio d_eff:    13.3
+  Dims for 90% activity var:    94
+  Dims for 99% activity var:    161
+
+INTERPRETATION:
+  The activity manifold has ~13 effective dimensions out of 300 possible.
+  Dimensionality fraction: 0.044 (4.4%)
+
+  This means the network's responses to diverse stimuli lie in a
+  ~13-dimensional subspace. Most of the 300-dimensional activity space
+  is never accessed — the network has massive low-dimensional structure.
+
+SCALING TO HUMAN:
+  C. elegans: N=302, d_eff_activity ~ 13.3
+  Human: N ~ 9e+10 neurons
+
+  Scaling law d_eff(human) = d_eff(C.elegans) * (N_human/N_elegans)^alpha:
+  alpha=0.50: d_eff(human) ~ 2.24e+05
+  alpha=0.75: d_eff(human) ~ 2.91e+07
+  alpha=1.00: d_eff(human) ~ 3.79e+09
+
+  The rate-distortion analysis used d_eff(human) = 10^10 to 10^12.
+  This simulation gives: alpha=0.75 -> 2.9e+07
+  which falls outside the assumed range.
+
+CAVEAT: Scaling from 300 neurons (C. elegans) to 86 billion (human) is a large
+extrapolation. The Drosophila connectome (140,000 neurons, FlyWire 2023) would
+provide a critical intermediate data point. If d_eff(Drosophila) is measured,
+we can fit the alpha exponent empirically rather than assuming it.
