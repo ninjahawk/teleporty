@@ -219,8 +219,8 @@ Phase 2: Work all five alleyways             ✅ done — 3 closed, 1 active, 1 
 Phase 3: Full math for Direction 1           ✅ done — info budget, energy, scanner analysis
 Phase 4: Rate-distortion lower bound         ✅ done — minimum 10¹²–10¹³ bits vs naive 10¹⁶
 Phase 5: Scanner technology roadmap          ✅ done — bottleneck is manufacturing, not physics
-Phase 6: Reconstruction system design        ← next — architecture/
-Phase 7: Testable simulation                 ← end goal
+Phase 6: Reconstruction system design        ✅ done — no physics barriers, C. elegans test is MVP
+Phase 7: Testable simulation                 ← next — end goal
 ```
 
 ---
@@ -255,8 +255,10 @@ Phase 7: Testable simulation                 ← end goal
 | [visser_kar_dadhich_2003_small_exotic_matter.md](research/papers/visser_kar_dadhich_2003_small_exotic_matter.md) | Visser et al. (2003) — exotic matter lower bounds |
 | [ford_roman_1999_quantum_interest.md](research/papers/ford_roman_1999_quantum_interest.md) | Ford & Roman (1999) — negative energy limits |
 
-### In Progress
-- `architecture/` — reconstruction system design (Phase 6)
+### Architecture
+| File | Status | What's In It |
+|------|--------|-------------|
+| [architecture/reconstruction_system.md](architecture/reconstruction_system.md) | ✅ Done | Feedstock → molecular → cellular → whole-body assembly. Critical path: synapse-level weight convergence. MVP: C. elegans test. |
 
 ---
 
