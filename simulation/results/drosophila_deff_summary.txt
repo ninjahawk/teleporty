@@ -1,0 +1,48 @@
+Drosophila (FlyWire 783) d_eff Analysis
+========================================
+Dataset: Dorkenwald et al. 2023, proofread_connections_783.feather
+Neurons: 138,639
+Directed edges (unique pairs): 15,091,983
+Max syn_count: 2405
+
+METHOD 1: Randomized SVD (top 300 components)
+  Participation ratio d_eff:         141.0
+  Dims for 90% variance (top-300):  >300
+  Dims for 99% variance (top-300):  >300
+  Variance in top 300 components:   40.9%
+
+METHOD 2: Submatrix PCA (5000 x 2000 submatrix)
+  Participation ratio d_eff:  17.7
+  Dims for 90% variance:      106
+
+METHOD 3: Power-law eigenspectrum fit
+  lambda_i ~ 5.1458 * i^(-0.658)
+  beta = 0.658 (<= 1: slow convergence)
+  Extrapolated d_eff: N/A
+
+SCALING ANALYSIS
+  C. elegans: N=302,   d_eff_activity=13.3
+  Drosophila: N=138,639, d_eff_SVD=141.0
+  Fitted scaling exponent alpha: 0.3852
+  d_eff scales approximately as N^0.385
+
+HUMAN ESTIMATE
+  N_human = 86e9 neurons
+  d_eff(human) ~ 2.402e+04
+  R(D=30%) ~ 4.173e+04 bits  (0.00 GB)
+
+INTERPRETATION
+  The scaling exponent alpha=0.385 means:
+  - Sub-linear scaling: each new neuron adds less than proportional complexity
+  - d_eff(human) ~ 2.4e+04, BELOW the assumed R-D range of 10^10-10^12
+
+  This REVISES DOWNWARD the minimum bits estimate.
+  Revised R-D minimum at D=30%: 4.17e+04 bits = 0.00 GB
+
+CAVEAT
+  The C. elegans d_eff was measured from activity manifold (behavioral simulation).
+  The Drosophila d_eff was measured from the weight matrix SVD (no dynamics).
+  These are different quantities — ideally both would use the same method.
+  The SVD method tends to give HIGHER d_eff than the activity manifold method.
+  If the activity manifold d_eff for Drosophila is lower (as for C. elegans,
+  where activity d_eff=13 vs weight PCA d_eff=28), alpha would be even lower.
