@@ -220,8 +220,10 @@ Phase 3: Full math for Direction 1           ✅ done — info budget, energy, s
 Phase 4: Rate-distortion lower bound         ✅ done — minimum 10¹²–10¹³ bits vs naive 10¹⁶
 Phase 5: Scanner technology roadmap          ✅ done — bottleneck is manufacturing, not physics
 Phase 6: Reconstruction system design        ✅ done — no physics barriers, C. elegans test is MVP
-Phase 7: Testable simulation                 ← next — end goal
+Phase 7: Testable simulation                 ✅ spec done — C. elegans LIF + distortion + d_eff extraction
 ```
+
+**Up next:** Build the simulation. Python LIF model of C. elegans, Cook et al. 2019 connectome data, distortion sweep, d_eff PCA. This is the first thing in this entire project that produces a number that could be wrong.
 
 ---
 
@@ -259,6 +261,7 @@ Phase 7: Testable simulation                 ← next — end goal
 | File | Status | What's In It |
 |------|--------|-------------|
 | [architecture/reconstruction_system.md](architecture/reconstruction_system.md) | ✅ Done | Feedstock → molecular → cellular → whole-body assembly. Critical path: synapse-level weight convergence. MVP: C. elegans test. |
+| [architecture/simulation_spec.md](architecture/simulation_spec.md) | ✅ Spec done | 5 falsifiable predictions. C. elegans LIF distortion test, d_eff extraction, generative model validation. |
 
 ---
 
