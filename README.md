@@ -171,9 +171,23 @@ Single EM setup: 3.6 million years
 10⁸ parallel microscopes: 13 days
 ```
 
-10⁸ electron microscopes don't exist (there are ~10,000 in the world today). But **there is no physics that forbids building them**. This is a manufacturing and economics problem. The same way there were no transistors in 1940 and now there are 10²³.
+10⁸ electron microscopes don't exist (~10,000 in the world today). But **there is no physics that forbids building them**. This is a manufacturing and economics problem.
 
-**For a living scan** (non-destructive, nm resolution): doesn't exist yet. No known fundamental barrier to building one, but also no clear path. This is the hardest open engineering question in the project.
+### Two Paths Forward
+
+*From [math/direction1_scanner_roadmap.md](math/direction1_scanner_roadmap.md)*
+
+**Path A — Destructive (accept the original is destroyed):**  
+Expansion microscopy at 10× + light-sheet imaging gets to ~25 nm effective resolution at ~10× the throughput of ssEM. With 10⁷ parallel setups (~$1T at current prices, ~$100B at scale): scan in ~13 days. Manufacturing problem. TRL 4–5.
+
+**Path B — Two-tier non-destructive:**  
+1. Full-brain functional imaging captures the d_eff-dimensional activity manifold (the "program" the brain runs). Current: ~10⁶ neurons. Required: ~10¹⁰–10¹¹.  
+2. Small destructive EM calibration sample (~1 cm³) trains a generative model: activity → structural weights.  
+3. Reconstruct full connectome from functional recording + generative model.
+
+This is the only path that preserves the original. Physics allows live nm-resolution imaging with STED (~10–20 nm) — but current methods are too slow for whole-brain volume. The fundamental radiation dose barrier prevents live X-ray at nm resolution; light-based methods are exempt. TRL 2–3.
+
+**The hard open question:** Building a device that records from ~10¹⁰–10¹¹ neurons simultaneously in a living human. No physics forbids it. No current technology achieves it.
 
 ---
 
@@ -203,9 +217,9 @@ Single EM setup: 3.6 million years
 Phase 1: Survey existing approaches          ✅ done — all dead or lead to Direction 1
 Phase 2: Work all five alleyways             ✅ done — 3 closed, 1 active, 1 feeds in
 Phase 3: Full math for Direction 1           ✅ done — info budget, energy, scanner analysis
-Phase 4: Rate-distortion lower bound         ← next
-Phase 5: Scanner technology roadmap          ← next
-Phase 6: Reconstruction system design        ← architecture/
+Phase 4: Rate-distortion lower bound         ✅ done — minimum 10¹²–10¹³ bits vs naive 10¹⁶
+Phase 5: Scanner technology roadmap          ✅ done — bottleneck is manufacturing, not physics
+Phase 6: Reconstruction system design        ← next — architecture/
 Phase 7: Testable simulation                 ← end goal
 ```
 
@@ -220,6 +234,8 @@ Phase 7: Testable simulation                 ← end goal
 | [math/direction4_penrose_diosi_threshold.md](math/direction4_penrose_diosi_threshold.md) | ✅ Done | Full PD calculation, thermal decoherence, quantum ceiling table |
 | [math/direction2_cm_tunneling.md](math/direction2_cm_tunneling.md) | ✅ Closed | Why CM tunneling doesn't work — the numbers |
 | [math/direction3_quantum_cheshire_cat.md](math/direction3_quantum_cheshire_cat.md) | ✅ Closed | TSVF formalism, post-selection constraint, why it can't transport anything |
+| [math/direction1_rate_distortion.md](math/direction1_rate_distortion.md) | ✅ Done | Shannon R-D bound: minimum 10¹²–10¹³ bits, d_eff analysis, compressed sensing argument |
+| [math/direction1_scanner_roadmap.md](math/direction1_scanner_roadmap.md) | ✅ Done | All scanning technologies, radiation dose barrier, two viable paths, technology timeline |
 
 ### Background Research
 | File | What's In It |
@@ -240,8 +256,7 @@ Phase 7: Testable simulation                 ← end goal
 | [ford_roman_1999_quantum_interest.md](research/papers/ford_roman_1999_quantum_interest.md) | Ford & Roman (1999) — negative energy limits |
 
 ### In Progress
-- `math/` — Direction 2 (CM tunneling), Direction 4 (Penrose-Diósi)
-- `architecture/` — system design once a direction matures
+- `architecture/` — reconstruction system design (Phase 6)
 
 ---
 
