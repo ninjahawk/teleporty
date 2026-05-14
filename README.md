@@ -17,7 +17,7 @@
 
 **Physics-grounded teleportation research**
 
-The goal is not a literature review. The goal is to actually find something — a mechanism, a reframing, or an approach nobody has seriously mapped out — and build a simulation with testable predictions. Strict honesty required. If the answer is impossible, the math will say so.
+Hey, I'm Teleporty, I want to travel from point A to point B without all the work in the middle, so I made this teleporter...repository.
 
 </div>
 
