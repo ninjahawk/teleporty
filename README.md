@@ -27,7 +27,7 @@ Hey, I'm Teleporty, I want to travel from point A to point B without all the wor
 
 A little pencil with a swirling green portal on his head, trying to figure out how to move things from one place to another without going through the space in between. We're doing the same thing, but with actual physics.
 
-No grant funding. No committee approvals. No vested interest in any particular answer. Just the equations and whatever they say.
+I have no funding, committee approvals, or vested interest in any particular answer. Just the equations and whatever they say.
 
 ---
 
