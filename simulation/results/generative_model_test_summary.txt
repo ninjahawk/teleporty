@@ -1,0 +1,37 @@
+Generative Model Test v3 (Per-Neuron Dynamical Regression)
+===========================================================
+N=300, d_eff=28, T=600.0ms/cond, sub=20 (10.0ms), samples/cond=60
+Ridge lambda=0.0001
+
+Method: z_j(t) = atanh((r_j(t+1)-r_j(t))*tau/dt + r_j(t)) / gain - I_gap_j - I_ext_j
+        = sum_i W[i,j] r_i(t)  [exact, no approximation]
+Valid: r_j(t+1) > eps (lower clip not active).
+Per-neuron A_j: subtract invalid-step contribution from global A.
+Consistency check: mean|z-X@W|_valid = 7.99e-15  [~0 = exact]
+
+    K      frob   pearson    div_tap   div_chem
+    1    0.9673    0.2819     0.4750     0.3946
+    2    0.9525    0.3466     0.2659     0.1627
+    3    0.9335    0.4093     0.4911     0.0637
+    5    0.9071    0.4758     0.7256     0.0627
+    8    0.8796    0.5374     0.6835     0.0767
+   10    0.8635    0.5606     0.6661     0.0808
+   15    0.8247    0.6300     0.6404     0.0908
+   20    0.7813    0.7009     0.6463     0.0996
+   30    0.7152    0.7695     0.6442     0.1059
+   50    0.5908    0.8748     0.6135     0.0991
+
+Threshold K for div_tap < 5%:  >50
+Threshold K for div_chem < 5%: >50
+Threshold K for pearson >= 0.9: >50
+
+Theoretical K prediction: d_eff / samples_per_cond = 28/60 = 1
+
+Assumptions:
+  [KNOWN IN SIM] G used in z computation. Real: estimated from structural sample.
+  [ESTABLISHED] Dynamical regression exact for rate model (no approximation).
+  [THIS PROJECT] d_eff=28 from three-organism scaling law.
+
+Prediction status:
+  Tap:  K_thresh=None vs K_pred=1: FAILED
+  Chem: K_thresh=None vs K_pred=1: FAILED
