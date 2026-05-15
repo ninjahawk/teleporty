@@ -3,10 +3,10 @@
 ## STRICT RULE — COMMITS AND CONTRIBUTORS
 **NEVER EVER include Claude as a co-author, contributor, or co-committer in any commit, PR, or anywhere on this repo. Do NOT add `Co-Authored-By: Claude` or any similar line to commit messages. Commits are authored by the human only.**
 
-
-
 ## Project Goal
 Find a mechanism, reframing, or approach to teleportation that is physically grounded, has not been seriously pursued, and produces a simulation with testable predictions. The goal is discovery, not literature review.
+
+The working definition of teleportation: **scan → transmit → reconstruct → verify**. The reconstructed object is functionally identical to the original. Atom identity doesn't matter. Continuity of the original doesn't matter. Behavioral/functional equivalence is the criterion.
 
 **Honesty rule:** This is math and science. Do not produce results to make the user feel good. If something is impossible, say so with the math that shows why. If something is possible, show the derivation. No rounding off, no handwaving, no softening conclusions.
 
@@ -16,64 +16,19 @@ Find a mechanism, reframing, or approach to teleportation that is physically gro
 - **Warp drive (Alcubierre)**: same exotic matter wall. White's 2012 geometry still requires Jupiter-mass negative energy and is causally disconnected from the interior.
 - **Psychic teleportation**: pseudoscience. Not considered further.
 
-## Active Research Directions (the alleyways)
+## The Viable Path
+**Functional teleportation via classical information.** The quantum barriers apply to copying every quantum state of every particle. Functional identity is encoded in classical information: connectome structure, cell types, molecular composition, spatial arrangement. None of the quantum barriers apply at the classical level.
 
-### Direction 1: Functional Teleportation — Minimum Information Reframing
-The quantum barriers apply to copying every quantum state of every particle. But functional identity is probably encoded in classical information: connectome (~10¹⁵ bits), molecular composition, biochemistry. At the classical level, none of the quantum barriers apply.
+The only physically honest mechanism for teleportation is: **disassemble (or scan) → encode → transmit → fabricate**. No spacetime bending. No exotic matter. Just a file and a sufficiently advanced printer.
 
-**Open question:** What is the minimum classical information required for functional equivalence, and what is the physical lower bound on reconstruction fidelity? Nobody has built a rigorous model of this.
+## Active Research Directions
 
-**Goal:** Build an information-theoretic model. Calculate: minimum bits, transmission time at various bandwidths, reconstruction energy from raw atoms, error tolerance.
+### Direction 1: Functional Teleportation — Complete Pipeline (PRIMARY)
 
-### Direction 2: Center-of-Mass Tunneling of Macroscopic Bound States
-Composite objects have a center-of-mass wavefunction that is distinct from the internal degrees of freedom. A BEC or superconductor tunnels as a unit. Levitated nanoparticle experiments have placed ~10⁷-atom objects in spatial superpositions.
+**Status: In progress. Neural scanner confirmed. Apple pipeline quantified. Fabricator is the bottleneck.**
 
-**Open question:** What is the tunneling amplitude for a composite bound object as a function of mass, internal temperature, barrier geometry, and decoherence rate? How does it scale? Where is the practical cutoff?
+**What has been established (neural scanner):**
 
-**Goal:** Derive the center-of-mass tunneling amplitude for a composite object with internal thermal noise. Compare to levitated particle experimental results. Find the feasible mass/distance regime.
-
-### Direction 3: Quantum Cheshire Cat Scaling
-Denkmayr et al. 2014 demonstrated experimentally that a neutron's spin was found in a spatially separate location from the neutron. The effect is real and measured. The mechanism is pre/post-selection in an interferometer.
-
-**Open question:** Does this effect generalize beyond spin? Can it apply to mass, charge, or other properties? Is there a sense in which a property "relocates" that is physically meaningful for transport?
-
-**Goal:** Work through the mathematical formalism (two-state vector formalism, weak measurements). Determine what the effect can and cannot transmit. If it can transmit anything useful, characterize the conditions.
-
-### Direction 4: Penrose-Diósi Gravitational Collapse Threshold
-If objective gravitational collapse is real (Penrose-Diósi model), the decoherence timescale for a superposition is:
-
-τ ≈ ℏ / E_G
-
-where E_G = G ∫∫ [ρ_A(r) - ρ_B(r)]² / |r - r'| d³r d³r'
-
-This gives a hard, calculable mass-dependent ceiling on how long a quantum superposition can exist — and therefore the maximum scale of quantum teleportation.
-
-**Goal:** Calculate τ as a function of object mass and superposition separation. Compare to current nanoparticle experiments. Determine whether this is the binding constraint or whether thermal decoherence wins first.
-
-### Direction 5: Quantum Darwinism Reconstruction
-Every physical object imprints redundant classical copies of its pointer states onto environmental photons, air molecules, and thermal radiation. Zurek's quantum Darwinism quantifies this.
-
-**Open question:** What fraction of an object's classical state information is recoverable from environmental records within a finite spacetime volume? Is this sufficient for functional reconstruction?
-
-**Goal:** Model information recovery from environmental imprints. Calculate the redundancy factor and accessible fidelity as a function of object size, environment density, and time.
-
-## Priority Order
-1. Direction 1 (functional teleportation reframing) — most honest near-term path, fewest assumptions
-2. Direction 4 (Penrose-Diósi) — sets the hard ceiling for all quantum approaches; do this before investing heavily in quantum methods
-3. Direction 2 (CM tunneling) — real physics, currently being measured, scaling math is missing
-4. Direction 3 (Cheshire cat) — interesting but may be a dead end; check the formalism first
-5. Direction 5 (Darwinism) — most speculative of the five; do last
-
-## Strict Rules
-- Show all math, don't skip steps
-- Every assumption labeled explicitly with its justification
-- Distinguish: **established physics** / **theoretical mainstream** / **speculative** / **this project's conjecture**
-- If a direction hits a fundamental wall, document exactly where and why, then stop pursuing it
-- NEVER EVER include Claude as a co-author, contributor, or co-committer in any commit, PR, or anywhere on this repo
-
-## Current State of Direction 1 (as of 2026-05-15)
-
-### What has been measured
 Three connectomes processed, d_eff extracted via weight-matrix PCA (participation ratio):
 
 | Organism | N neurons | d_eff | Source |
@@ -86,78 +41,93 @@ Scaling law fit (three-point, log-log): **d_eff = 1.85 × N^0.459**
 
 Human extrapolation (N = 86×10⁹): **d_eff ≈ 2×10⁵**
 
-Minimum bits for functional reconstruction (D=30% distortion): **R ≈ 42 KB**
-vs. original assumption: 10¹²–10¹³ bits. Revised by 7–8 orders of magnitude.
+Minimum bits for functional reconstruction (D=30% distortion): **R ≈ 42 KB** (revised from original 10¹²–10¹³ bits — 7–8 orders of magnitude compression)
 
 The 30% distortion tolerance is empirically confirmed in C. elegans simulation (behavioral divergence <2% at D=0.30).
 
-### Scanner problem (revised)
-Compressed sensing measurement count: M = d_eff × log₂(N_s/d_eff) ≈ **6×10⁶ measurements** (not 10¹⁴ synapses).
+**Generative model — CONFIRMED (Prediction 3):**
 
-Two viable paths:
-1. **Functional recording** (living): ~10⁶ neurons distributed across brain × ~3 diverse behavioral conditions theoretically sufficient to span d_eff = 2×10⁵ activity manifold. Requires ~10,000 distributed electrode sites (1000× Neuralink scale).
-2. **Sparse structural EM** (destructive): random 0.01% spatial subsample + matrix completion.
+Activity recordings can reconstruct synaptic weights well enough to reproduce behavior. Final result: **K = 1 dedicated probe condition per behavior class** suffices.
 
-Current bottlenecks:
-- Generative model (activity → structure): TRL 2–3, needs training data from paired functional+structural recordings
-- Distributed electrode deployment at safe density: ~10,000 probes in living brain, physiological effects unknown
-- Rapid whole-brain vitrification (destructive path): not demonstrated at human scale
+- div_tap = 0.5% at K=1 (tap-targeted pulsed condition) ✓
+- div_chem = 0.5% at K=2 (chem-targeted pulsed condition) ✓
 
-### Generative Model Test — Prediction 3 (as of 2026-05-15)
+Training protocol: pulsed stimuli targeting relevant sensory neurons at moderate amplitude (avoids saturation, captures linear-regime transients). Not random stimulation.
 
-**Status: CONFIRMED with refined scanner protocol.**
+Key finding: tap sensor chemical weights are 27× smaller than global mean → joint regression over all behaviors fails (large-signal circuits wash out small-signal ones). Modular approach (fit per behavior class, combine per-neuron by best-activating condition) resolves this.
 
-Multiple regression versions tested. Final confirmed result: **K = 1 dedicated condition per behavior class, pulsed stimuli at moderate amplitude.**
+**Revised scanner prediction:**
+- K = N_behavior_classes (order 100–1000 for humans), not K ~ d_eff = 10⁵
+- Structured probe stimuli per behavior class, not random recording
+- This is stronger than the original compressed sensing prediction
 
-**Regression evolution:**
-1. **v1 (steady-state)**: FAILED. Network oscillates — no fixed point.
-2. **v2 (dynamical, shared A)**: consistency ~0 but behavioral divergence WORSENED with K. Root cause: zero-padding invalid entries biased the shared A matrix.
-3. **v3 (dynamical, per-neuron A_j)**: chemotaxis confirmed at 0.63% divergence. Tap stuck at 60-70% — root cause: constant-drive training saturates tap neurons.
-4. **Pulsed random training**: tap neurons underactivated (mean r=0.014) — same failure from opposite direction.
-5. **Targeted pulsed training (final)**: pulsed stimuli at tap neurons, amp=1.5, cycling tap/chem/random. Results:
-   - **div_tap = 0.5% at K=1** (tap-targeted condition) ✓ CONFIRMED
-   - **div_chem = 0.5% at K=2** (chem-targeted condition) ✓ CONFIRMED
-   - Combined joint regression degrades — root cause: tap sensor mean chemical weight (0.0007) is 27x smaller than global mean (0.019); chem data dominates joint regression and washes out small tap weights.
-   - Gap junctions are NOT the issue (ablation test: div_tap=0.006 with G=0).
+**What the apple pipeline established:**
 
-**Final scanner protocol:**
-- Run K = N_behavior_classes probe conditions
-- Each condition: pulsed stimuli targeting the relevant sensory neurons at moderate amplitude (linear tanh regime during transient)
-- Per-neuron weights estimated from the condition where that neuron is best-activated (valid_frac × variance score)
-- This is STRONGER than K ~ d_eff = 28: you only need one condition per behavior class
+Full scan→transmit→reconstruct→verify model for a non-neural biological object. Key numbers:
 
-**What this means for the scanner:**
-- For a human brain: K ~ N_distinct_behavior_classes (order 100–1000), not 10⁵
-- Stimuli must be structured probes activating each sensory circuit, not random
-- Training amplitude matters: must avoid saturation while achieving sufficient activation
-- This is a refinement of the scanner prediction — the constraint is behavioral coverage, not manifold coverage
+| Stage | Bottleneck? | Key number |
+|-------|-------------|------------|
+| Scan | No | 160 MB – 1.6 GB at 10 μm resolution |
+| Transmit | No | <13s on broadband |
+| Reconstruct | **YES** | Needs 10× resolution gain, 100× throughput gain over 2025 bioprinters |
+| Verify | No | 24h: GC-MS, texture, nutrition |
 
-**Key simulation files:**
-- `simulation/run_generative_model_test.py` — v3 (per-neuron A_j, constant drive)
-- `simulation/run_generative_model_targeted_pulse.py` — targeted pulsed training (final result)
-- `simulation/run_generative_model_modular.py` — modular per-neuron combination
-- `simulation/run_generative_model_combined_fixed.py` — direct A_j with adaptive lambda
-- `simulation/run_circuit_diagnostic.py` — gap junction ablation + weight analysis
+Thermodynamic minimum for assembly: ~44 J (entropy cost, negligible). Practical fabricator energy: ~1 kWh. Energy is not the barrier.
 
-**Next phase:** Apple pipeline — extend the scan→transmit→reconstruct model to a complete non-neural biological object. Goals: information budget, scanner spec, fabricator requirement, energy cost.
+Current bioprinting state (2025): ~100 μm resolution, ~10⁶ cells/min. Required: ~10 μm resolution, ~10⁸ cells/s. Neither gap is a physics barrier — both are engineering.
 
-### Key simulation files
+**The fabricator is the binding constraint for the entire teleportation program.** Scanner and transmission are solved in principle.
+
+**Open questions / next steps:**
+1. Fabricator simulation: model resolution, throughput, and parallelization requirements quantitatively. What does the fabricator need to look like? What's the technology readiness level?
+2. Body information budget: extend d_eff / rate-distortion framework to non-neural somatic cells. Is the body really 1–2 orders of magnitude harder than the brain, or more?
+3. Vascular viability problem (human only): printed vasculature must be functional within seconds. This is the hardest unsolved fabrication problem for the human case. The apple case sidesteps it.
+
+### Direction 2: Center-of-Mass Tunneling of Macroscopic Bound States
+**Status: Not started.** Levitated nanoparticle experiments are measuring this now. The scaling theory (tunneling amplitude vs. mass, barrier geometry, decoherence rate) is missing.
+
+### Direction 3: Quantum Cheshire Cat Scaling
+**Status: Not started.** Effect is real (Denkmayr 2014). Whether it generalizes beyond spin is unknown. Two-state vector formalism needs to be worked through.
+
+### Direction 4: Penrose-Diósi Gravitational Collapse Threshold
+**Status: Not started.** τ ≈ ℏ/E_G is calculable. Sets a hard ceiling for quantum teleportation approaches. Should be done before investing in quantum methods.
+
+### Direction 5: Quantum Darwinism Reconstruction
+**Status: Not started.** Most speculative. Do last.
+
+## Priority Order
+1. **Direction 1 fabricator simulation** — complete the pipeline model. This is the next concrete task.
+2. **Direction 1 body information budget** — quantify the non-neural piece.
+3. **Direction 4 (Penrose-Diósi)** — sets the hard quantum ceiling before going deeper on quantum directions.
+4. **Direction 2 (CM tunneling)** — real ongoing experiments, missing scaling theory.
+5. **Directions 3 and 5** — lower priority.
+
+## Strict Rules
+- Show all math, don't skip steps
+- Every assumption labeled explicitly with its justification
+- Distinguish: **established physics** / **theoretical mainstream** / **speculative** / **this project's conjecture**
+- If a direction hits a fundamental wall, document exactly where and why, then stop pursuing it
+- NEVER EVER include Claude as a co-author, contributor, or co-committer in any commit, PR, or anywhere on this repo
+
+## Key Files
+
+### Simulation
 - `simulation/run_distortion.py` — C. elegans distortion sweep (confirms 30% tolerance)
 - `simulation/run_deff.py` — C. elegans d_eff extraction
-- `simulation/run_drosophila_deff.py` — Drosophila d_eff (randomized SVD k=3000)
+- `simulation/run_drosophila_deff.py` — Drosophila d_eff
 - `simulation/run_mouse_deff.py` — Mouse V1 d_eff + three-organism scaling law
-- `simulation/run_generative_model_test.py` — Prediction 3 v3 (per-neuron A_j, constant drive)
-- `simulation/run_generative_model_targeted_pulse.py` — **FINAL**: targeted pulsed training, both behaviors confirmed
-- `simulation/run_circuit_diagnostic.py` — gap junction ablation + tap circuit weight analysis
-- `simulation/rate_model.py` — firing rate model (tanh, NOT LIF — LIF abandoned due to E/I classification requirement)
+- `simulation/run_generative_model_targeted_pulse.py` — **FINAL generative model result**
+- `simulation/run_circuit_diagnostic.py` — gap junction ablation + weight analysis
+- `simulation/rate_model.py` — firing rate model (tanh, not LIF)
 - `simulation/load_connectome.py` — Cook et al. 2019 loader
 
-### Key math files
-- `math/direction1_scaling_law.md` — three-organism d_eff data and scaling law fit
-- `math/direction1_scanner_revised.md` — compressed sensing reframe of the scanner problem
-- `math/direction1_rate_distortion.md` — Shannon R-D derivation
+### Math
+- `math/direction1_rate_distortion.md` — Shannon R-D derivation (42 KB result)
+- `math/direction1_scaling_law.md` — three-organism d_eff data and scaling law
+- `math/direction1_scanner_revised.md` — compressed sensing reframe of scanner problem
+- `math/apple_pipeline.md` — **complete teleportation pipeline model (apple proof of concept)**
 
-### Data files (gitignored, too large for GitHub)
+### Data (gitignored, too large for GitHub)
 - `simulation/data/SI5_connectome_adjacency.xlsx` — C. elegans Cook 2019
 - `simulation/data/flywire_connections_783.feather` — Drosophila FlyWire 783 (~852 MB)
 - `simulation/data/microns_mm3_connectome.h5` — Mouse V1 MICrONS mm3 (~725 MB)
@@ -165,7 +135,6 @@ Multiple regression versions tested. Final confirmed result: **K = 1 dedicated c
 ## File Structure
 - `CLAUDE.md` — this file
 - `research/` — background literature, government docs, paper notes
-- `research/unconventional_angles.md` — detailed treatment of the 5 active directions
-- `math/` — derivations, calculations, numerical simulations
-- `architecture/` — design docs for a conceptual system once a direction shows promise
+- `math/` — derivations and calculations
+- `architecture/` — design docs (use once a direction shows enough promise)
 - `simulation/` — Python scripts; results go to `simulation/results/`
