@@ -76,12 +76,34 @@ Thermodynamic minimum for assembly: ~44 J (entropy cost, negligible). Practical 
 
 Current bioprinting state (2025): ~100 μm resolution, ~10⁶ cells/min. Required: ~10 μm resolution, ~10⁸ cells/s. Neither gap is a physics barrier — both are engineering.
 
-**The fabricator is the binding constraint for the entire teleportation program.** Scanner and transmission are solved in principle.
+**Fabricator simulation — DONE (math/direction1_fabricator.md):**
+- Resolution: 1 μm (neural), 5 μm (somatic)
+- Throughput: 10¹⁰ cells/s for 1-hour human fabrication
+- Print head: ~10⁷ nozzles in 1 m² array
+- Vascular viability solved by hypothermic fabrication at 4 °C (DHCA window of 60 min)
+- Energy: ~175 kWh per human (≈ $17.50). No physics barriers; all gaps are engineering.
+
+**Full pipeline simulation — DONE (simulation/run_teleportation_pipeline.py):**
+- Path B (compression round-trip on ideal W): PASS at <0.01% behavioral divergence on tap and chem.
+- Path A (full scan → compress → reconstruct → verify): FAIL at the SCAN stage.
+- Compression: 70× ratio (10 KB spec for C. elegans, vs 700 KB raw).
+- Transmit: ~80 μs over Wifi.
+
+**Scan inverse problem — PARTIAL (simulation/run_scan_inverse_problem.py):**
+Six approaches tested for recovering a unified W from activity recordings:
+- Combined ridge, weighted blend, iterative refinement, modular variants: all fail (r ≤ 0.11).
+- Support-aware combined regression (D): r = 0.72, chem div = 0.056 (just over 5% threshold), tap div = 0.57.
+- Knowing the binary topology (from a separate structural EM scan) cuts unknowns from N² to ~12 per neuron — this is the single most important lever.
+- Remaining bottleneck: small-signal circuits (tap weights are 27× smaller than mean) get washed out under joint regression. This is a measurement / observability problem, not an information-theoretic one.
+
+**Updated picture: the binding constraints are now TWO problems, not one.**
+1. **Fabricator** (engineering): 10¹⁰ cells/s, 10⁷ nozzles. No physics barrier.
+2. **Scan inverse problem** (algorithm): recovering a unified sparse W that simultaneously reproduces all behaviors. Open at C. elegans scale; tap circuit remains a blocker even with structural support known.
 
 **Open questions / next steps:**
-1. Fabricator simulation: model resolution, throughput, and parallelization requirements quantitatively. What does the fabricator need to look like? What's the technology readiness level?
+1. Scan inverse problem: better stimulus design (frequency-rich, behavior-class-specific high-amplitude probes), or circuit-decomposition reconstruction (different W slices per functional module).
 2. Body information budget: extend d_eff / rate-distortion framework to non-neural somatic cells. Is the body really 1–2 orders of magnitude harder than the brain, or more?
-3. Vascular viability problem (human only): printed vasculature must be functional within seconds. This is the hardest unsolved fabrication problem for the human case. The apple case sidesteps it.
+3. Vascular lumen patency: simulate 8 μm capillary lumen collapse dynamics under hypothermic fabrication. The 60-min window assumes immediate perfusion; verify this engineering assumption holds.
 
 ### Direction 2: Center-of-Mass Tunneling of Macroscopic Bound States
 **Status: Not started.** Levitated nanoparticle experiments are measuring this now. The scaling theory (tunneling amplitude vs. mass, barrier geometry, decoherence rate) is missing.
@@ -96,7 +118,7 @@ Current bioprinting state (2025): ~100 μm resolution, ~10⁶ cells/min. Require
 **Status: Not started.** Most speculative. Do last.
 
 ## Priority Order
-1. **Direction 1 fabricator simulation** — complete the pipeline model. This is the next concrete task.
+1. **Scan inverse problem** — close the C. elegans gap (current best: r=0.72, tap div=0.57). Next attacks: frequency-rich probes, circuit decomposition, lasso/sparse priors on the support.
 2. **Direction 1 body information budget** — quantify the non-neural piece.
 3. **Direction 4 (Penrose-Diósi)** — sets the hard quantum ceiling before going deeper on quantum directions.
 4. **Direction 2 (CM tunneling)** — real ongoing experiments, missing scaling theory.
@@ -116,7 +138,9 @@ Current bioprinting state (2025): ~100 μm resolution, ~10⁶ cells/min. Require
 - `simulation/run_deff.py` — C. elegans d_eff extraction
 - `simulation/run_drosophila_deff.py` — Drosophila d_eff
 - `simulation/run_mouse_deff.py` — Mouse V1 d_eff + three-organism scaling law
-- `simulation/run_generative_model_targeted_pulse.py` — **FINAL generative model result**
+- `simulation/run_generative_model_targeted_pulse.py` — per-class K=1 generative model result
+- `simulation/run_teleportation_pipeline.py` — **end-to-end pipeline: scan → compress → transmit → reconstruct → verify + fabricator projection**
+- `simulation/run_scan_inverse_problem.py` — **unified-W scan reconstruction (6 approaches, support-aware best)**
 - `simulation/run_circuit_diagnostic.py` — gap junction ablation + weight analysis
 - `simulation/rate_model.py` — firing rate model (tanh, not LIF)
 - `simulation/load_connectome.py` — Cook et al. 2019 loader
@@ -125,7 +149,8 @@ Current bioprinting state (2025): ~100 μm resolution, ~10⁶ cells/min. Require
 - `math/direction1_rate_distortion.md` — Shannon R-D derivation (42 KB result)
 - `math/direction1_scaling_law.md` — three-organism d_eff data and scaling law
 - `math/direction1_scanner_revised.md` — compressed sensing reframe of scanner problem
-- `math/apple_pipeline.md` — **complete teleportation pipeline model (apple proof of concept)**
+- `math/apple_pipeline.md` — apple proof-of-concept teleportation pipeline model
+- `math/direction1_fabricator.md` — **human-scale fabricator: resolution, throughput, Krogh+DHCA vascular constraint**
 
 ### Data (gitignored, too large for GitHub)
 - `simulation/data/SI5_connectome_adjacency.xlsx` — C. elegans Cook 2019

@@ -1,0 +1,13 @@
+Scan Inverse Problem -- search for a unified W
+====================================================
+K_total = 20 conditions
+
+Approach                          frob         r    div_tap   div_chem  verdict
+A combined ridge               16.3307    0.1093     0.7108     0.5053  FAIL
+B weighted blend (tau=2)        5.5757    0.0601     0.7162     0.5010  FAIL
+C iterative refinement         28.4428    0.0558     0.7104     0.5061  FAIL
+D support-aware combined        0.7825    0.7223     0.5747     0.0563  FAIL
+E support + cond-weighted       1.0228    0.6208     0.5776     0.1083  FAIL
+F support-aware modular        17.0583    0.0230     0.6681     0.3295  FAIL
+
+Best unified W: D support-aware combined
