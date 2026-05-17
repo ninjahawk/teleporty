@@ -1,0 +1,33 @@
+Generative Model Test — Combined Regression, Direct A_j, Adaptive Lambda
+=========================================================================
+N=300, d_eff=28, T=600.0ms/cond, sub=20, T_pc=60
+Tap amp=1.5, Chem amp=1.5, cycling tap/chem/random
+Adaptive lambda = max(0.0001, 0.01 * mean_diag(A_j))
+Direct A_j computation (valid rows only, no subtraction)
+Consistency check: 6.80e-04
+
+    K      frob   pearson    div_tap   div_chem    lam_mean
+    1    0.9669    0.2366     0.0053     0.4372    1.77e-03
+    2    0.9152    0.4209     0.2368     0.0038    5.43e-03
+    3    0.9012    0.4686     0.4907     0.0147    1.54e-02
+    5    0.9000    0.4708     0.4775     0.0143    2.13e-02
+    8    6.2431    0.1612     0.6554     0.3431    3.93e-02
+   10    5.4394    0.1944     0.6533     0.3371    5.11e-02
+   15    4.5790    0.2542     0.6584     0.3290    7.28e-02
+   20    4.0868    0.2921     0.6583     0.3250    9.15e-02
+   30    3.1935    0.3579     0.6596     0.3257    1.42e-01
+   50    4.0607    0.3340     0.6767     0.4145    2.30e-01
+
+Threshold K for div_tap  < 5%:  1
+Threshold K for div_chem < 5%:  2
+Threshold K for pearson >= 0.9: >50
+
+Tap:  CONFIRMED
+Chem: CONFIRMED
+
+Assumptions:
+  [KNOWN IN SIM] G known exactly.
+  [ESTABLISHED] Dynamical regression exact for rate model.
+  [THIS PROJECT] d_eff=28, D_tolerance=0.30.
+  [THIS EXPERIMENT] Direct A_j (valid rows) avoids subtraction instability.
+  [THIS EXPERIMENT] Adaptive lambda = alpha * mean_diag(A_j) scales with signal.

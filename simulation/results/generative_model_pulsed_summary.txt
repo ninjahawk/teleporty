@@ -1,0 +1,42 @@
+Generative Model Test — Pulsed Training Stimuli
+================================================
+N=300, d_eff=28, T=600.0ms/cond, sub=20 (10.0ms), samples/cond=60
+Pulse duration: 30.0ms, random onset, random neurons
+Ridge lambda=0.0001
+
+Hypothesis: constant-drive training saturates tap neurons (tanh flat at +1),
+making regression ill-conditioned for transient test stimuli.
+Pulsed training spans the transient regime and should fix div_tap.
+
+    K      frob   pearson    div_tap   div_chem
+    1    0.8787    0.5435     0.6752     0.0565
+    2    0.8289    0.6401     0.6534     0.0815
+    3    0.8099    0.6657     0.6444     0.0885
+    5    0.7508    0.7424     0.6271     0.1030
+    8   22.3072    0.0740     0.6392     0.2976
+   10   23.6526    0.0853     0.6397     0.2992
+   15   60.6590    0.0479     0.6845     0.4223
+   20   64.2577    0.0608     0.6974     0.4476
+   30   78.7940    0.0833     0.7088     0.4729
+   50   73.9032    0.0929     0.7165     0.5075
+
+Threshold K for div_tap  < 5%:  >50
+Threshold K for div_chem < 5%:  >50
+Threshold K for pearson >= 0.9: >50
+
+Theoretical K prediction: d_eff / samples_per_cond = 28/60 = 1
+
+Assumptions:
+  [KNOWN IN SIM] G used in z computation. Real scanner: estimated from structural sample.
+  [ESTABLISHED] Dynamical regression exact for this rate model.
+  [THIS PROJECT] d_eff=28 from three-organism scaling law.
+  [THIS EXPERIMENT] Pulsed stimuli match test temporal structure (transient dynamics).
+
+Prediction status:
+  Tap:  K_thresh=None vs K_pred=1: FAILED — tap circuit requires additional structure
+  Chem: K_thresh=None vs K_pred=1: FAILED
+
+Comparison to v3 (constant drive):
+  If pulsed fixes tap: training protocol is the scanner spec (naturalistic/pulsed recording).
+  If pulsed fails: tap circuit has gap-junction or history-dependent structure
+  not captured by the rate model — more data or a different model class required.
