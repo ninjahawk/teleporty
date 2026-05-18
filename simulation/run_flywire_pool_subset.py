@@ -82,11 +82,11 @@ print(f"  Mean |supp|: {mean_supp:.1f}, max: {max_supp}")
 T_PROBE_ms = 300.0; T_probe = int(T_PROBE_ms/params.dt)
 SS = (int(150.0/params.dt), int(280.0/params.dt)); SUB_SS = 2
 EPS = 0.001; SAT_HI = 0.85; SAT_LO = 0.02
-AMPS = [0.4, 0.8, 1.5]; N_REPS = 5; NOISE = 0.01
+AMPS = [0.4, 0.8, 1.5]; N_REPS = 3; NOISE = 0.01
 ratio = params.tau/params.dt
 
-K_pools = max(75, int(8 * mean_supp), int(np.ceil(N / 15)))  # ensure K*M >= N
-M = max(15, int(mean_supp * 0.5), int(np.ceil(N / K_pools)))
+M = max(15, int(mean_supp * 0.5))
+K_pools = max(75, int(8 * mean_supp), int(np.ceil(3.0 * N / M)))  # K*M/N >= 3 coverage
 print(f"\nPool stim: K_pools = {K_pools}, M = {M}, total trials = {K_pools*len(AMPS)*N_REPS}")
 
 t0 = time.time()
