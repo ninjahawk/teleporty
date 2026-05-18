@@ -42,19 +42,31 @@ experiment (Visible Human Project or similar) would pin it down.
   Protocol: pool optogenetic stimulation (cell-type-driver lines) + Ca²⁺ imaging,
             steady-state regression with structural support from EM scan.
 
-  Parameters (human cortex, mean|supp_j| ≈ 7000):
-    K_pools         ≈ 5 × 10⁴
-    Pool size M     ≈ 7000
-    Amplitudes/pool 3
-    Reps/condition  10
-    Total trials    ≈ 1.5 × 10⁶
-    Trial duration  30 s (incl. probe + recording + reset)
+  Parameters (human cortex, N = 8.6 × 10¹⁰, mean|supp_j| ≈ 7000):
 
-  Serial wall-clock: 1.5 × 10⁶ × 30 s ≈ 1.25 × 10⁴ hours ≈ **18 months**
-  With 50 parallel scanners: **2 weeks**
-  With 1000 parallel scanners (Manhattan-Project scale): **1 day**
+  **Two constraints on K_pools, both must hold:**
+    - Information-theoretic: K_pools > d_eff per cell type (~10²–10³)
+    - Coverage: K_pools · M ≥ N (each neuron in at least ~1 pool)
 
-  Source: `math/direction1_scan_inverse_pool.md` (extrapolated from N=1000 sim)
+  With M = 7000: K_pools ≥ N/M = 8.6×10¹⁰ / 7000 = **1.2 × 10⁷ pools**
+  (coverage dominates; the information-theoretic bound is much smaller)
+
+  Amplitudes/pool 3
+  Reps/condition  10
+  Total trials    ≈ 3.7 × 10⁸
+  Trial duration  30 s (incl. probe + recording + reset)
+
+  Serial wall-clock: 3.7 × 10⁸ × 30 s ≈ 3 × 10⁵ hours ≈ **35 years**
+  With 10³ parallel scanners: **13 days**
+  With 10⁴ parallel scanners (national-scale program): **1.3 days**
+
+  Source: `math/direction1_scan_inverse_pool.md` (scaling rule confirmed
+  by FlyWire N=2000 coverage failure mode).
+
+  **Note:** the overnight projection of ~2 × 10⁶ trials was wrong; it
+  assumed K_pools ~ d_eff per type, which gives information-theoretic
+  sufficiency but not coverage. The N=2000 real-data test exposed the
+  K_pools ≥ N/M coverage requirement. Honest projection is ~10⁸ trials.
 
   Robustness already demonstrated at C. elegans:
     1% rate noise (biological floor)  PASS
