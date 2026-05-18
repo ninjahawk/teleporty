@@ -21,6 +21,7 @@ Find a physically grounded mechanism for teleportation with testable predictions
 - Vascular patency: 8× safety margin during 60-min hypothermic fabrication
 - Full pipeline PASS at 1% Ca²⁺ imaging noise + 5% FP + 5% FN EM errors + cell-type pool structure, **when** hybrid pools (type drivers + ~50 multi-type combinations) are used
 - Pearson r on weights can be 0.43 while behavioral div < 3% — rate-distortion principle holds
+- **Real-data test (FlyWire mushroom body subset, N=797):** strong-ridge fallback for under-determined hubs gives PASS on all 5 random behavioral tests (div 0.003-0.015) even with Pearson r=0.37. Direct empirical confirmation of rate-distortion on real biological data.
 
 ### What's currently open
 1. ~~**Hub-neuron scaling**~~ — **RESOLVED 2026-05-18.** d_eff << |supp| confirmed on two real connectomes (FlyWire: d_eff 25-58 vs |supp|~252; C. elegans command neurons: d_eff 3.72 vs |supp|=45.6). Strong-ridge under-determined recovery gives Pearson r=0.31 at K=⅓·|supp|, which is behaviorally adequate per rate-distortion (r=0.43 → behavioral PASS observed previously). Engineering refinements (proper trace-norm multi-task) optional but not required for feasibility.

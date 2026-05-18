@@ -217,6 +217,38 @@ permanently. This is the main failure mode at high EM error.
 Modern segmentation (FlyWire, MICrONS) reports <5% error on validated regions,
 within the robust envelope. EM is not a project-blocker.
 
+## Real-data test: Drosophila mushroom body subset — `run_flywire_pool_subset.py`
+
+The deepest test of the protocol: take a real biological neuropil and verify
+recovery on actual hub-heavy connectivity.
+
+Setup: FlyWire 783 MB_CA_R (mushroom body calyx right). Top 800 neurons by
+total degree. Mean |supp|=8.8, but max |supp|=686 (heavy hub skew, typical
+of real brain circuits).
+
+Two protocol variants:
+
+| Variant | Under-determined handling | Pearson r | 5 random behavioral tests |
+|---|---|---|---|
+| Canonical (skip if K < \|supp\|) | 10 hubs skipped | 0.33 | div 0.07-0.10, **ALL FAIL** |
+| **Strong-ridge fallback** | 10 hubs get λ=0.5 | 0.37 | div 0.003-0.015, **ALL PASS** |
+
+**Critical finding:** the **strong-ridge fallback** for under-determined
+neurons (5-line code change: `if vj.sum() < len(sj)+3: use ridge=0.5
+instead of skipping`) transforms FAIL → PASS on real biological data.
+
+The Pearson r of the recovered weights barely changes (0.33 → 0.37), but the
+*behavioral* fidelity goes from 0.07 (FAIL) to 0.003 (PASS) — a 20× reduction
+in functional divergence. This is the rate-distortion principle made
+concrete on real biological data: structural recovery is misleading;
+behavioral verification is the criterion.
+
+**Deployment recommendation:** the canonical `run_scan_inverse_pool.py` skips
+under-determined neurons (cleaner for the headline r=0.99 result on
+C. elegans where hubs are bounded). Real-world deployment should use the
+strong-ridge fallback for any neuron with \|supp\| > K. The Drosophila
+script demonstrates this.
+
 ## Type-based pools (biologically realistic) — `run_scan_inverse_type_pools.py`
 
 Random pools were a stand-in for what real optogenetic addressing looks like.
