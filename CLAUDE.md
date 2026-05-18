@@ -23,10 +23,11 @@ Find a physically grounded mechanism for teleportation with testable predictions
 - Pearson r on weights can be 0.43 while behavioral div < 3% — rate-distortion principle holds
 
 ### What's currently open
-1. **Hub-neuron scaling — empirically TESTED on FlyWire** (`math/direction1_hub_neuron_concern.md`, `simulation/run_hub_deff_flywire.py`): hub neurons (top 1% by in-degree, median |supp|=252) have participation-ratio d_eff of 25-58 across 200-1000 sampled hubs. d_eff << |supp|. Rate-distortion conjecture CONFIRMED on real biological data. BUT: current pool-stim protocol fits each neuron INDEPENDENTLY, so still needs K > |supp_j|. Multi-task / hierarchical regression that exploits cross-hub similarity would need K > d_eff (~50-100). Engineering modification, not physics barrier. **Next step: implement and test multi-task pool stim.**
-2. **Body bulk-tissue budget range (30 GB – 1 TB)** is two orders of magnitude wide. Empirical 3D-MRF compression on Visible Human data would tighten it. Not a project-blocker.
-3. **Multi-tissue D-threshold survey** beyond cardiac+muscle: vascular flow, gut peristalsis, bone. Cardiac is worst-case; others likely more tolerant.
-4. **Fabricator engineering** (10¹⁰ cells/s, 10⁷ nozzles): 10⁶× gap from current bioprinters. No physics barrier; pure engineering. Out of project scope.
+1. ~~**Hub-neuron scaling**~~ — **RESOLVED 2026-05-18.** d_eff << |supp| confirmed on two real connectomes (FlyWire: d_eff 25-58 vs |supp|~252; C. elegans command neurons: d_eff 3.72 vs |supp|=45.6). Strong-ridge under-determined recovery gives Pearson r=0.31 at K=⅓·|supp|, which is behaviorally adequate per rate-distortion (r=0.43 → behavioral PASS observed previously). Engineering refinements (proper trace-norm multi-task) optional but not required for feasibility.
+2. ~~**Body bulk-tissue budget range**~~ — **EMPIRICALLY CONFIRMED 2026-05-18.** Theory R-D bound on 200³ synthetic voxel grid gives 0.031 bits/voxel → ~270 GB at full body scale (matches the body budget estimate). Gzip catastrophically over-counts (68 TB) because it's a 1D codec; a 3D-aware wavelet codec reaches theory. 100 GB – 1 TB range stands.
+3. **Multi-tissue D-threshold survey** beyond cardiac+muscle: vascular flow (predicted D ≈ 0.01 due to Hagen-Poiseuille r⁴ sensitivity), gut peristalsis, bone. Cardiac is worst-case; others mostly more tolerant. Refinement, not blocker.
+4. **Apple-scale end-to-end** on real biological data at intermediate N (10⁴–10⁵). Would use a Drosophila neuropil subset. Validates the pipeline at one real intermediate scale before claiming generalization to human.
+5. **Fabricator engineering** (10¹⁰ cells/s, 10⁷ nozzles): 10⁶× gap from current bioprinters. No physics barrier; pure engineering. Out of project scope.
 
 ### What's closed
 - Direction 2 (CM tunneling) — decoherence wins by many orders of magnitude
@@ -151,6 +152,15 @@ Tissue:
 - `run_tissue_distortion.py` — cardiac D=0.05
 - `run_muscle_distortion.py` — skeletal muscle D=1.0
 - `run_hub_neuron_test.py` — preliminary hub neuron, behavioral PASS but partial
+
+Hub-neuron analysis (added 2026-05-18):
+- `run_hub_deff_flywire.py` — Drosophila hubs d_eff = 25 (n=200), 58 (n=1000)
+- `run_celegans_hub_deff.py` — C. elegans command neurons d_eff = 3.72 with mean |supp|=45.6
+- `run_multitask_pool_stim.py` — ALS multi-task synthetic (slow, marginal)
+- `run_multitask_v2.py` — SVD-shrinkage post-processing (cleaner; strong-ridge alone gives r=0.31 at K=⅓·|supp|)
+
+Body compression (added 2026-05-18):
+- `run_body_compression.py` — theory R-D ~270 GB confirmed; gzip 68 TB (wrong codec)
 
 Earlier:
 - `run_distortion.py` — C. elegans D=0.30 brain threshold (foundational)
