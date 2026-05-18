@@ -60,6 +60,24 @@ experiment (Visible Human Project or similar) would pin it down.
   With 10³ parallel scanners: **13 days**
   With 10⁴ parallel scanners (national-scale program): **1.3 days**
 
+  **Pool-size optimization:** the coverage rule is on K · M, not K alone.
+  Real optogenetic addressing can combine driver lines:
+    - Single cell type pool: M ≈ 7000, K_pools ≈ 1.2 × 10⁷
+    - Combined 10 types per pool (intersectional Cre): M ≈ 7 × 10⁴, K ≈ 1.2 × 10⁶
+    - Combined 100 types per pool (modern combinatorial): M ≈ 7 × 10⁵, K ≈ 1.2 × 10⁵
+    - Holographic 2P pattern (arbitrary M): not type-bound
+
+  Practical bound: M ≈ 10⁵ is realistic with current intersectional
+  genetics + 2P holography. K_pools ≈ 1.2 × 10⁵, total trials ≈ 4 × 10⁶.
+  Wall-clock: 35 days serial, **~1 hour at 1000× parallelism**.
+
+  So depending on optogenetic addressing scale, the human-scale scan is:
+  - Worst case (M=7000): 35 years serial, ~10 days at 10³ parallel
+  - Realistic (M~10⁵): 35 days serial, ~1 hour at 10³ parallel
+  - Best case (holographic): faster still
+
+  The architecture choice determines the trial budget by 2-3 orders of magnitude.
+
   Source: `math/direction1_scan_inverse_pool.md` (scaling rule confirmed
   by FlyWire N=2000 coverage failure mode).
 
