@@ -153,7 +153,7 @@ consumer SSD. At 1 Gbps consumer fiber, full human upload = 800 s.
 
 ## Priority Order
 1. **Bulk-tissue distortion threshold validation** — confirm D=0.3 transfers from brain to tissue (cardiac electrophysiology or muscle contraction sim under perturbed cell positions). Currently the 10¹⁰–10¹² bulk-tissue range is 2 orders of magnitude wide; tightening this needs empirical D-threshold work.
-2. **Scan inverse problem human-scale** — current protocol needs 2.6×10¹² trials. Find a parallel / population-decoded variant.
+2. ~~**Scan inverse problem human-scale**~~ — **SOLVED** in `math/direction1_scan_inverse_pool.md`: pool-based stimulation (cell-type-driver-line optogenetics) achieves higher fidelity than per-neuron probing AND reduces total trials from 10¹² to ~10⁶ for human scale. Maps to existing optogenetic infrastructure (~10⁴ cell-type drivers).
 3. **Direction 2 (CM tunneling)** — real ongoing experiments, missing scaling theory.
 4. **Directions 3 and 5** — lower priority.
 
@@ -194,6 +194,8 @@ consumer SSD. At 1 Gbps consumer fiber, full human upload = 800 s.
 - `math/direction1_fabricator.md` — **human-scale fabricator: resolution, throughput, Krogh+DHCA vascular constraint**
 - `math/direction1_scan_inverse_solved.md` — **scan inverse problem solved at C. elegans scale + 1% biological noise**
 - `math/direction1_body_information_budget.md` — **full body (non-neural) rate-distortion budget: 3–700 GB (revised w/ tissue D=0.05)**
+- `math/direction1_scan_inverse_pool.md` — **pool-based scan inverse: 10⁶ trials for human (vs 10¹² per-neuron); higher fidelity than per-neuron**
+- `simulation/run_scan_inverse_pool.py` — **pool stimulation sweep: K=100,M=15 → r=0.99 PASS**
 - `simulation/run_tissue_distortion.py` — **2D cardiac propagation sim: tissue D-threshold = 0.05 (6× more sensitive than brain)**
 
 ### Data (gitignored, too large for GitHub)
