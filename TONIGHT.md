@@ -2,6 +2,30 @@
 
 **Two-session arc:** overnight session 2026-05-17 → 18 (the bulk of the work), then continuation 2026-05-18 morning (hub-neuron empirical + body compression).
 
+## Continuation 2026-05-18 (afternoon) — coverage rule + scaling honesty
+
+Pushing the pipeline onto a larger real-data subset (Drosophila mushroom body,
+N=2000) exposed a scaling bug in the overnight projection. The pool-stim
+protocol needs **K_pools · M ≥ 3N** — each neuron must land in at least a
+few pools to be directly stimulated. The overnight estimate (~2×10⁶ human
+trials) assumed K ~ d_eff per cell type, which is the information-theoretic
+bound but NOT the coverage bound.
+
+- N=797 (K·M/N=1.4): PASS
+- N=2000, K=75 (K·M/N=0.56): FAIL — 160 neurons never stimulated
+- N=2000, K=134 (K·M/N=1.0): FAIL — 117 still skipped (Poisson variance)
+- Coverage sweep (synthetic N=500): K·M/N≥3 needed for <2% skipped
+
+Honest human-scale projection, depends on optogenetic pool size M:
+- Single cell-type drivers (M=7000): ~10⁹ trials
+- 100-type combinatorial drivers (M=7×10⁵): ~10⁷ trials → ~4 days at 1000× parallel
+
+The architecture choice (single vs combinatorial driver lines) shifts the
+trial budget by 100×. Still no physics barrier — but the engineering cost
+is real and the overnight number was optimistic by ~2 orders of magnitude.
+This correction is in `math/direction1_scan_inverse_pool.md` and
+`direction1_human_projection.md`.
+
 ## Morning continuation (2026-05-18) — hub neurons resolved
 
 The #1 open question coming out of the overnight session was: does d_eff(input vector) << |supp| for hub neurons like Purkinje cells? Two independent biological-data tests:
