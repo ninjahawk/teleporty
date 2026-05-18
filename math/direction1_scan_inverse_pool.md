@@ -52,6 +52,29 @@ This is the same intuition behind compressed sensing: random projections of a
 sparse signal carry more information per measurement than canonical-basis
 samples.
 
+## Robustness (`run_scan_inverse_pool_robust.py`)
+
+K=100, M=15 across 3 noise levels × 5 seeds (15 runs):
+
+| Noise | Pass rate | Median Pearson r |
+|---|---|---|
+| 0.5% | 5/5 | 0.997 |
+| 1.0% | 5/5 | 0.989 |
+| 2.0% | 5/5 | 0.972 |
+
+**Pool stim passes 100% of trials at every noise level up to 2%.**
+
+Compare to per-neuron protocol (v4) at the same K_total budget:
+  - per-neuron at 1% noise: 3/3 PASS, r=0.92
+  - per-neuron at 2% noise: 0/3 PASS, tap circuit collapses
+  - **pool at 2% noise: 5/5 PASS, r=0.97**
+
+Pool stimulation is more sample-efficient (3× fewer trials) AND more robust
+to noise (passes 2× the noise level that breaks per-neuron). The improvement
+is consistent with the compressed-sensing intuition: rich rank-M
+measurements distribute the small-weight signal across many observations,
+so each per-element noise contribution is averaged down.
+
 ## Failure regime
 
 Below K_pools=75 (with M≥30), recovery fails on the tap circuit first. The
