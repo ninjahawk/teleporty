@@ -1,0 +1,9 @@
+C. elegans command-neuron d_eff
+=============================================
+Command neurons (n=10): ['AVAL', 'AVAR', 'AVBL', 'AVBR', 'AVDL', 'AVDR', 'AVEL', 'AVER', 'PVCL', 'PVCR']
+In-degrees: [65, 59, 45, 45, 39, 46, 46, 44, 34, 33]
+Mean |supp|: 45.6
+Participation ratio d_eff: 3.72
+
+Top-10 hub d_eff: 4.73
+Random-10 control d_eff: 2.92

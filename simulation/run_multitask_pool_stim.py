@@ -43,21 +43,22 @@ mask = (rng.random((N, N_normal)) < p_chem)
 np.fill_diagonal(mask[:N_normal, :], False)
 W[:, :N_normal][mask] = rng.lognormal(-2.0, 1.0, mask.sum())
 
-# Hub neurons (last N_HUBS): each has |supp|=HUB_SUPP, all from a shared rank-r basis
-# Generate r latent "input patterns" of length N
+# Hub neurons (last N_HUBS): biologically realistic Purkinje-like:
+# All hubs are of the SAME type, sharing the SAME set of presynaptic neurons
+# (granule cell analog). The shared support models cell-type-uniform inputs.
+# Different hubs have different weight COEFFICIENTS in the shared latent basis.
 latent_basis = rng.lognormal(-2.0, 0.5, (N, LATENT_RANK))
-# Each hub picks a random subset of HUB_SUPP presyn neurons and a random
-# coefficient vector in the latent space
+# One shared support: HUB_SUPP presyn neurons that all hubs receive from
+shared_supp = rng.choice(N_normal, size=HUB_SUPP, replace=False)
 hub_supports = []
 for h in range(N_HUBS):
     hub_col = N_normal + h
-    supp = rng.choice(N_normal, size=HUB_SUPP, replace=False)
-    hub_supports.append(supp)
+    hub_supports.append(shared_supp)
     # weight column: w[supp] = sum_k coeff_k * latent_basis[supp, k]
     coeff = rng.normal(0, 1.0, LATENT_RANK)
-    w = latent_basis[supp] @ coeff
+    w = latent_basis[shared_supp] @ coeff
     w = np.abs(w)  # non-negative weights
-    W[supp, hub_col] = w
+    W[shared_supp, hub_col] = w
 
 W_norm = W / W.max()
 # Tiny gap junctions to keep dynamics stable

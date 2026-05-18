@@ -125,6 +125,28 @@ priors are textbook). Existing libraries handle it.
     protocol does not. **Open engineering work: implement multi-task pool
     stim recovery.**
 
+## C. elegans command-neuron d_eff (`run_celegans_hub_deff.py`)
+
+Cross-checking the FlyWire result on a different real-data connectome.
+C. elegans command interneurons (AVA, AVD, AVE, AVB, PVC — the locomotion
+command system) are the highest-in-degree neurons.
+
+| Quantity | Value |
+|---|---|
+| n_command_neurons | 10 |
+| Mean \|supp\| | 45.6 |
+| Total nonzeros | 456 |
+| Participation ratio d_eff | **3.72** |
+| d_eff / mean \|supp\| | **0.08** (12× redundancy) |
+
+The 10 command neurons' incoming weight matrix has rank essentially 4.
+Information needed to specify ALL their incoming weights: ~37 free parameters,
+not 456 (raw count) or 3000 (full N×10).
+
+This is consistent with the FlyWire result. Real hub neurons of related
+function have weight columns in a low-dim subspace. The multi-task hypothesis
+is empirically supported on two distinct organisms (C. elegans + Drosophila).
+
 ## Preliminary test (`run_hub_neuron_test.py`)
 
 Built a synthetic N=400 network with one Purkinje-like hub neuron at

@@ -1,0 +1,9 @@
+Multi-task pool stim test
+=============================================
+|supp_hub| = 300, true latent rank = 20
+
+ K_pools   Indep r_hub   Multi r_hub
+      50        0.0000        0.0270
+     100        0.0000        0.0243
+     200        0.2082        0.0659
+     500        0.9350        0.7526
