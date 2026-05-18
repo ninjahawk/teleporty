@@ -1,0 +1,8 @@
+FlyWire N=1998 failure diagnostic
+=============================================
+Baseline div_mean: 0.1426 (FAIL)
+Skipped neurons: 146, mega-hubs: 2
+
+(A) W_TRUE for skipped:        0.0422  FAIL
+(B) W_TRUE for mega-hubs:      0.0416  FAIL
+(C) W_TRUE for skipped+hubs:   0.0423  FAIL

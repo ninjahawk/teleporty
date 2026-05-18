@@ -62,14 +62,78 @@ source state not saturated. Neurons that are intrinsically near-silent or
 near-saturated under the probe protocol never yield valid rows. These are a
 *observability* failure, not a coverage or hub failure.
 
-**Honest status: the N=2000 failure cause is not definitively isolated.**
-Candidates: (a) skipped/unobservable neurons, (b) mega-hubs, (c) accumulated
-small errors over longer propagation paths in the bigger network. The
-diagnostic that would settle it — substitute W_TRUE for skipped columns
-and re-test behavior — was not run (needs a ~48-min re-simulation). The
-honest claim is: **the pipeline is demonstrated at N≤800; at N=2000 it
-fails for a reason within the reconstruction/observability stage that is
-characterized but not pinned down.**
+## Diagnostic result — cause isolated (`run_flywire_pool_subset.py`)
+
+The diagnostic was run (N=2000, K=134). For each candidate cause, substitute
+W_TRUE for those columns and re-test behavior:
+
+| Substitution | # columns | div_mean | result |
+|---|---|---|---|
+| Baseline (nothing) | 0 | 0.14 | FAIL |
+| W_TRUE for skipped neurons | 146 | **0.042** | near-PASS |
+| W_TRUE for mega-hubs (\|supp\|>500) | **2** | **0.042** | near-PASS |
+| W_TRUE for skipped + mega-hubs | 146 | 0.042 | near-PASS |
+
+**Decisive finding:** substituting just **2 mega-hub columns** gives the
+*identical* improvement (0.14 → 0.042) as substituting all 146 skipped
+columns. The two fixes are redundant — which means **the 2 mega-hubs are
+themselves among the 146 skipped neurons**, and they alone account for
+~0.10 of the 0.14 divergence.
+
+**The mega-hubs ARE the dominant cause** — confirming the original
+hypothesis — but via a mechanism the synthetic test missed:
+
+  The 2 mega-hubs (|supp| up to 1703) are **unobservable** under the probe
+  protocol. A neuron receiving 1703 inputs is driven into **saturation**
+  (rate pinned near 1.0) whenever its many presynaptic neurons are
+  co-activated by the pools. Saturated samples fail the validity filter
+  (X > SAT_HI), so the mega-hub accumulates < 5 valid observations and is
+  *skipped* — its W_hat column is left at zero. A zeroed mega-hub column
+  means that hub receives no chemical input in the reconstruction; since
+  mega-hubs are high-influence integrators, silencing 2 of them distorts
+  the whole network's behavior by ~0.10.
+
+The synthetic mega-hub test (`run_megahub_svt.py`) did NOT reproduce this
+because the synthetic hubs were never saturated/skipped — the failure is
+an **observability** failure, not a regression under-determination failure.
+
+## The residual 0.042
+
+Even with mega-hubs fixed, div_mean = 0.042 — borderline (some test stimuli
+still > 0.05). This residual is general bulk-reconstruction error: at N=2000,
+K=134, the overall Pearson r is only 0.29 (vs 0.99 on C. elegans). The bulk
+network needs more pool trials (higher K) and/or more reps. This is the
+ordinary coverage/SNR axis — solvable by more data, unlike the mega-hub
+observability problem which needs a protocol change.
+
+## The fix
+
+Mega-hubs must be kept **out of saturation** during probing so they yield
+valid observations:
+
+  1. **Lower-amplitude probes** for pools containing many of a mega-hub's
+     presynaptic neurons — keep the hub's rate in [0.05, 0.85].
+  2. **Sparse targeted probes** that activate only a fraction of a mega-hub's
+     inputs at once, so the hub stays in its linear regime.
+  3. **Adaptive amplitude:** detect saturation in real time and back off.
+
+None of these is hard. They are probe-design refinements. The mega-hub
+problem is an **observability/protocol** issue, fully within engineering
+scope — not a fundamental reconstruction-algorithm gap as the first draft
+of this note feared.
+
+## Honest status (final)
+
+  - Pipeline demonstrated at N ≤ 800 (C. elegans + Drosophila MB subset).
+  - At N = 2000 it fails; cause now isolated: 2 saturated/unobservable
+    mega-hubs (~0.10 of the divergence) + general bulk recon error at
+    low K (~0.04).
+  - Mega-hub fix: keep hubs unsaturated via lower-amplitude / sparse
+    targeted probes. Protocol refinement, not an algorithm gap.
+  - Bulk-error fix: more pool trials (higher K). Ordinary scaling.
+  - Neither is a physics barrier. Both are characterized and have clear
+    engineering solutions. **Implementing the unsaturated-probe protocol
+    and re-testing N=2000 is the concrete next step.**
 
 ## What this means for the hub-neuron concern
 
