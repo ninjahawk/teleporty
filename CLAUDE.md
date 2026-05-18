@@ -110,8 +110,28 @@ Tap-circuit weights are 27× smaller than global mean → first to break under n
 1. **Fabricator** (engineering): 10¹⁰ cells/s, 10⁷ nozzles. No physics barrier.
 2. ~~Scan inverse problem~~: solved at C. elegans scale at 1% biological noise.
 
+**Body information budget — DONE (math/direction1_body_information_budget.md):**
+
+Component-by-component rate-distortion analysis of all non-neural systems.
+
+| Component | Bits (functional) | Size |
+|---|---|---|
+| Brain functional spec | 3.4 × 10⁵ | 42 KB |
+| Bulk tissue (voxel + tissue) | 10¹⁰–10¹² | 1–275 GB |
+| Adaptive immunity (TCR/BCR) | 10¹⁰ | 1 GB |
+| Vasculature (extra) | 10⁹ | 125 MB |
+| Per-person genome variants | 10⁸ | 12 MB |
+| Epigenome (functional) | 3 × 10⁸ | 40 MB |
+| Microbiome composition | 10⁵ | 15 KB |
+| Per-person dynamic state | 10³ | 100 B |
+| **Total (functional)** | **10¹⁰–10¹² bits** | **1–275 GB** |
+
+Key finding: body is **5–7 orders of magnitude larger than the brain** in
+information (despite the brain being ~200× denser per cell), but fits on a
+consumer SSD. At 1 Gbps consumer fiber, full human upload = 800 s.
+**Transmission is not a bottleneck.** Fabricator remains the only barrier.
+
 **Open questions / next steps:**
-1. Body information budget: extend d_eff / rate-distortion framework to non-neural somatic cells. Is the body really 1–2 orders of magnitude harder than the brain, or more? (Direction 1 non-neural extension.)
 2. Scan inverse scaling: protocol requires N × 3 × n_reps = 9k trials for C. elegans. For human (N=86×10⁹) this is 2.6×10¹² trials — not serially feasible. Open: parallel optogenetic probing / sparse-population disambiguation.
 3. Vascular lumen patency: simulate 8 μm capillary lumen collapse dynamics under hypothermic fabrication. The 60-min window assumes immediate perfusion; verify this engineering assumption holds.
 4. Direction 4 (Penrose-Diósi): set the hard quantum ceiling before going deeper on quantum directions.
@@ -129,11 +149,12 @@ Tap-circuit weights are 27× smaller than global mean → first to break under n
 **Status: Not started.** Most speculative. Do last.
 
 ## Priority Order
-1. **Direction 1 body information budget** — quantify the non-neural piece. Is the body really 1–2 orders of magnitude harder than the brain?
-2. **Direction 4 (Penrose-Diósi)** — sets the hard quantum ceiling before going deeper on quantum directions.
-3. **Scan inverse problem human-scale** — current protocol needs 2.6×10¹² trials. Find a parallel / population-decoded variant.
-4. **Direction 2 (CM tunneling)** — real ongoing experiments, missing scaling theory.
-5. **Directions 3 and 5** — lower priority.
+1. **Bulk-tissue distortion threshold validation** — confirm D=0.3 transfers from brain to tissue (cardiac electrophysiology or muscle contraction sim under perturbed cell positions). Currently the 10¹⁰–10¹² bulk-tissue range is 2 orders of magnitude wide; tightening this needs empirical D-threshold work.
+2. **Scan inverse problem human-scale** — current protocol needs 2.6×10¹² trials. Find a parallel / population-decoded variant.
+3. **Direction 2 (CM tunneling)** — real ongoing experiments, missing scaling theory.
+4. **Directions 3 and 5** — lower priority.
+
+(Direction 4 Penrose-Diósi is complete in `math/direction4_penrose_diosi_threshold.md`: quantum ceiling at ~50 μm even in best lab conditions; humans are 7 orders of magnitude too large. Confirms Direction 1 as only viable path.)
 
 ## Strict Rules
 - Show all math, don't skip steps
@@ -168,6 +189,7 @@ Tap-circuit weights are 27× smaller than global mean → first to break under n
 - `math/apple_pipeline.md` — apple proof-of-concept teleportation pipeline model
 - `math/direction1_fabricator.md` — **human-scale fabricator: resolution, throughput, Krogh+DHCA vascular constraint**
 - `math/direction1_scan_inverse_solved.md` — **scan inverse problem solved at C. elegans scale + 1% biological noise**
+- `math/direction1_body_information_budget.md` — **full body (non-neural) rate-distortion budget: 1–275 GB**
 
 ### Data (gitignored, too large for GitHub)
 - `simulation/data/SI5_connectome_adjacency.xlsx` — C. elegans Cook 2019
