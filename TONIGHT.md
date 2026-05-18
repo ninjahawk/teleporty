@@ -66,6 +66,24 @@ generalizes — it isn't curve-fit to the probe-set behaviors.
 
 ---
 
+## Deployment-conditions stress test — most honest test
+
+Each prior test isolated one constraint. Combined them all:
+  Type pools (cell-type driver lines) + 1% noise + 5%+5% EM errors
+
+**Pure type pools FAIL** on tap circuit (div=0.10): the 6 tap sensors are
+split across 4 driver lines, so the multi-presynaptic activation pattern
+the test stimulus uses is never seen in training.
+
+**Hybrid pools PASS**: add ~50 multi-type combination drivers (intersectional
+genetics, holographic optogenetics) and all 4 behaviors pass.
+
+Notable: in the hybrid config, **Pearson r on weights is only 0.43** but
+behavioral divergence is <3%. This is the rate-distortion principle in
+action — many weight configurations produce equivalent behavior. The
+behavioral criterion (which is what we actually care about) is satisfied
+even when per-weight error is high.
+
 ## Robustness picture
 
 Pool stim was tested against every parameter axis I could think of:
