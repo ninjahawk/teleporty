@@ -1,0 +1,12 @@
+Synthetic pipeline generalization check
+=======================================================
+Random sparse networks (p_chem=0.04, p_gap=0.024)
+Pool stim K=8*mean_supp, M=max(15, 0.5*mean_supp), 5 reps, 1% noise
+4 random test stimuli per network
+
+    N seed     K  pearson  div_max verdict
+  300    1 8*ms    0.994   0.0001 PASS
+  300    2 8*ms    0.996   0.0001 PASS
+  300    3 8*ms    0.961   0.0001 PASS
+  600    1 8*ms    0.990   0.0004 PASS
+ 1000    1 8*ms    0.979   0.0001 PASS
