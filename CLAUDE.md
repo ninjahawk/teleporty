@@ -149,15 +149,33 @@ consumer SSD. At 1 Gbps consumer fiber, full human upload = 800 s.
 **Status: CLOSED (math/direction4_penrose_diosi_threshold.md).** Quantum teleportation ceiling at ~50 μm even at 0 K in perfect vacuum (1 second collapse time). Human-scale ruled out by Penrose-Diósi AND independently by thermal photon emission from a warm body (10⁻²³ s decoherence).
 
 ### Direction 5: Quantum Darwinism Reconstruction
-**Status: Not started.** Most speculative. Do last.
+**Status: CLOSED (math/direction5_quantum_darwinism.md).** Quantum Darwinism is real (Zurek, multiple experimental confirmations) and explains how classical objectivity emerges. But what's redundantly encoded in environmental fragments is the CLASSICAL pointer-basis information — exactly what Direction 1 already uses. Direction 5 collapses to Direction 1.
 
-## Priority Order
-1. **Bulk-tissue distortion threshold validation** — confirm D=0.3 transfers from brain to tissue (cardiac electrophysiology or muscle contraction sim under perturbed cell positions). Currently the 10¹⁰–10¹² bulk-tissue range is 2 orders of magnitude wide; tightening this needs empirical D-threshold work.
-2. ~~**Scan inverse problem human-scale**~~ — **SOLVED** in `math/direction1_scan_inverse_pool.md`: pool-based stimulation (cell-type-driver-line optogenetics) achieves higher fidelity than per-neuron probing AND reduces total trials from 10¹² to ~10⁶ for human scale. Maps to existing optogenetic infrastructure (~10⁴ cell-type drivers).
-3. **Direction 2 (CM tunneling)** — real ongoing experiments, missing scaling theory.
-4. **Directions 3 and 5** — lower priority.
+## Priority Order — REMAINING OPEN
 
-(Direction 4 Penrose-Diósi is complete in `math/direction4_penrose_diosi_threshold.md`: quantum ceiling at ~50 μm even in best lab conditions; humans are 7 orders of magnitude too large. Confirms Direction 1 as only viable path.)
+The five quantum directions (2, 3, 4, 5) are all closed (verdicts in their
+math files). Direction 1 is fully wired end-to-end at C. elegans scale.
+
+The remaining open work is engineering-side characterization at scale:
+
+1. **Bulk-tissue D-thresholds per tissue type.** Cardiac threshold is 0.05
+   (`run_tissue_distortion.py`). Need: muscle contraction, vascular flow,
+   bone mineralization, gut peristalsis. Likely all more tolerant than
+   cardiac (the worst-case excitable medium). This would tighten the body
+   information budget from the current 3–700 GB range.
+
+2. **Apple-scale end-to-end pipeline** with v2 scan + pool stim, to validate
+   the pipeline at one intermediate scale before claiming generalization
+   to human.
+
+3. **Fabricator-side engineering rigour.** The vascular patency analysis
+   (`math/direction1_vascular_patency.md`) is force-balance only; a full
+   CFD with soft-tissue FEM would close it rigorously. Same with the
+   nozzle-array print-head — current model is throughput math, not real
+   fluid dynamics of 10⁷ jets in parallel.
+
+These are not project-blockers — they are engineering refinements that
+will be needed when an actual scanner/fabricator is built.
 
 ## Strict Rules
 - Show all math, don't skip steps
