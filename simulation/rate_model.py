@@ -253,9 +253,18 @@ def calibrate_homeostatic(W_norm, G_norm, params, ref_inputs, c=1.5,
                 dr = inv_tau * (-r + np.tanh(gain_vec * (h - theta_vec)))
                 r = np.clip(r + dr, 0.0, 1.0)
         D = np.array(drive_samples)            # (n_samples, N)
-        theta_vec = D.mean(axis=0)
         sigma = D.std(axis=0)
-        gain_vec = c / np.maximum(sigma, 1e-3)
+        # Gain: floor the denominator at the median std (avoid divergence for
+        # barely-driven neurons) and bound to a biological range.
+        sigma_floor = max(np.median(sigma), 1e-3)
+        gain_vec = np.clip(c / np.maximum(sigma, sigma_floor), 0.5, 10.0)
+        # Threshold: theta = mean drive. NOTE: this is the current best of
+        # several tried (see math/direction1_heterogeneous_model.md). It
+        # leaves ~half the neurons unobservable on C. elegans — the
+        # calibration is an OPEN problem, not yet validated. The r_target
+        # variant (theta = mean - arctanh(r_target)/gain) reduced skips but
+        # worsened Pearson; the calibration needs proper coupled treatment.
+        theta_vec = D.mean(axis=0)
     return gain_vec, theta_vec
 
 

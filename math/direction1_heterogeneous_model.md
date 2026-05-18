@@ -140,28 +140,41 @@ their gain explodes to ~1500. A gain of 1500 makes tanh a step function —
 the neuron saturates on any infinitesimal input deviation, destroying the
 dynamics.
 
-### The fix (next session)
+### Calibration iterations tried (all on C. elegans, must reach Pearson > 0.9)
 
-The `c / std` formula is correct in spirit but needs guards:
+| # | Calibration | gain range | skipped | Pearson | behavioral |
+|---|---|---|---|---|---|
+| 1 | gain = c/std (naive) | [4, 1500] | 170/300 | 0.19 | FAIL |
+| 2 | gain capped [0.5,10], θ = mean drive | [4.4, 8.7] | 163/300 | **0.60** | tap PASS, chem FAIL |
+| 3 | #2 + θ = mean − arctanh(0.3)/gain | [4.4, 8.7] | 80/300 | 0.27 | FAIL |
 
-1. **Floor the denominator:** `gain_i = c / max(std_i, std_floor)` where
-   `std_floor` ≈ the median std across neurons. This caps gain for quiet
-   neurons at a sane value instead of letting it diverge.
-2. **Bound gain to a biological range**, e.g. [0.5, 10]. Real neuronal
-   gains do not span 1500×.
-3. **Better reference ensemble:** the calibration ensemble (20 random pools
-   at amp 0.8) leaves low-degree neurons nearly silent — exactly the neurons
-   whose std collapses. The reference ensemble should drive every neuron at
-   least sometimes, e.g. include targeted probes of each neuron's inputs,
-   matching the actual pool-stim protocol's drive statistics.
+Iteration 2 is the current best (code is left in this state). None reaches
+the Pearson > 0.9 bar.
 
-The conceptual model (per-neuron gain/theta, homeostatic calibration) is
-sound. The first calibration implementation was naive about the
-zero-variance edge case. This is an ordinary debugging task, not a
-conceptual problem.
+**Diagnosis of why this is hard:** the calibration is a coupled problem.
+- The gain cap (iter 1→2) fixed the divergence — clearly correct, Pearson
+  0.19 → 0.60.
+- The θ adjustment (iter 2→3) reduced unobservable neurons (163 → 80) but
+  *worsened* reconstruction (0.60 → 0.27). Lowering θ keeps neurons
+  observable but changes the dynamics in a way that hurts the regression.
+- gain, θ, the resulting dynamics, and observability all interact. Quick
+  one-variable patches each fix one symptom and break another.
 
-**Next session: fix the calibration (gain floor + bound + better reference
-ensemble), re-run `run_hetero_validation.py` until C. elegans gives
-Pearson > 0.9, then proceed to the FlyWire test.**
+**This needs a proper coupled treatment, not more one-line patches:**
+  1. The reference ensemble must drive every neuron into a good range
+     (the 20-random-pool ensemble leaves low-degree neurons silent — they
+     dominate the skipped count regardless of θ).
+  2. gain and θ should be jointly optimized so each neuron's *response*
+     (not its drive) has good dynamic range AND stays observable — this is
+     a 2-parameter-per-neuron fit, plausibly solved by matching each
+     neuron's response distribution to a target (e.g. mean 0.3, std 0.15).
+  3. Validate against C. elegans Pearson 0.99 at every step.
+
+The conceptual model is sound; the calibration is a genuine sub-problem
+that needs careful, fresh work — three deep-context patches did not crack
+it. Honest status: **heterogeneous model implemented, calibration OPEN.**
+
+**Next session: solve the calibration as a coupled 2-parameter-per-neuron
+response-matching problem, validate on C. elegans, then test FlyWire.**
 
 ## Original validation plan
