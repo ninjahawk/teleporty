@@ -2,6 +2,31 @@
 
 **Two-session arc:** overnight session 2026-05-17 → 18 (the bulk of the work), then continuation 2026-05-18 morning (hub-neuron empirical + body compression).
 
+## Continuation 2026-05-18 (evening) — N=2000 failure diagnosed and fix in progress
+
+Pushing onto the N=2000 FlyWire mushroom body subset exposed a real failure
+(behavioral div 0.13, all stimuli FAIL). The investigation arc:
+
+1. First hypothesis: mega-hubs under-determined. A synthetic test did NOT
+   reproduce it → hypothesis not confirmed; doc honestly corrected.
+2. Decisive diagnostic (substitute W_TRUE for candidate columns): the cause
+   is 2 mega-hubs (|supp|≈1703) that **saturate** under the probe protocol,
+   fail the validity filter, get skipped (zeroed columns), and their
+   silencing causes ~0.10 of the 0.14 divergence. It's an *observability*
+   failure, not under-determination — which is why the synthetic test
+   (no saturation) missed it.
+3. Fix: lower-amplitude probes keep mega-hubs in their observable range.
+   Result: div 0.14 → 0.040 (3/5 stimuli now PASS). But all-low amplitudes
+   starve small-weight circuits → Pearson 0.29 → 0.24.
+4. In progress: a mixed amplitude ladder ([0.05–1.5]) — low end for
+   mega-hub observability, high end for small-weight SNR — plus 2× coverage.
+
+The honesty arc here is the point: a real negative result (N=2000 FAIL) was
+not buried. It was diagnosed to root cause, the first hypothesis was
+falsified by its own test and the doc corrected, and the fix is being
+verified empirically. The pipeline claim is scoped to N≤800 until the
+N=2000 re-test passes.
+
 ## Continuation 2026-05-18 (afternoon) — coverage rule + scaling honesty
 
 Pushing the pipeline onto a larger real-data subset (Drosophila mushroom body,
