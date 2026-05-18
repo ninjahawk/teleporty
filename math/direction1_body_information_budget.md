@@ -429,14 +429,25 @@ massively redundant by design.
 voxel ~ 3 bits and a coarse density estimate ~ 4 bits = 7 bits/voxel
 minimum, even when state distortion is irrelevant.)
 
-Bulk-tissue revised lower bound: dominated by smooth-muscle and epithelial
-voxels at 0.87 bits/state. Roughly the same magnitude as the original D=0.3
-estimate (10¹⁰–10¹² bits). The pessimistic cardiac-everywhere bound (3-700 GB)
-overstates the requirement by ~2.5×.
+Bulk-tissue revised total (correcting earlier arithmetic):
 
-**Best-current-estimate body total: 10¹⁰–10¹¹ bits ≈ 1–10 GB.** Qualitative
-conclusion unchanged: fits on consumer storage, transmission not the
-bottleneck.
+  N_indep = 5.6 × 10¹¹ blocks
+  Mean bits per block = 0.87 (state, weighted across tissue types) + 3 (type label) ≈ 4 bits
+  Bulk-tissue total ≈ 5.6 × 10¹¹ × 4 = 2.2 × 10¹² bits ≈ **275 GB**
+
+  At more aggressive (10×) tissue-codec compression: ~30 GB.
+  At less aggressive (no type-label compression): ~1 TB.
+
+Honest range: **30 GB – 1 TB for bulk tissue.** The earlier "1–10 GB" estimate
+was wrong; it counted only the state-distortion contribution and missed the
+type-label floor (3 bits per block × 5.6 × 10¹¹ blocks ≈ 200 GB regardless
+of state distortion).
+
+**Best-current-estimate body total: ~3 × 10¹² – 10¹³ bits ≈ 100 GB – 1 TB.**
+
+Qualitative conclusion unchanged: fits on consumer storage (modern 4-16 TB
+SSDs), transmission tractable at 1-10 hours on 1 Gbps fiber. Not the
+bottleneck. Fabricator engineering remains the only barrier.
 
 ## Open questions
 

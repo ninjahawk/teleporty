@@ -23,16 +23,19 @@ Each constraint shown with its citation in this repo.
 | Component | Bits | Size | Source |
 |---|---|---|---|
 | Brain (functional spec) | 3.4 × 10⁵ | 42 KB | `math/direction1_rate_distortion.md` |
-| Bulk tissue (stratified D) | 10¹⁰–10¹¹ | 1–10 GB | `math/direction1_body_information_budget.md` |
+| Bulk tissue (stratified D, after compression) | 2 × 10¹²–10¹³ | 30 GB – 1 TB | `math/direction1_body_information_budget.md` |
 | Adaptive immunity (TCR/BCR) | 10¹⁰ | 1 GB | same |
 | Vasculature (extra) | 10⁹ | 125 MB | same |
 | Epigenome (functional) | 3 × 10⁸ | 40 MB | same |
 | Per-person genome variants | 10⁸ | 12 MB | same |
 | Microbiome composition | 10⁵ | 15 KB | same |
 | Dynamic state (hormones etc) | 10³ | 100 B | same |
-| **Total per person** | **~3 × 10¹⁰ bits** | **~3.5 GB** | sum |
+| **Total per person** | **~3 × 10¹²–10¹³ bits** | **~100 GB – 1 TB** | sum |
 
-The brain term is negligible at this scale; the body dominates.
+The brain term is negligible at this scale; the body dominates. The bulk-
+tissue range spans an order of magnitude because compression aggressiveness
+isn't tightly bound by current data. An empirical body-scan compression
+experiment (Visible Human Project or similar) would pin it down.
 
 ## SCAN — neural
 
@@ -85,12 +88,15 @@ The brain term is negligible at this scale; the body dominates.
 
 ## TRANSMIT
 
-  Spec size:    3.5 GB
-  Consumer fiber (1 Gbps):  28 s
-  Datacenter fiber (100 Gbps): 0.3 s
-  5G millimeter wave (10 Gbps): 2.8 s
+  Spec size:    100 GB – 1 TB (honest range; see body info budget)
+  Consumer fiber (1 Gbps):       800–8000 s ≈ 13 min – 2 h
+  Datacenter fiber (100 Gbps):   8–80 s
+  5G millimeter wave (10 Gbps):  80–800 s
 
-  Transmission is not a bottleneck at any reasonable scale.
+  Transmission is bandwidth-tractable but no longer trivial. For consumer
+  upload of a full human spec, expect 1-2 hours over normal fiber. This is
+  the same order of magnitude as a routine cloud-backup operation, not a
+  fundamental constraint.
 
 ## RECONSTRUCT — fabricator (THE BOTTLENECK)
 

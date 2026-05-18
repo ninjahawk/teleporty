@@ -120,19 +120,21 @@ Component-by-component rate-distortion analysis of all non-neural systems.
 | Component | Bits (functional) | Size |
 |---|---|---|
 | Brain functional spec | 3.4 × 10⁵ | 42 KB |
-| Bulk tissue (tissue-stratified D: cardiac 0.05, muscle 1.0, mixed) | 10¹⁰–10¹¹ | 1–10 GB |
+| Bulk tissue (tissue-stratified D: cardiac 0.05, muscle 1.0, mixed) | 2 × 10¹²–10¹³ | 30 GB–1 TB |
 | Adaptive immunity (TCR/BCR) | 10¹⁰ | 1 GB |
 | Vasculature (extra) | 10⁹ | 125 MB |
 | Per-person genome variants | 10⁸ | 12 MB |
 | Epigenome (functional) | 3 × 10⁸ | 40 MB |
 | Microbiome composition | 10⁵ | 15 KB |
 | Per-person dynamic state | 10³ | 100 B |
-| **Total (functional, tissue-stratified)** | **~10¹⁰–10¹¹ bits** | **~1–10 GB** |
+| **Total (functional, tissue-stratified)** | **~3 × 10¹²–10¹³ bits** | **~100 GB–1 TB** |
 
-Key finding: body is **5–7 orders of magnitude larger than the brain** in
-information (despite the brain being ~200× denser per cell), but fits on a
-consumer SSD. At 1 Gbps consumer fiber, full human upload = 800 s.
-**Transmission is not a bottleneck.** Fabricator remains the only barrier.
+Key finding: body is **7–8 orders of magnitude larger than the brain** in
+information (despite the brain being ~200× denser per cell), but fits on
+a consumer SSD (modern 4-16 TB drives). At 1 Gbps consumer fiber, full
+human upload = 1-10 hours. At 100 Gbps datacenter fiber: 1-10 min.
+**Transmission is bandwidth-tractable but no longer trivial.** Fabricator
+remains the binding barrier.
 
 **Pool-based scan inverse — RESOLVED (math/direction1_scan_inverse_pool.md):**
 
