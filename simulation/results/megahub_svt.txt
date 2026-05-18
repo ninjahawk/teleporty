@@ -1,0 +1,7 @@
+Mega-hub SVT multi-task reconstruction test
+=======================================================
+N=600, 20 mega-hubs |supp|=250, latent rank=12
+K_pools=80 (<< |supp_hub|), M=15
+
+Per-neuron strong-ridge: r_hub=0.574, div_mean=0.0159, PASS
+SVT multi-task:          r_hub=0.547, div_mean=0.0162, PASS

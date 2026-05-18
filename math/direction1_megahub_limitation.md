@@ -31,15 +31,45 @@ structural.
 The test subsamples the **top-N neurons by degree**. This is hub-enriched
 by construction:
 
-  N=797  subset: max \|supp\| = 686
-  N=2000 subset: max \|supp\| = 1703
+  N=797  subset: max \|supp\| = 686,  74 skipped (vj.sum() < 5)
+  N=2000 subset: max \|supp\| = 1703, 81 skipped at K=400
 
-The larger subset includes mega-hubs with \|supp\| in the thousands. The
-per-neuron support-aware regression — even with the strong-ridge fallback
-(λ=0.5) — cannot reconstruct a weight vector of length 1703 from K=400 pool
-observations. The strong ridge produces a heavily shrunk, biased estimate;
-16-30 such mega-hubs collectively bias the whole network's gain, producing
-the systematic ~0.13 divergence.
+## Cause not yet definitively isolated (honest status)
+
+The first draft of this note attributed the failure to mega-hubs (|supp| in
+the thousands defeating the per-neuron regression). **A direct synthetic test
+of that hypothesis did NOT reproduce the failure** (`run_megahub_svt.py`):
+
+  Synthetic N=600, 20 mega-hubs |supp|=250, K=80 (K ≪ |supp|):
+    per-neuron strong-ridge: behavioral div = 0.016, **PASS**
+    SVT multi-task:          behavioral div = 0.016, PASS
+
+When there is no skipping, per-neuron strong-ridge handles K ≪ |supp| fine.
+So "mega-hubs alone" is NOT the confirmed cause.
+
+The more likely culprit is the **81 skipped neurons** at N=2000. A skipped
+neuron (vj.sum() < 5 — fewer than 5 valid observations) gets W_hat column = 0,
+i.e. it is reconstructed as receiving zero chemical input. 81 silenced
+neurons in a 2000-network, if any sit on the test-stimulus propagation
+paths, would produce a systematic behavioral divergence. This is consistent
+with the flat div ≈ 0.13 across all K (the skipped count only dropped from
+160 → 81 as K went 75 → 400; it never reached zero).
+
+**Why do neurons get skipped even at K·M/N = 3?** A neuron is skipped when,
+even after being in several pools, it produces < 5 valid timesteps. Valid
+requires: postsynaptic rate above EPS, the arctanh target in range, and the
+source state not saturated. Neurons that are intrinsically near-silent or
+near-saturated under the probe protocol never yield valid rows. These are a
+*observability* failure, not a coverage or hub failure.
+
+**Honest status: the N=2000 failure cause is not definitively isolated.**
+Candidates: (a) skipped/unobservable neurons, (b) mega-hubs, (c) accumulated
+small errors over longer propagation paths in the bigger network. The
+diagnostic that would settle it — substitute W_TRUE for skipped columns
+and re-test behavior — was not run (needs a ~48-min re-simulation). The
+honest claim is: **the pipeline is demonstrated at N≤800; at N=2000 it
+fails for a reason within the reconstruction/observability stage that is
+characterized but not pinned down.**
 
 ## What this means for the hub-neuron concern
 
