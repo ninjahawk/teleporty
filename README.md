@@ -264,7 +264,7 @@ Phase 1: Survey existing approaches          ✅ all dead or lead to Direction 1
 Phase 2: Work all five alleyways             ✅ 4 closed, 1 demonstrated
 Phase 3: Full math for Direction 1           ✅ info budget, energy, scanner
 Phase 4: Rate-distortion lower bound         ✅ brain 42 KB, body ~247 GB (7-tissue stratified)
-Phase 5: Scanner technology roadmap          ✅ pool stim, ~10⁶ trials @ human scale
+Phase 5: Scanner technology roadmap          ✅ pool stim; ~10⁸ trials @ human scale (coverage-limited)
 Phase 6: Reconstruction system design        ✅ fabricator math + vascular patency
 Phase 7: C. elegans testable simulation      ✅ d_eff, distortion, R-D
 Phase 8: Scan inverse problem solved         ✅ pool stim, r=0.99 at 1% noise
