@@ -136,7 +136,7 @@ consumer SSD. At 1 Gbps consumer fiber, full human upload = 800 s.
 
 **Open questions / next steps:**
 2. Scan inverse scaling: protocol requires N × 3 × n_reps = 9k trials for C. elegans. For human (N=86×10⁹) this is 2.6×10¹² trials — not serially feasible. Open: parallel optogenetic probing / sparse-population disambiguation.
-3. Vascular lumen patency: simulate 8 μm capillary lumen collapse dynamics under hypothermic fabrication. The 60-min window assumes immediate perfusion; verify this engineering assumption holds.
+3. ~~Vascular lumen patency~~ — **DONE (math/direction1_vascular_patency.md):** force-balance analysis shows 8× safety margin over 60-min window under three engineering requirements (bubble-free saline carrier, ≥1.5 m reservoir head, ≤4°C). Not a physics barrier.
 4. Direction 4 (Penrose-Diósi): set the hard quantum ceiling before going deeper on quantum directions.
 
 ### Direction 2: Center-of-Mass Tunneling of Macroscopic Bound States
@@ -195,6 +195,7 @@ consumer SSD. At 1 Gbps consumer fiber, full human upload = 800 s.
 - `math/direction1_scan_inverse_solved.md` — **scan inverse problem solved at C. elegans scale + 1% biological noise**
 - `math/direction1_body_information_budget.md` — **full body (non-neural) rate-distortion budget: 3–700 GB (revised w/ tissue D=0.05)**
 - `math/direction1_scan_inverse_pool.md` — **pool-based scan inverse: 10⁶ trials for human (vs 10¹² per-neuron); higher fidelity than per-neuron**
+- `math/direction1_vascular_patency.md` — **capillary patency under hypothermic fabrication: 8× safety margin if bubble-free + pressure-regulated**
 - `simulation/run_scan_inverse_pool.py` — **pool stimulation sweep: K=100,M=15 → r=0.99 PASS**
 - `simulation/run_tissue_distortion.py` — **2D cardiac propagation sim: tissue D-threshold = 0.05 (6× more sensitive than brain)**
 
