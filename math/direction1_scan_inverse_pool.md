@@ -217,6 +217,43 @@ permanently. This is the main failure mode at high EM error.
 Modern segmentation (FlyWire, MICrONS) reports <5% error on validated regions,
 within the robust envelope. EM is not a project-blocker.
 
+## Scaling rule: K · M ≥ N for coverage
+
+At N=797 (FlyWire mushroom body subset, K=75, M=15): PASS.
+At N=1998 (same neuropil scaled up, K=75, M=15): **FAIL** with div=0.13.
+
+Diagnostic at N=1998: 160 of 1998 neurons skipped because vj.sum() < 5 (too
+few valid observations for that neuron's regression).
+
+Each pool of size M stimulates M random neurons out of N. The probability of
+any given neuron being in any given pool is M/N. Expected pools per neuron
+over K trials: K · M / N.
+
+  At N=797, K=75, M=15:  K·M/N = 1125/797 = 1.41 — adequate
+  At N=1998, K=75, M=15: K·M/N = 1125/1998 = 0.56 — 44% of neurons miss every pool
+
+This is the COVERAGE failure mode. The protocol's K_pools must scale with N:
+
+  **Minimum K_pools ≥ max(8·mean\|supp\|, N/M)**
+
+For human cortex (N=8.6×10¹⁰, M~7000): K_pools = N/M ≈ 1.2 × 10⁷.
+Each pool · 3 amps · 10 reps = ~3.7 × 10⁸ trials total.
+At 30 s/trial: ~3000 years serial; ~30 days with 100× scanner parallelism.
+
+So the human-scale projection from the overnight run was missing this
+coverage constraint. The realistic projection is:
+
+| Scale | K_pools | Total trials | Serial time | At 100× parallel |
+|---|---|---|---|---|
+| C. elegans (N=300) | 100 | 3,000 | 25 hours | 15 min |
+| Drosophila MB sub (N=2000) | 200 | 6,000 | 50 hours | 30 min |
+| Mouse cortex (N=10⁸, M=1000) | 10⁵ | 3 × 10⁶ | ~35 yrs | ~3 months |
+| Human cortex (N=10¹¹, M=7000) | 1.4 × 10⁷ | 4.2 × 10⁸ | impossible serial | ~3 yrs at 100× |
+
+For human scale at reasonable wall-clock: needs ~10⁴ parallel scanners.
+That's the right order of magnitude (one per US city for a national-scale
+biomedical infrastructure program).
+
 ## Real-data test: Drosophila mushroom body subset — `run_flywire_pool_subset.py`
 
 The deepest test of the protocol: take a real biological neuropil and verify

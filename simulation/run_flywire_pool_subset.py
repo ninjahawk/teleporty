@@ -85,8 +85,8 @@ EPS = 0.001; SAT_HI = 0.85; SAT_LO = 0.02
 AMPS = [0.4, 0.8, 1.5]; N_REPS = 5; NOISE = 0.01
 ratio = params.tau/params.dt
 
-K_pools = max(75, int(8 * mean_supp))
-M = max(15, int(mean_supp * 0.5))
+K_pools = max(75, int(8 * mean_supp), int(np.ceil(N / 15)))  # ensure K*M >= N
+M = max(15, int(mean_supp * 0.5), int(np.ceil(N / K_pools)))
 print(f"\nPool stim: K_pools = {K_pools}, M = {M}, total trials = {K_pools*len(AMPS)*N_REPS}")
 
 t0 = time.time()
