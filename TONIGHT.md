@@ -2,6 +2,37 @@
 
 **Two-session arc:** overnight session 2026-05-17 → 18 (the bulk of the work), then continuation 2026-05-18 morning (hub-neuron empirical + body compression).
 
+## Continuation 2026-05-18 (late) — model-mismatch found AND resolved
+
+The FlyWire investigation went deep and reached a real resolution:
+
+1. FlyWire reconstructs at Pearson 0.35 even on sparse subsets (vs C. elegans
+   0.99). Behavioral PASS at N≤2000 was rate-distortion masking a weak fit.
+2. N=5000 dense subset failed catastrophically (div 0.68).
+3. Root cause isolated: NOT density — a **model mismatch**. Real synapse
+   weights span 3.4 OOM (syn_count 1–2405); the uniform-parameter rate model
+   can't keep weak and strong synapses both responsive under any single
+   normalization (/max → silent, /p99 → saturated).
+4. Fix: a **heterogeneous-excitability model** — per-neuron gain/threshold,
+   homeostatically calibrated. First 3 calibration attempts (on the drive
+   distribution) failed. The correct formulation — **response-matching**:
+   tune each neuron's gain/theta so its firing-rate distribution hits a
+   target mean/std — works. C. elegans validation: Pearson 0.975.
+5. **FlyWire dense N=2000 (mean in-degree 34) now PASSES** all 5 behavioral
+   tests (div 0.032–0.050) with the heterogeneous model — where the uniform
+   model gave div 0.68.
+
+Honest caveats: the PASS is marginal (one stim at 0.0498, Pearson 0.54,
+71/2000 neurons use an approximate fallback). Real but not comfortable.
+
+Also built: a sparse simulator (validated identical to dense, 65–375×
+faster) that made all the large-N real-data testing tractable.
+
+The methodological point: I had declared the calibration "needs fresh
+context" after 3 failed attempts. It actually needed the *correct
+formulation* (response- not drive-matching), which was one genuine attempt
+away. Pushing past the premature stopping point produced the result.
+
 ## Continuation 2026-05-18 (evening) — N=2000 failure diagnosed and fix in progress
 
 Pushing onto the N=2000 FlyWire mushroom body subset exposed a real failure
