@@ -1,0 +1,9 @@
+Hub-neuron stress test
+=============================================
+Hub neuron has |supp| = 200, vs mean = 15.6
+
+                   config    r_full   r_normal     r_hub  div_hub
+    K=50 << hub|supp|=200     0.980      0.986       nan    0.0087
+   K=100 << hub|supp|=200     0.969      0.998     0.302    0.0039
+    K=200 = hub|supp|=200     0.995      0.999     0.702    0.0001
+    K=400 > hub|supp|=200     1.000      1.000     0.993    0.0000

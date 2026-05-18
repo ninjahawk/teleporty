@@ -81,7 +81,37 @@ doesn't have anything like a Purkinje cell.
    high. Group-LASSO over functional input clusters could exploit the
    redundancy among parallel-fiber inputs.
 
-## Verdict
+## Preliminary test (`run_hub_neuron_test.py`)
+
+Built a synthetic N=400 network with one Purkinje-like hub neuron at
+|supp|=200 (16× the mean of 12 for the rest of the network). Tested pool
+stim at various K values.
+
+| Config | r_full | r_normal | r_hub | behavioral div |
+|---|---|---|---|---|
+| K=50  (< hub\|supp\|) | 0.980 | 0.986 | n/a (skipped) | 0.009 PASS |
+| K=100 (< hub\|supp\|) | 0.969 | 0.998 | 0.302 | 0.004 PASS |
+| K=200 (= hub\|supp\|) | 0.995 | 0.999 | 0.702 | 0.000 PASS |
+| K=400 (> hub\|supp\|) | 1.000 | 1.000 | 0.993 | 0.000 PASS |
+
+**Interesting result:** behavioral output passes even when r_hub is low
+or undefined.
+
+Caveats:
+  - At K=50, regression SKIPS the hub (under-determined). The behavioral
+    PASS is because the hub didn't strongly affect behavior in this test
+    network, not because the hub was correctly recovered.
+  - At K=100, structural r_hub = 0.30 (poor), but behavioral div still
+    passes — rate-distortion saving the day again.
+
+This is a weak confirmation. A stronger test requires:
+  - Hub that strongly drives behavior (test stim that EXPECTS hub firing)
+  - Larger hub |supp| (1000+) at human-relevant scale
+  - More realistic hub: e.g., Purkinje-like averaging with many small inputs
+
+Provisional verdict: at small scale, hubs don't catastrophically break the
+protocol. Strong claim needs the mouse-cortex empirical d_eff analysis
+(open). The conditional caveat in this document remains the honest answer.
 
 This is a **conditional caveat**, not a confirmed failure. The pool
 protocol is demonstrated robustly at C. elegans scale (no hubs of the
