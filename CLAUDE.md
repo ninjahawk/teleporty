@@ -28,11 +28,28 @@ All five "viable mechanisms" surveyed at project start: four (quantum approaches
 - **Real-data test (FlyWire mushroom body subset, N=797):** strong-ridge fallback for under-determined hubs gives PASS on all 5 random behavioral tests (div 0.003-0.015) even with Pearson r=0.37. Direct empirical confirmation of rate-distortion on real biological data.
 
 ### What's currently open
-1. **Mega-hub reconstruction — OPEN, top priority** (`math/direction1_megahub_limitation.md`). The pipeline PASSES at N≤800 (C. elegans + small Drosophila subset, max |supp|≤686) but FAILS at N=2000 Drosophila subset (max |supp|=1703) — behavioral div stuck at 0.13 regardless of coverage. The hub d_eff IS low (FlyWire 25-58, C. elegans 3.72), so the information exists — but the strong-ridge fallback only handles moderate hubs. Mega-hubs (|supp|>1000) need a genuine multi-task low-rank reconstruction (trace-norm-penalized, fit all hubs of a type jointly). The ALS and SVD-shrinkage attempts this session were marginal. **This is the #1 unsolved engineering problem. Not a physics barrier — low-rank structure is measured — but unimplemented.**
-2. ~~**Body bulk-tissue budget range**~~ — **EMPIRICALLY CONFIRMED 2026-05-18.** Theory R-D bound on 200³ synthetic voxel grid gives 0.031 bits/voxel → ~270 GB at full body scale (matches the body budget estimate). Gzip catastrophically over-counts (68 TB) because it's a 1D codec; a 3D-aware wavelet codec reaches theory. 100 GB – 1 TB range stands.
-3. **Multi-tissue D-threshold survey** beyond cardiac+muscle: vascular flow (predicted D ≈ 0.01 due to Hagen-Poiseuille r⁴ sensitivity), gut peristalsis, bone. Cardiac is worst-case; others mostly more tolerant. Refinement, not blocker.
-4. **Apple-scale end-to-end** on real biological data at intermediate N (10⁴–10⁵). Would use a Drosophila neuropil subset. Validates the pipeline at one real intermediate scale before claiming generalization to human.
-5. **Fabricator engineering** (10¹⁰ cells/s, 10⁷ nozzles): 10⁶× gap from current bioprinters. No physics barrier; pure engineering. Out of project scope.
+
+**THE top open problem — heterogeneous-excitability model calibration.**
+See the "Priority Order" section below and `math/direction1_heterogeneous_model.md`.
+The uniform rate model cannot handle real connectome weight statistics
+(FlyWire spans 3.4 OOM). A per-neuron gain/threshold model is implemented
+(`simulate_rate_hetero`) but its homeostatic calibration is unsolved — 3
+iterations reached at best Pearson 0.60 on C. elegans (need >0.9). This
+gates all real-connectome / human-scale claims.
+
+Resolved this session (no longer open):
+- Mega-hub reconstruction at N=2000 — was diagnosed (hub saturation →
+  unobservability) and FIXED (mixed-amplitude probe ladder + K·M≥3N
+  coverage). N=2000 FlyWire PASSES. See `direction1_megahub_limitation.md`.
+- Body bulk-tissue budget — pinned at ~247 GB (7-tissue D-stratified).
+- Coverage rule — K·M ≥ 3N, empirically verified.
+- Vascular D-threshold — 0.001 (Hagen-Poiseuille r⁴).
+
+Lower-priority / out of scope:
+- Apple-scale end-to-end at real intermediate N — partly covered by
+  FlyWire N=2000; full neuropil needs the hetero model first.
+- Fabricator engineering (10¹⁰ cells/s, 10⁷ nozzles): 10⁶× gap, no
+  physics barrier, out of project scope.
 
 ### What's closed
 - Direction 2 (CM tunneling) — decoherence wins by many orders of magnitude
@@ -123,7 +140,10 @@ All five "viable mechanisms" surveyed at project start: four (quantum approaches
 - `math/direction1_vascular_patency.md` — 8× margin force-balance
 - `math/direction1_deployment_conditions.md` — combined-stress test (most honest result)
 - `math/direction1_hub_neuron_concern.md` — hub d_eff measurements (low d_eff confirmed)
-- `math/direction1_megahub_limitation.md` — **OPEN: N=2000 real-data FAIL; mega-hub multi-task reconstruction unsolved**
+- `math/direction1_megahub_limitation.md` — N=2000 failure diagnosed + FIXED (mixed-amplitude probes); also documents two observability failure modes
+- `math/direction1_density_limitation.md` — FlyWire model-mismatch finding: uniform rate model can't handle 3.4-OOM weight range
+- `math/direction1_heterogeneous_model.md` — **per-neuron gain/threshold model: design + implemented; calibration OPEN (top priority)**
+- `math/direction1_scan_inverse_pool.md` — pool stim, coverage rule, type pools, robustness (the main scan-inverse technical doc)
 - `math/direction1_human_projection.md` — synthesis: everything end-to-end at human scale
 - `math/apple_pipeline.md` — apple proof-of-concept (older)
 - `math/direction2_cm_tunneling.md` — CLOSED
@@ -165,8 +185,21 @@ Hub-neuron analysis (added 2026-05-18):
 - `run_multitask_pool_stim.py` — ALS multi-task synthetic (slow, marginal)
 - `run_multitask_v2.py` — SVD-shrinkage post-processing (cleaner; strong-ridge alone gives r=0.31 at K=⅓·|supp|)
 
-Body compression (added 2026-05-18):
+Body compression + tissue D (added 2026-05-18):
 - `run_body_compression.py` — theory R-D ~270 GB confirmed; gzip 68 TB (wrong codec)
+- `run_vascular_distortion.py` — vascular flow D-threshold = 0.001 (Hagen-Poiseuille)
+- `make_tissue_D_summary.py` — 7-tissue D survey, body budget ~247 GB
+
+Real-connectome scaling + model limits (added 2026-05-18):
+- `run_flywire_pool_subset.py` — FlyWire MB subset; N=797 PASS, N=2000 PASS (mixed amps)
+- `run_flywire_sparse.py` — sparse-simulator flywire test; N=5000 dense FAIL
+- `run_coverage_rule.py` — K·M≥3N coverage rule verification
+- `run_saturation_analysis.py` — two observability failure modes (hub saturation, low-degree under-drive)
+- `run_megahub_svt.py` — SVT multi-task solver (synthetic; addressed wrong failure mode)
+- `run_sparse_validation.py` — sparse simulator validated identical to dense, 65-375× faster
+- `run_hetero_validation.py` — heterogeneous-model validation (OPEN: best Pearson 0.60, calibration unsolved)
+
+rate_model.py now also provides: `simulate_rate_sparse` (validated), `simulate_rate_hetero` + `calibrate_homeostatic` (calibration OPEN — see `math/direction1_heterogeneous_model.md`).
 
 Earlier:
 - `run_distortion.py` — C. elegans D=0.30 brain threshold (foundational)
