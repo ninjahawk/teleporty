@@ -217,6 +217,40 @@ permanently. This is the main failure mode at high EM error.
 Modern segmentation (FlyWire, MICrONS) reports <5% error on validated regions,
 within the robust envelope. EM is not a project-blocker.
 
+## Type-based pools (biologically realistic) — `run_scan_inverse_type_pools.py`
+
+Random pools were a stand-in for what real optogenetic addressing looks like.
+In practice each "pool" is a cell-type-driver line that targets all cells of
+one type. C. elegans has ~118 named neuron classes (most cells are bilateral
+pairs, so ~210 unique name prefixes when split by suffix).
+
+Test: rebuild pools as "all cells of one type" rather than random subsets.
+
+Result:
+  Pools: 209 (one per type, mean size 1.4 cells)
+  Conditions: 209 × 3 amps = 627
+  Trials: 6270 (10 reps)
+  Pearson r: 0.869
+  div_tap = 0.010, div_chem = 0.002, div_thermo = 0.025, div_noci = 0.002
+  **PASS on all 4 behaviors (including 2 held out)**.
+
+The Pearson r is lower than random-pool r=0.99 because type pools are
+smaller (mean 1.4 vs 15) and within-type cells fire identically (correlated
+columns reduce effective rank). But behavioral verification still passes.
+
+**This is the deployment configuration:** each pool maps to a single
+optogenetic driver line that targets one named cell type. The protocol
+remains effective under the constraint that real driver lines have
+biological semantics, not arbitrary cell subsets.
+
+For human cortex (~10⁴ cell types per BICCN), the equivalent configuration:
+  Pools = 10⁴ type drivers
+  Conditions = 10⁴ × 3 amps = 3 × 10⁴
+  Trials = 3 × 10⁴ × 10 reps = 3 × 10⁵
+  Total time at 30 s/trial = 2500 hours ≈ 100 days serial
+
+At 100× scanner parallelism: **1 day per human scan**. Engineering-tractable.
+
 ## Files
 
   - `simulation/run_scan_inverse_pool.py` — pool sweep

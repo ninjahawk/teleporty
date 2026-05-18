@@ -1,0 +1,13 @@
+Type-based pool scan inverse (biological cell-type-driver match)
+=================================================================
+Cell types: 209, total conditions: 627
+Type size dist: min=1, max=13, mean=1.4
+Total trials: 6270
+Pearson r (W recovery): 0.8689
+
+           tap  div = 0.0102  [PASS]
+          chem  div = 0.0024  [PASS]
+        thermo  div = 0.0248  [PASS]
+   nociception  div = 0.0022  [PASS]
+
+Verdict: PASS
