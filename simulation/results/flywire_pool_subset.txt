@@ -2,16 +2,16 @@ Pool stim on FlyWire neuropil subset
 =======================================================
 Neuropil: MB_CA_R
 N: 1998, mean |supp|: 8.0
-K_pools: 134, M: 15, total trials: 2010
-Skipped (under-determined): 85/1998
-Pearson r = 0.2444
-Frob = 1.9006
+K_pools: 267, M: 15, total trials: 4005
+Skipped (under-determined): 35/1998
+Pearson r = 0.3465
+Frob = 1.3770
 
 5 random test stimuli:
-  stim 1: div = 0.0263  [PASS]
-  stim 2: div = 0.0315  [PASS]
-  stim 3: div = 0.0647  [FAIL]
-  stim 4: div = 0.0519  [FAIL]
-  stim 5: div = 0.0251  [PASS]
+  stim 1: div = 0.0114  [PASS]
+  stim 2: div = 0.0105  [PASS]
+  stim 3: div = 0.0130  [PASS]
+  stim 4: div = 0.0101  [PASS]
+  stim 5: div = 0.0111  [PASS]
 
-Overall: FAIL
+Overall: PASS
