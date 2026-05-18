@@ -163,6 +163,32 @@ Pool-based scan inverse is the right human-scale strategy.
 The human scanner is now in the realm of "feasible large engineering
 project", not "fundamentally impossible at biological time scales".
 
+## High-noise behavior (`run_scan_inverse_pool_highnoise.py`)
+
+Pool stim was specifically designed to avoid the clipping-bias saturation
+wall that broke per-neuron at 5% rate noise. Tested:
+
+| Noise | n_reps=10 | n_reps=30 | n_reps=100 | Notes |
+|---|---|---|---|---|
+| 1% | PASS | PASS | – | r=0.99 |
+| 2% | PASS | PASS | – | r=0.98 at n_reps=30 |
+| 3% | PASS | PASS | – | r=0.97 |
+| 5% | FAIL | **PASS** | – | n_reps=30 succeeds where per-neuron hit hard wall |
+| 8% | FAIL | FAIL | FAIL | tap div plateaus at 0.27 |
+| 10% | FAIL | FAIL | FAIL | tap div plateaus at 0.55 |
+
+Pool stim is **2.5× more noise-tolerant** than per-neuron (5% vs 2% wall).
+At 5% noise, n_reps=30 cleanly recovers; v4 per-neuron at 5% plateaued at
+div_tap ≈ 0.78 regardless of n_reps.
+
+Why pool wins on saturation: per-neuron drives ONE cell to high amplitude
+(near saturation under amp=1.5). Pool spreads drive across M=15 cells, each
+at moderate excitation; population stays in the linear regime, no clipping
+bias accumulates.
+
+Hard wall at 8% noise. Open: targeted low-amplitude pool design (M=15 at
+amp ≤ 0.5 only) could push the wall further, at cost of 3× more trials.
+
 ## Support-error robustness (`run_scan_inverse_support_errors.py`)
 
 The protocol assumes the binary support matrix from EM is exact. Real EM has
