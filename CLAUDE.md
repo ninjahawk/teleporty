@@ -50,18 +50,20 @@ FlyWire dense N=2000 all-5-PASS. See `math/direction1_heterogeneous_model.md`.
   cortex column) — tractable now with the sparse simulator.
 
 Resolved this session (no longer open):
-- Mega-hub reconstruction at N=2000 — was diagnosed (hub saturation →
-  unobservability) and FIXED (mixed-amplitude probe ladder + K·M≥3N
-  coverage). N=2000 FlyWire PASSES. See `direction1_megahub_limitation.md`.
+- Heterogeneous-excitability model — uniform model couldn't handle real
+  3.4-OOM weight ranges; per-neuron gain/theta with response-matching
+  calibration fixes it. Validated C. elegans (0.975), FlyWire N=2000 + N=5000.
+- Mega-hub reconstruction — hub saturation → unobservability, FIXED via
+  mixed-amplitude probe ladder + K·M≥3N coverage.
 - Body bulk-tissue budget — pinned at ~247 GB (7-tissue D-stratified).
 - Coverage rule — K·M ≥ 3N, empirically verified.
 - Vascular D-threshold — 0.001 (Hagen-Poiseuille r⁴).
+- Sparse simulator — `simulate_rate_sparse`, validated identical to dense,
+  65–375× faster; makes large-N real-connectome tests tractable.
 
-Lower-priority / out of scope:
-- Apple-scale end-to-end at real intermediate N — partly covered by
-  FlyWire N=2000; full neuropil needs the hetero model first.
+Out of project scope:
 - Fabricator engineering (10¹⁰ cells/s, 10⁷ nozzles): 10⁶× gap, no
-  physics barrier, out of project scope.
+  physics barrier, but a hardware program not a modeling question.
 
 ### What's closed
 - Direction 2 (CM tunneling) — decoherence wins by many orders of magnitude
