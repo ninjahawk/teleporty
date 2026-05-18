@@ -1,0 +1,4 @@
+Sparse simulator validation
+========================================
+C. elegans dense-vs-sparse max trajectory diff: 5.55e-17
+   verdict: IDENTICAL

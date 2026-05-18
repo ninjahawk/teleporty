@@ -89,6 +89,65 @@ def simulate_rate(
     }
 
 
+def simulate_rate_sparse(
+    W_norm,
+    G_norm,
+    I_ext: np.ndarray,
+    T_ms: float,
+    params: RateParams = None,
+) -> dict:
+    """
+    Sparse-matrix version of simulate_rate. Identical dynamics, but the
+    chemical/gap matmuls use scipy.sparse, giving ~1/density speedup on the
+    per-timestep W.T @ r product.
+
+    For a connectome with density d, the dense matmul is O(N^2); the sparse
+    version is O(d*N^2) = O(nnz). FlyWire neuropils have d ~ 0.004, a ~250x
+    speedup. This makes N >= 10^4 simulations tractable.
+
+    Args:
+        W_norm  : (N, N) scipy.sparse or dense — chemical weights, W[pre, post]
+        G_norm  : (N, N) scipy.sparse or dense — gap junctions, symmetric
+        I_ext   : (T_steps, N) external current
+        T_ms    : duration in ms
+        params  : RateParams
+
+    Returns dict: r (T_steps, N), r_mean (N,)
+    """
+    import scipy.sparse as sp
+    if params is None:
+        params = RateParams()
+
+    N = W_norm.shape[0]
+    T_steps = int(T_ms / params.dt)
+    dt = params.dt
+
+    # Scale; keep sparse if input is sparse
+    W = (W_norm * params.w_chem)
+    G = (G_norm * params.w_gap)
+    W = sp.csr_matrix(W) if not sp.issparse(W) else W.tocsr()
+    G = sp.csr_matrix(G) if not sp.issparse(G) else G.tocsr()
+    # W.T @ r needs W transposed in CSR for fast matvec
+    Wt = W.T.tocsr()
+    G_rowsum = np.asarray(G.sum(axis=1)).flatten()
+
+    R = np.zeros((T_steps, N))
+    r = np.zeros(N)
+    gain = params.gain
+    inv_tau = dt / params.tau
+
+    for t in range(T_steps):
+        I_chem = Wt @ r                          # sum_i r[i] * W[i,j]
+        I_gap = (G @ r) - G_rowsum * r           # sum_j G[i,j]*(r[j]-r[i])
+        I_in = I_ext[t] if I_ext is not None else 0.0
+        h = I_chem + I_gap + I_in + params.bias
+        dr = inv_tau * (-r + np.tanh(gain * h))
+        r = np.clip(r + dr, 0.0, 1.0)
+        R[t] = r
+
+    return {"r": R, "r_mean": R.mean(axis=0)}
+
+
 def make_tap_input(N: int, neuron_names: list, T_ms: float, dt: float,
                    onset_ms: float = 50.0, duration_ms: float = 20.0,
                    amplitude: float = 3.0) -> np.ndarray:
