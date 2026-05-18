@@ -1,0 +1,10 @@
+FlyWire hub-neuron d_eff test
+=============================================
+Hub threshold (99th %ile in-degree): 186
+Sample size: 1000 hubs
+Median |supp|:    255
+Max |supp|:       5853
+Participation d_eff = 58.3
+d_eff / median(|supp|) = 0.229
+
+Top singular values (first 10): [np.float64(2945.29981633967), np.float64(2612.704635919889), np.float64(2536.724726329507), np.float64(2312.1311391764925), np.float64(2153.027882116358), np.float64(1982.6996377128778), np.float64(1900.8749963144533), np.float64(1900.6708569589111), np.float64(1798.1817970023835), np.float64(1746.1018319882342)]

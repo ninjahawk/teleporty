@@ -23,7 +23,7 @@ Find a physically grounded mechanism for teleportation with testable predictions
 - Pearson r on weights can be 0.43 while behavioral div < 3% — rate-distortion principle holds
 
 ### What's currently open
-1. **Hub-neuron scaling caveat** (`math/direction1_hub_neuron_concern.md`): cortical hubs like Purkinje cells have |supp_j| up to 200k. Pool protocol assumes K_pools > |supp_j|. Resolution depends on whether d_eff of input vectors << |supp| per cell type (the rate-distortion prediction). Empirical question; mouse cortex data (MICrONS) exists and is sufficient. **Next session should attack this.**
+1. **Hub-neuron scaling — empirically TESTED on FlyWire** (`math/direction1_hub_neuron_concern.md`, `simulation/run_hub_deff_flywire.py`): hub neurons (top 1% by in-degree, median |supp|=252) have participation-ratio d_eff of 25-58 across 200-1000 sampled hubs. d_eff << |supp|. Rate-distortion conjecture CONFIRMED on real biological data. BUT: current pool-stim protocol fits each neuron INDEPENDENTLY, so still needs K > |supp_j|. Multi-task / hierarchical regression that exploits cross-hub similarity would need K > d_eff (~50-100). Engineering modification, not physics barrier. **Next step: implement and test multi-task pool stim.**
 2. **Body bulk-tissue budget range (30 GB – 1 TB)** is two orders of magnitude wide. Empirical 3D-MRF compression on Visible Human data would tighten it. Not a project-blocker.
 3. **Multi-tissue D-threshold survey** beyond cardiac+muscle: vascular flow, gut peristalsis, bone. Cardiac is worst-case; others likely more tolerant.
 4. **Fabricator engineering** (10¹⁰ cells/s, 10⁷ nozzles): 10⁶× gap from current bioprinters. No physics barrier; pure engineering. Out of project scope.

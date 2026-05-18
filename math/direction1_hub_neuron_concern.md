@@ -81,6 +81,50 @@ doesn't have anything like a Purkinje cell.
    high. Group-LASSO over functional input clusters could exploit the
    redundancy among parallel-fiber inputs.
 
+## Empirical test on real Drosophila data (`run_hub_deff_flywire.py`)
+
+Loaded FlyWire 783 connectome (16.8 M synapse rows). Filtered to syn_count >= 5
+strong connections. Identified hub neurons (top 1% by in-degree, |supp| >= 186).
+
+Stacked incoming weight vectors for sampled hubs into matrix M and computed
+participation-ratio d_eff:
+
+| Sample size | n_hubs | Median \|supp\| | Max \|supp\| | d_eff | d_eff / median \|supp\| |
+|---|---|---|---|---|---|
+| 200 hubs  | 200  | 252 | 5365 | **25.2** | 0.10 |
+| 1000 hubs | 1000 | 255 | 5853 | **58.3** | 0.23 |
+
+d_eff grows sub-linearly with sample size — the "input space" expands as more
+diverse hub types are included, but always remains far smaller than \|supp\|.
+
+**Important nuance:** d_eff being small doesn't directly mean K_pools < \|supp\|
+suffices with the *current* protocol. The current support-aware ridge regression
+fits each neuron INDEPENDENTLY — for each neuron j it needs K observations to
+constrain |supp_j| unknowns.
+
+The d_eff finding implies something different: **multi-task regression** that
+fits all hubs of similar type jointly can exploit the redundancy. With a
+group-LASSO or hierarchical-Bayes prior linking similar hubs:
+
+  K_pools > d_eff(hub type) instead of K_pools > max |supp_j|
+  → K ~ 50-100 instead of K ~ 200k for Purkinje
+  → 2000× reduction in trial count for the hard cell types
+
+This is a real protocol modification, not just a parameter tweak. But it's
+**standard machine-learning practice** (multi-task learning, hierarchical
+priors are textbook). Existing libraries handle it.
+
+**Verdict on the hub-neuron concern (updated with FlyWire data):**
+  - The "raw" pool-stim protocol does need K > \|supp_j\| per neuron — for
+    Purkinje cells (\|supp\| ~ 200k) this is infeasible.
+  - The "multi-task pool-stim protocol" needs only K > d_eff per cell type.
+    Empirical d_eff for hub neurons in FlyWire is ~25-58 across 200-1000
+    hubs (sub-linear growth). For human cortex this is likely to be hundreds
+    rather than hundreds of thousands.
+  - Net: a multi-task version of the current protocol scales. The current
+    protocol does not. **Open engineering work: implement multi-task pool
+    stim recovery.**
+
 ## Preliminary test (`run_hub_neuron_test.py`)
 
 Built a synthetic N=400 network with one Purkinje-like hub neuron at
