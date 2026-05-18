@@ -82,7 +82,14 @@ print(f"  Mean |supp|: {mean_supp:.1f}, max: {max_supp}")
 T_PROBE_ms = 300.0; T_probe = int(T_PROBE_ms/params.dt)
 SS = (int(150.0/params.dt), int(280.0/params.dt)); SUB_SS = 2
 EPS = 0.001; SAT_HI = 0.85; SAT_LO = 0.02
-AMPS = [0.4, 0.8, 1.5]; N_REPS = 3; NOISE = 0.01
+# Amplitude ladder: env-selectable. 'low' adds small amplitudes so mega-hubs
+# stay out of saturation and remain observable.
+_AMP_MODE = os.environ.get('FLYWIRE_AMPS', 'default')
+if _AMP_MODE == 'low':
+    AMPS = [0.05, 0.1, 0.2, 0.4, 0.8]   # spans into the unsaturated regime
+else:
+    AMPS = [0.4, 0.8, 1.5]
+N_REPS = 3; NOISE = 0.01
 ratio = params.tau/params.dt
 
 M = max(15, int(mean_supp * 0.5))
