@@ -19,7 +19,9 @@ Honest caveats: the FlyWire PASS is marginal (one stimulus at div 0.0498), Pears
 
 All five "viable mechanisms" surveyed at project start: four (quantum approaches) closed with negative verdicts; the fifth (Direction 1, classical-information functional teleportation) is the viable path — classical-information / rate-distortion / fabricator analysis intact, scan-inverse demonstrated on C. elegans (Pearson 0.99) and on a real dense Drosophila connectome (heterogeneous model).
 
-**No physics barriers remain.** Remaining work is engineering — but one piece of that engineering (mega-hub reconstruction at scale) is genuinely unsolved in this repo, not just "scale up known methods." The low-rank structure that should make it solvable is measured; the algorithm to exploit it is not yet built.
+**No physics barriers remain.** Remaining work is engineering and scale-up. The two limitations found this session (mega-hub saturation; uniform-model weight-range mismatch) were both diagnosed and FIXED — mega-hubs via mixed-amplitude probes, the model mismatch via the heterogeneous-excitability model. What's left is pushing to larger real connectomes and tightening reconstruction accuracy — refinement, not unknowns.
+
+**IN PROGRESS at handoff:** a FlyWire N=5000 run with the heterogeneous model was launched (background task `b6zifgr0x`, ~20 min). N=5000 is where the uniform model failed catastrophically (div 0.68); this tests whether the heterogeneous model holds at 2.5× the validated scale. Check `simulation/results/flywire_hetero.txt` for the result, or re-run `FLYWIRE_N_CAP=5000 FLYWIRE_REPS=10 python simulation/run_flywire_hetero.py`.
 
 ### What's been validated
 - Scan inverse: **pool stimulation** (random or cell-type pools, ~10⁵ trials for human) recovers W well enough for behavioral PASS
@@ -120,11 +122,34 @@ Lower-priority / out of scope:
 
 ## Priority Order for Next Session
 
-1. **Heterogeneous-excitability rate model** — design spec is ready in `math/direction1_heterogeneous_model.md`; implement and run its validation plan. THE top open problem. Real connectomes (FlyWire) have synapse weights spanning 3.4 orders of magnitude. The project's uniform rate model can't accommodate that range — no global weight normalization puts weak and strong synapses both in the tanh responsive band. The fix: give each neuron its own gain / threshold / time constant (homeostatic-style), so every neuron operates in its responsive range regardless of total synaptic drive — as real neurons do. Then re-test the scan-inverse protocol on FlyWire. Until this is done, the real-connectome capability of the protocol is genuinely unestablished. The scan-inverse protocol itself (pool stim, coverage rule, mixed amplitudes, strong-ridge) is sound — demonstrated on C. elegans at Pearson 0.99 — and likely transfers once the model accommodates real weight statistics.
-2. **Body-scan compression empirical bound**. Run a 3D-MRF compression experiment on Visible Human Project data to tighten 30 GB–1 TB → single number.
-3. **Multi-tissue D-threshold sweep**. Run sims like `run_tissue_distortion.py` for: vascular flow (Navier-Stokes through capillary network), gut peristalsis (muscle contraction waves), bone (mechanical loading). Tightens body budget further.
-4. **Apple-scale end-to-end** with pool stim at N≈10⁵ (one Drosophila neuropil from `flywire_connections_783.feather` would be a real-data intermediate scale).
-5. Fabricator-side engineering CFD — out of project scope but useful as a sanity check.
+0. **FIRST: read the N=5000 result.** A FlyWire N=5000 heterogeneous-model run
+   was in progress at handoff (`simulation/results/flywire_hetero.txt`). If it
+   PASSED, the real-connectome capability holds at 2.5× the validated scale —
+   update CLAUDE.md/README accordingly. If it FAILED, diagnose (likely the
+   skipped-neuron fallback or reconstruction accuracy) before scaling further.
+
+1. **Improve reconstruction accuracy.** The FlyWire N=2000 PASS is marginal
+   (Pearson 0.54, one stim at 0.0498). Levers: (a) more pool trials / higher K
+   coverage; (b) the multi-task low-rank fit (`run_megahub_svt.py` — apply per
+   cell type, FlyWire has type annotations not yet used); (c) better probe
+   design so fewer neurons need the degree-scaled fallback (currently 71/2000).
+   Higher Pearson → comfortable PASS margin → confidence at larger scales.
+
+2. **Scale to a full Drosophila neuropil (N≈10⁴–10⁵).** Now tractable with
+   `simulate_rate_sparse` + the heterogeneous model. The biggest real-data
+   test available short of mouse cortex.
+
+3. **Body-side refinements** (lower priority, not blockers):
+   - Body-scan compression empirical bound on Visible Human data (tighten
+     the ~247 GB estimate).
+   - Multi-tissue D-threshold sweep (gut peristalsis, bone) — cardiac and
+     muscle and vascular are done.
+
+4. **Fabricator engineering CFD** — out of project scope; sanity-check only.
+
+The five quantum directions are all closed. Direction 1 is the project. The
+physics is settled (no barriers); the open work is all reconstruction-
+accuracy and scale-up engineering.
 
 ## Strict Rules
 - Show all math, don't skip steps
