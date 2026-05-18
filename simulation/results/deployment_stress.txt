@@ -1,0 +1,14 @@
+Deployment stress test (type pools + noise + EM errors)
+============================================================
+Pools: type-based (209)
+Rate noise: 1%
+EM errors: 5% FP + 5% FN
+
+Pearson r: 0.4325
+
+               tap  div = 0.0286  [PASS]
+              chem  div = 0.0112  [PASS]
+     thermo (held)  div = 0.0056  [PASS]
+       noci (held)  div = 0.0046  [PASS]
+
+Verdict: PASS
