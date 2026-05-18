@@ -51,7 +51,7 @@ for _ in range(20):
 
 print("Calibrating homeostatic gain/theta...")
 gain_vec, theta_vec = calibrate_homeostatic(W_norm, G_norm, params, ref_inputs,
-                                             c=1.5, n_rounds=5)
+                                             n_rounds=8)
 print(f"  gain_i:  mean={gain_vec.mean():.3f}, range=[{gain_vec.min():.3f}, {gain_vec.max():.3f}]")
 print(f"  theta_i: mean={theta_vec.mean():.3f}, range=[{theta_vec.min():.3f}, {theta_vec.max():.3f}]")
 

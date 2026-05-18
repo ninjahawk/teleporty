@@ -206,22 +206,31 @@ def simulate_rate_hetero(
     return {"r": R, "r_mean": R.mean(axis=0)}
 
 
-def calibrate_homeostatic(W_norm, G_norm, params, ref_inputs, c=1.5,
-                          n_rounds=5, gain0=2.5):
+def calibrate_homeostatic(W_norm, G_norm, params, ref_inputs,
+                          n_rounds=8, gain0=2.5,
+                          target_mean=0.3, target_std=0.15):
     """
-    Homeostatic calibration of per-neuron gain_i, theta_i.
+    Homeostatic calibration of per-neuron gain_i, theta_i by RESPONSE
+    matching (math/direction1_heterogeneous_model.md).
 
-    Fixed-point iteration (math/direction1_heterogeneous_model.md):
-      theta_i = mean total drive to neuron i across the reference ensemble
-      gain_i  = c / std(total drive to neuron i)
-    Drive depends on parameters, so iterate to convergence.
+    Earlier attempts calibrated on the DRIVE distribution and failed
+    (gain explosion, then half the neurons unobservable). This version
+    iterates on each neuron's actual RESPONSE (firing-rate) distribution,
+    adjusting gain/theta to push the response toward a target:
+        E[r_i]   -> target_mean   (so the neuron rests observable + modulable)
+        std[r_i] -> target_std    (so it has good dynamic range)
+
+    Per round:
+      1. simulate the reference ensemble with current gain/theta
+      2. measure each neuron's response mean m_i and std s_i
+      3. gain_i  *= target_std / s_i        (more gain if too flat)
+      4. theta_i += (m_i - target_mean)/gain_i   (raise theta to lower r)
+      Both damped and clipped for stability.
 
     Args:
-        ref_inputs : list of (T_steps, N) external-input arrays defining the
-                     reference stimulus ensemble used to estimate drive stats
-        c          : target responsive-band constant (~1-2)
-        n_rounds   : fixed-point iterations
-        gain0      : initial uniform gain
+        ref_inputs   : list of (T_steps, N) external-input arrays
+        target_mean  : desired per-neuron mean firing rate
+        target_std   : desired per-neuron firing-rate std
 
     Returns (gain_vec, theta_vec).
     """
@@ -238,33 +247,31 @@ def calibrate_homeostatic(W_norm, G_norm, params, ref_inputs, c=1.5,
     else:
         Wt = np.asarray(W).T; Gm = np.asarray(G)
         G_rowsum = Gm.sum(axis=1)
+    inv_tau = params.dt / params.tau
 
     for rnd in range(n_rounds):
-        drive_samples = []  # collect h_i values across the ensemble
+        resp = []  # response samples r_i
         for I_ext in ref_inputs:
             T_steps = I_ext.shape[0]
             r = np.zeros(N)
-            inv_tau = params.dt / params.tau
             for t in range(T_steps):
                 h = (Wt @ r) + (Gm @ r - G_rowsum * r) + I_ext[t]
-                # record drive in the second half (steady-ish)
-                if t > T_steps // 2:
-                    drive_samples.append(h.copy())
                 dr = inv_tau * (-r + np.tanh(gain_vec * (h - theta_vec)))
                 r = np.clip(r + dr, 0.0, 1.0)
-        D = np.array(drive_samples)            # (n_samples, N)
-        sigma = D.std(axis=0)
-        # Gain: floor the denominator at the median std (avoid divergence for
-        # barely-driven neurons) and bound to a biological range.
-        sigma_floor = max(np.median(sigma), 1e-3)
-        gain_vec = np.clip(c / np.maximum(sigma, sigma_floor), 0.5, 10.0)
-        # Threshold: theta = mean drive. NOTE: this is the current best of
-        # several tried (see math/direction1_heterogeneous_model.md). It
-        # leaves ~half the neurons unobservable on C. elegans — the
-        # calibration is an OPEN problem, not yet validated. The r_target
-        # variant (theta = mean - arctanh(r_target)/gain) reduced skips but
-        # worsened Pearson; the calibration needs proper coupled treatment.
-        theta_vec = D.mean(axis=0)
+                if t > T_steps // 2:
+                    resp.append(r.copy())
+        Rsamp = np.array(resp)                 # (n_samples, N)
+        m = Rsamp.mean(axis=0)
+        s = Rsamp.std(axis=0)
+        # damping factor for stability
+        damp = 0.6
+        # gain update: scale toward target_std (floor s to avoid blow-up)
+        gain_factor = target_std / np.maximum(s, 0.01)
+        gain_factor = 1.0 + damp * (gain_factor - 1.0)
+        gain_vec = np.clip(gain_vec * gain_factor, 0.3, 12.0)
+        # theta update: raising theta lowers r. To move m -> target_mean,
+        # shift theta by damp*(m - target_mean)/gain.
+        theta_vec = theta_vec + damp * (m - target_mean) / np.maximum(gain_vec, 0.3)
     return gain_vec, theta_vec
 
 
