@@ -51,8 +51,10 @@ print(f"  mean |supp|={indeg.mean():.1f}, max={indeg.max()}")
 T_PROBE_ms = 300.0; T_probe = int(T_PROBE_ms/params.dt)
 SS = (int(150/params.dt), int(280/params.dt)); SUB_SS = 2
 EPS = 0.001; SAT_HI = 0.85; SAT_LO = 0.02
-AMPS = [0.05, 0.15, 0.4, 0.8, 1.5]
-N_REPS = 3; NOISE = 0.01
+AMPS = [0.15, 0.4, 0.8, 1.5]   # heterogeneous model handles saturation via
+                                # calibration, so the very-low 0.05 isn't needed
+N_REPS = int(os.environ.get('FLYWIRE_REPS', '10'))
+NOISE = 0.01
 ratio = params.tau/params.dt
 M = 15
 K_pools = max(75, int(np.ceil(3.0 * N / M)))
