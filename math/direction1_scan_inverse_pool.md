@@ -232,27 +232,43 @@ over K trials: K · M / N.
   At N=797, K=75, M=15:  K·M/N = 1125/797 = 1.41 — adequate
   At N=1998, K=75, M=15: K·M/N = 1125/1998 = 0.56 — 44% of neurons miss every pool
 
-This is the COVERAGE failure mode. The protocol's K_pools must scale with N:
+This is the COVERAGE failure mode. The K·M/N ratio is the controlling
+parameter. Empirically (`run_coverage_rule.py`, N=500 sweep):
 
-  **Minimum K_pools ≥ max(8·mean\|supp\|, N/M)**
+| K·M/N | % neurons skipped | Pearson r |
+|---|---|---|
+| 0.30 | 54% | 0.36 |
+| 1.0  | 11% | 0.50 |
+| 1.5  | 6%  | 0.52 |
+| 3.0  | 1%  | 0.63 |
 
-For human cortex (N=8.6×10¹⁰, M~7000): K_pools = N/M ≈ 1.2 × 10⁷.
-Each pool · 3 amps · 10 reps = ~3.7 × 10⁸ trials total.
-At 30 s/trial: ~3000 years serial; ~30 days with 100× scanner parallelism.
+The transition is gradual (Poisson variance in random pool selection),
+not a sharp cutoff at K·M/N = 1. The protocol's K_pools must satisfy:
 
-So the human-scale projection from the overnight run was missing this
-coverage constraint. The realistic projection is:
+  **K_pools ≥ max(8·mean\|supp\|, 3·N/M)**
 
-| Scale | K_pools | Total trials | Serial time | At 100× parallel |
-|---|---|---|---|---|
-| C. elegans (N=300) | 100 | 3,000 | 25 hours | 15 min |
-| Drosophila MB sub (N=2000) | 200 | 6,000 | 50 hours | 30 min |
-| Mouse cortex (N=10⁸, M=1000) | 10⁵ | 3 × 10⁶ | ~35 yrs | ~3 months |
-| Human cortex (N=10¹¹, M=7000) | 1.4 × 10⁷ | 4.2 × 10⁸ | impossible serial | ~3 yrs at 100× |
+The factor of 3 (rather than 1) absorbs the Poisson fluctuation so that
+near-zero neurons miss every pool. Confirmed by FlyWire N=2000:
+  - K·M/N = 0.56 → 160 skipped, FAIL
+  - K·M/N = 1.0  → 117 skipped, FAIL
+  - K·M/N = 3.0  → (test in progress)
 
-For human scale at reasonable wall-clock: needs ~10⁴ parallel scanners.
-That's the right order of magnitude (one per US city for a national-scale
-biomedical infrastructure program).
+For human cortex (N=8.6×10¹⁰), the trial budget depends on pool size M,
+which is set by the optogenetic addressing architecture:
+
+| Pool architecture | M | K_pools (=3N/M) | Total trials |
+|---|---|---|---|
+| Single cell-type driver | 7×10³ | 3.7×10⁷ | 1.1×10⁹ |
+| 10-type intersectional | 7×10⁴ | 3.7×10⁶ | 1.1×10⁸ |
+| 100-type combinatorial | 7×10⁵ | 3.7×10⁵ | 1.1×10⁷ |
+| Holographic 2P pattern | arbitrary | — | — |
+
+At 30 s/trial, the realistic (100-type combinatorial) case is 1.1×10⁷
+trials = ~10 years serial, **~4 days at 1000× parallelism**. The
+single-type worst case is ~100× more. The architecture choice dominates.
+
+For human scale at reasonable wall-clock: ~10³–10⁴ parallel scanners,
+a national-scale biomedical infrastructure program.
 
 ## Real-data test: Drosophila mushroom body subset — `run_flywire_pool_subset.py`
 
