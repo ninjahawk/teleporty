@@ -43,12 +43,13 @@ N = len(unique_neurons)
 print(f"  Unique neurons: {N}")
 
 # Build dense W (N x N) -- only feasible if N <= ~3000
-if N > 800:
-    print(f"  N={N} too large for sim time budget; subsampling top 800 by total degree")
+N_CAP = int(os.environ.get('FLYWIRE_N_CAP', '800'))
+if N > N_CAP:
+    print(f"  N={N} too large; subsampling top {N_CAP} by total degree")
     deg_in = df_sub.groupby('post_pt_root_id').size()
     deg_out = df_sub.groupby('pre_pt_root_id').size()
     deg = deg_in.add(deg_out, fill_value=0)
-    keep_ids = deg.nlargest(800).index.values
+    keep_ids = deg.nlargest(N_CAP).index.values
     keep_set = set(keep_ids.tolist())
     df_sub = df_sub[df_sub['pre_pt_root_id'].isin(keep_set) & df_sub['post_pt_root_id'].isin(keep_set)]
     unique_neurons = pd.unique(df_sub[['pre_pt_root_id','post_pt_root_id']].values.ravel())

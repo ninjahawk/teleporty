@@ -419,11 +419,22 @@ massively redundant by design.
 | Tissue | Cell count (×10⁹) | D-threshold | Bits per independent block |
 |---|---|---|---|
 | Cardiac muscle (heart) | ~5    | 0.05 | 2.16 |
+| **Vasculature (capillary lumens)** | (~5% by volume) | **0.001** | **4.98** |
 | Skeletal muscle | 250         | 1.00 | 0    (D > σ²) |
 | Smooth muscle (gut, vessels) | 50 | ~0.3 | 0.87 (estimate, similar to brain) |
 | Bone, connective, fat | 1000   | ~1.0 | 0    (passive structural) |
 | Brain (neural) | 0.086        | 0.30 | 0.87 |
 | Other epithelia, glands | 5000 | ~0.3 | 0.87 |
+
+**Vasculature is the new worst-case tissue** for distortion sensitivity.
+Hagen-Poiseuille Q ∝ r⁴ amplifies radius variance 16× into flow variance.
+For <5% chronic hypoxia (flow < 80% baseline in <5% of capillaries):
+  D_r < 0.001  →  bits per voxel = 4.98
+  (vs cardiac 2.16, muscle 0)
+
+Vasculature ~5% of body volume → average bits/voxel up by ~0.20 →
+extra ~14 GB on body budget. Total: 115 GB – 1 TB. Source:
+`simulation/run_vascular_distortion.py`.
 
 (The "0 bits per independent block" entries still need a type label per
 voxel ~ 3 bits and a coarse density estimate ~ 4 bits = 7 bits/voxel
