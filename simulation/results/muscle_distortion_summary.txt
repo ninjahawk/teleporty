@@ -1,0 +1,14 @@
+Muscle distortion sweep (parallel fiber bundle, N=1000)
+=======================================================
+     D     dF_rel      div_t  verdict
+  0.00     0.0000    -0.0000  PASS
+  0.05     0.0051     0.0000  PASS
+  0.10     0.0049     0.0000  PASS
+  0.20     0.0066     0.0000  PASS
+  0.30     0.0083     0.0000  PASS
+  0.50     0.0089     0.0000  PASS
+  1.00     0.0439     0.0000  PASS
+  2.00     0.0704     0.0000  FAIL
+
+Muscle D-threshold: 1.00
+Cardiac D-threshold: 0.05

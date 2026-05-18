@@ -394,6 +394,50 @@ sensitive (it conducts electrical waves). Connective tissue, fat, and bone
 likely tolerate much higher D. A finer breakdown by tissue would reduce the
 total budget further. The 2.5× factor here is a conservative upper bound.
 
+### Skeletal muscle D-threshold (`simulation/run_muscle_distortion.py`)
+
+Parallel-fiber bundle model: N=1000 fibers, each producing
+force ∝ activation × cross-section × alignment. Per-fiber parameters
+perturbed multiplicatively with relative variance D.
+
+| D | dF_peak/F_peak | verdict |
+|---|---|---|
+| 0.30 | 0.008 | PASS |
+| 0.50 | 0.009 | PASS |
+| 1.00 | 0.044 | PASS |
+| 2.00 | 0.070 | FAIL |
+
+**Muscle D-threshold = 1.0** (20× more tolerant than cardiac).
+
+This is the central-limit theorem in action: a parallel bundle averages
+~1/√N_fibers of the per-fiber noise. With N=1000 fibers, even 100% per-fiber
+variance gives only ~3% variance on total force production. Muscle is
+massively redundant by design.
+
+### Tissue-stratified budget
+
+| Tissue | Cell count (×10⁹) | D-threshold | Bits per independent block |
+|---|---|---|---|
+| Cardiac muscle (heart) | ~5    | 0.05 | 2.16 |
+| Skeletal muscle | 250         | 1.00 | 0    (D > σ²) |
+| Smooth muscle (gut, vessels) | 50 | ~0.3 | 0.87 (estimate, similar to brain) |
+| Bone, connective, fat | 1000   | ~1.0 | 0    (passive structural) |
+| Brain (neural) | 0.086        | 0.30 | 0.87 |
+| Other epithelia, glands | 5000 | ~0.3 | 0.87 |
+
+(The "0 bits per independent block" entries still need a type label per
+voxel ~ 3 bits and a coarse density estimate ~ 4 bits = 7 bits/voxel
+minimum, even when state distortion is irrelevant.)
+
+Bulk-tissue revised lower bound: dominated by smooth-muscle and epithelial
+voxels at 0.87 bits/state. Roughly the same magnitude as the original D=0.3
+estimate (10¹⁰–10¹² bits). The pessimistic cardiac-everywhere bound (3-700 GB)
+overstates the requirement by ~2.5×.
+
+**Best-current-estimate body total: 10¹⁰–10¹¹ bits ≈ 1–10 GB.** Qualitative
+conclusion unchanged: fits on consumer storage, transmission not the
+bottleneck.
+
 ## Open questions
 
 1. **The bulk tissue uncertainty range (10¹⁰–10¹² bits) is 2 orders of

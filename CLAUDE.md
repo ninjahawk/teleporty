@@ -120,14 +120,14 @@ Component-by-component rate-distortion analysis of all non-neural systems.
 | Component | Bits (functional) | Size |
 |---|---|---|
 | Brain functional spec | 3.4 × 10⁵ | 42 KB |
-| Bulk tissue (voxel + tissue, at D=0.05 cardiac threshold) | 2.5×10¹⁰–2.5×10¹² | 3–700 GB |
+| Bulk tissue (tissue-stratified D: cardiac 0.05, muscle 1.0, mixed) | 10¹⁰–10¹¹ | 1–10 GB |
 | Adaptive immunity (TCR/BCR) | 10¹⁰ | 1 GB |
 | Vasculature (extra) | 10⁹ | 125 MB |
 | Per-person genome variants | 10⁸ | 12 MB |
 | Epigenome (functional) | 3 × 10⁸ | 40 MB |
 | Microbiome composition | 10⁵ | 15 KB |
 | Per-person dynamic state | 10³ | 100 B |
-| **Total (functional, w/ tissue D=0.05)** | **2.5×10¹⁰–2.5×10¹² bits** | **3–700 GB** |
+| **Total (functional, tissue-stratified)** | **~10¹⁰–10¹¹ bits** | **~1–10 GB** |
 
 Key finding: body is **5–7 orders of magnitude larger than the brain** in
 information (despite the brain being ~200× denser per cell), but fits on a
@@ -216,6 +216,7 @@ will be needed when an actual scanner/fabricator is built.
 - `math/direction1_vascular_patency.md` — **capillary patency under hypothermic fabrication: 8× safety margin if bubble-free + pressure-regulated**
 - `simulation/run_scan_inverse_pool.py` — **pool stimulation sweep: K=100,M=15 → r=0.99 PASS**
 - `simulation/run_tissue_distortion.py` — **2D cardiac propagation sim: tissue D-threshold = 0.05 (6× more sensitive than brain)**
+- `simulation/run_muscle_distortion.py` — **muscle force production sim: skeletal muscle D-threshold = 1.0 (20× more tolerant than cardiac)**
 
 ### Data (gitignored, too large for GitHub)
 - `simulation/data/SI5_connectome_adjacency.xlsx` — C. elegans Cook 2019
