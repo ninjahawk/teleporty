@@ -33,11 +33,12 @@ I have no funding, committee approvals, or vested interest in any particular ans
 
 ## 🎯 Headline (current state)
 
-**End-to-end functional teleportation pipeline simulated and passing at C. elegans scale under realistic biological deployment constraints.** No physics barriers remain. Remaining work is engineering (10⁶× scale-up of bioprinters and live-brain imaging) plus one open empirical question (hub-neuron d_eff in mammalian cortex).
+**End-to-end functional teleportation pipeline simulated and passing at C. elegans scale (300 neurons) under realistic biological deployment constraints, AND at a Drosophila mushroom body subset (797 neurons, real biological hub structure).** No physics barriers remain. Remaining work is engineering scale-up.
 
 - Per-person info budget: **~247 GB** (bulk tissue dominates; brain functional spec is 42 KB)
-- Transmit at 1 Gbps fiber: **1–2 hours**
+- Transmit at 1 Gbps fiber: **~33 minutes**
 - Fabricate (1 hour at 4 °C, hypothermic): requires **10¹⁰ cells/s** and **10⁷ nozzles** — no physics barrier, 10⁶× from current SOTA
+- Scan trial budget (human): ~4×10⁶ trials with combinatorial driver lines (M=10⁵), ~35 days serial / ~1 hour at 1000× parallelism
 - Marginal cost per teleport (energy + bio-ink + amortized printer): **~$10K**
 - R&D timeline: ~20 years, ~billions
 
