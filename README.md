@@ -35,7 +35,7 @@ I have no funding, committee approvals, or vested interest in any particular ans
 
 **End-to-end functional teleportation pipeline simulated and passing at C. elegans scale under realistic biological deployment constraints.** No physics barriers remain. Remaining work is engineering (10⁶× scale-up of bioprinters and live-brain imaging) plus one open empirical question (hub-neuron d_eff in mammalian cortex).
 
-- Per-person info budget: **100 GB – 1 TB** (bulk tissue dominates; brain functional spec is 42 KB)
+- Per-person info budget: **~247 GB** (bulk tissue dominates; brain functional spec is 42 KB)
 - Transmit at 1 Gbps fiber: **1–2 hours**
 - Fabricate (1 hour at 4 °C, hypothermic): requires **10¹⁰ cells/s** and **10⁷ nozzles** — no physics barrier, 10⁶× from current SOTA
 - Marginal cost per teleport (energy + bio-ink + amortized printer): **~$10K**
@@ -65,7 +65,7 @@ We went through all of them. Here's what happened.
 
 | Direction | Verdict | Why |
 |-----------|---------|-----|
-| 🟢 **1 — Functional teleportation via classical information** | **Demonstrated end-to-end** | Pipeline passes at C. elegans scale + biological deployment stress. Pool-stim scan, 42 KB brain spec, 100 GB – 1 TB body spec, 1-hour fabrication window. |
+| 🟢 **1 — Functional teleportation via classical information** | **Demonstrated end-to-end** | Pipeline passes at C. elegans scale + biological deployment stress. Pool-stim scan, 42 KB brain spec, ~247 GB body spec, 1-hour fabrication window. |
 | 🔴 **2 — CM tunneling of bound states** | **Closed** | Tunneling probability is exp(−10⁸) for 100 nm sphere. Decoherence wins by 30+ orders of magnitude. |
 | 🔴 **3 — Quantum Cheshire Cat** | **Closed** | Post-selection is passive — you can't force outcomes. No-communication theorem holds. |
 | 🔴 **4 — Penrose-Diósi threshold** | **Closed** | Sets hard quantum ceiling at ~50 μm even at 0 K. Human is 7 OOM too large. Confirmed independently by thermal photon emission (10⁻²³ s). |
@@ -110,10 +110,10 @@ The human body emits ~2.6 × 10²² thermal photons per second at body temperatu
 | Component | Bits | Size | Source |
 |---|---|---|---|
 | Brain (functional, rate-distortion) | 3.4 × 10⁵ | **42 KB** | [direction1_rate_distortion.md](math/direction1_rate_distortion.md) |
-| Bulk tissue (tissue-stratified D) | 2 × 10¹² – 10¹³ | **30 GB – 1 TB** | [direction1_body_information_budget.md](math/direction1_body_information_budget.md) |
+| Bulk tissue (7-tissue stratified D, vol-weighted) | 2 × 10¹² | **~245 GB** | [direction1_body_information_budget.md](math/direction1_body_information_budget.md) |
 | Adaptive immunity (TCR/BCR) | 10¹⁰ | 1 GB | same |
 | Vasculature, epigenome, genome, microbiome, dynamic | < 2 × 10⁹ | <200 MB | same |
-| **Total per person** | **~10¹² – 10¹³** | **~100 GB – 1 TB** |
+| **Total per person** | **~2 × 10¹²** | **~247 GB** |
 
 The brain term is negligible. Bulk tissue dominates. Body fits on a consumer SSD; transmission is 1–2 hours over 1 Gbps fiber.
 
@@ -177,11 +177,11 @@ No physics barriers. ~10⁶× engineering gap from current SOTA. Manufacturing +
 
 ### How long to send it
 
-| Channel | 42 KB (brain only) | 100 GB – 1 TB (full body) |
+| Channel | 42 KB (brain only) | ~247 GB (full body) |
 |---|---|---|
 | 1 Mbps (dialup) | 0.3 s | impractical |
-| 1 Gbps (consumer fiber) | 0.3 ms | **1–2 hours** |
-| 100 Gbps (datacenter) | 3 μs | 8 s – 80 s |
+| 1 Gbps (consumer fiber) | 0.3 ms | **~33 min** |
+| 100 Gbps (datacenter) | 3 μs | ~20 s |
 
 For the brain alone: trivial. For the full body: cloud-backup scale, not real-time.
 
@@ -263,7 +263,7 @@ The CLT damps per-fiber variance in muscle; cardiac propagating waves don't have
 Phase 1: Survey existing approaches          ✅ all dead or lead to Direction 1
 Phase 2: Work all five alleyways             ✅ 4 closed, 1 demonstrated
 Phase 3: Full math for Direction 1           ✅ info budget, energy, scanner
-Phase 4: Rate-distortion lower bound         ✅ brain 42 KB, body 100 GB–1 TB
+Phase 4: Rate-distortion lower bound         ✅ brain 42 KB, body ~247 GB (7-tissue stratified)
 Phase 5: Scanner technology roadmap          ✅ pool stim, ~10⁶ trials @ human scale
 Phase 6: Reconstruction system design        ✅ fabricator math + vascular patency
 Phase 7: C. elegans testable simulation      ✅ d_eff, distortion, R-D
@@ -285,7 +285,7 @@ Phase 10: Generalization beyond C. elegans   ✅ 5/5 synthetic, scaling N=300→
 |----------|-------|--------|
 | Human body atoms | ~7 × 10²⁷ | — |
 | Brain functional spec | **42 KB** | [direction1_rate_distortion.md](math/direction1_rate_distortion.md) |
-| Body functional spec | **100 GB – 1 TB** | [direction1_body_information_budget.md](math/direction1_body_information_budget.md) |
+| Body functional spec | **~247 GB** | [direction1_body_information_budget.md](math/direction1_body_information_budget.md) |
 | Assembly energy (from raw atoms) | ~6.2 GJ (~$206) | Calculated |
 | Fabricator energy (1 hour build) | 175 kWh (~$17.50) | [direction1_fabricator.md](math/direction1_fabricator.md) |
 | Raw material cost (human body) | **~$42** | Bulk elemental pricing |
@@ -409,7 +409,7 @@ Most of the framework is prior art: classical-information teleportation philosop
 1. **Pool stimulation > per-neuron stimulation** for connectome inference, with the explicit empirical comparison (r=0.99 vs 0.81, 3× fewer trials, 2.5× more noise-tolerant). Contrary to naive intuition.
 2. **Tonic steady-state probes > pulsed probes** because of τ/dt noise amplification in the linearization.
 3. **"Pearson r=0.43 with behavioral div=3%"** — explicit demonstration that weight-matrix recovery is a misleading metric vs functional equivalence (rate-distortion theory in concrete instance).
-4. **Tissue-stratified body information budget** with specific D-thresholds per tissue type and the resulting 100 GB – 1 TB total.
+4. **Tissue-stratified body information budget** with specific D-thresholds per tissue type and the resulting ~247 GB total.
 5. **Hybrid type-driver + combination pool design** that PASSES under combined deployment stress when pure type pools FAIL.
 6. **Three-organism d_eff scaling fit** (1.85 × N^0.46 from C. elegans, Mouse V1, Drosophila → human).
 7. **End-to-end pipeline demonstration** at C. elegans combining scan + compress + transmit + reconstruct + verify in one passing simulation on a real biological connectome.
