@@ -39,7 +39,19 @@ pre = df_e['pre_pt_root_id'].map(n2i).values
 post = df_e['post_pt_root_id'].map(n2i).values
 wts = df_e['syn_count'].values.astype(float)
 W = sp.csr_matrix((wts, (pre, post)), shape=(N, N))
-W_norm = W / W.max()
+# Normalization: FlyWire syn_counts are heavy-tailed (median 1, max ~2400).
+# Dividing by max leaves typical synapses ~30x weaker than C. elegans, so the
+# network is near-silent and unobservable. Percentile normalization fixes the
+# dynamic regime. Env FLYWIRE_NORM: 'max' (default) or 'p99' / 'p995'.
+_NORM = os.environ.get('FLYWIRE_NORM', 'max')
+if _NORM == 'p99':
+    denom = np.percentile(wts, 99)
+elif _NORM == 'p995':
+    denom = np.percentile(wts, 99.5)
+else:
+    denom = W.max()
+print(f"  Weight normalization: {_NORM} (denom={denom:.1f})")
+W_norm = W / denom
 G_norm = sp.csr_matrix((N, N))
 
 params = RateParams(tau=10.0, gain=2.5, w_chem=0.25, w_gap=0.1, dt=0.5)

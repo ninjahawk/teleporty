@@ -90,6 +90,41 @@ This is now the **top open problem** for Direction 1, displacing the
 mega-hub issue (which is solved). It is an algorithm-accuracy problem, not
 a physics barrier — but it is genuinely unsolved.
 
+## The deeper issue: FlyWire reconstruction Pearson is low at ANY density
+
+A yellow flag that should have been chased earlier: the protocol recovers
+the C. elegans connectome at Pearson r ≈ 0.99, but recovers FlyWire subsets
+at only r ≈ 0.35 — even the *sparse* N=2000 mushroom body subset (mean
+|supp|≈8, sparser than C. elegans's 12).
+
+Both use the identical rate model and identical pool-stim protocol. The
+regression *should* recover W to near-perfect Pearson, as it does for
+C. elegans. It does not for FlyWire. Candidate reasons:
+
+  1. **Weight distribution.** C. elegans weights (normalized synapse counts)
+     are moderate and similar in scale. FlyWire raw syn_counts span 1 to
+     several hundred; after W/W.max() normalization most weights are tiny.
+     A network of mostly-tiny weights may leave most neurons near-silent
+     under probing → few valid observations → ill-conditioned regression.
+  2. **Coverage ratio.** C. elegans canonical run used K·M/N = 5.0; the
+     FlyWire N=2000 run used 2.0. Lower coverage → noisier fit.
+  3. **The arctanh linearization** may be more error-prone for the FlyWire
+     weight/activity regime.
+
+The behavioral PASS at N≤2000 sparse was therefore the **rate-distortion
+principle masking a weak reconstruction** — Pearson 0.35 is poor, but on a
+sparse network the resulting input-sum error is small enough to stay under
+the 5% behavioral threshold. On the dense N=5000 network the same weak
+reconstruction is no longer masked, and the failure surfaces.
+
+So the honest root cause is: **the protocol's reconstruction accuracy on
+real connectomes (Pearson ~0.35) is much worse than on C. elegans (0.99),
+and that weak reconstruction only happens to pass behaviorally on sparse
+networks.** The density limitation is the symptom; the weak FlyWire
+reconstruction is the disease. Diagnosing *why* FlyWire reconstructs poorly
+(weight distribution? coverage? linearization?) is the prerequisite to any
+dense-cortex claim.
+
 ## Honesty note
 
 The session's earlier claims ("pipeline demonstrated", "generalizes")
