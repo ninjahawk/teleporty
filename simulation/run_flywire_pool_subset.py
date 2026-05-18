@@ -86,7 +86,10 @@ EPS = 0.001; SAT_HI = 0.85; SAT_LO = 0.02
 # stay out of saturation and remain observable.
 _AMP_MODE = os.environ.get('FLYWIRE_AMPS', 'default')
 if _AMP_MODE == 'low':
-    AMPS = [0.05, 0.1, 0.2, 0.4, 0.8]   # spans into the unsaturated regime
+    AMPS = [0.05, 0.1, 0.2, 0.4, 0.8]   # unsaturated regime only
+elif _AMP_MODE == 'mixed':
+    # low end keeps mega-hubs observable; high end gives small-weight circuits SNR
+    AMPS = [0.05, 0.15, 0.4, 0.8, 1.5]
 else:
     AMPS = [0.4, 0.8, 1.5]
 N_REPS = 3; NOISE = 0.01
