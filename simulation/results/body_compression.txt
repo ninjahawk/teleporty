@@ -1,0 +1,14 @@
+Body-scan compression empirical test
+=======================================================
+Sample grid: 200x200x200 = 8,000,000 voxels
+Scaling factor to full body (7e13 vox): 8.75e+06
+
+  Raw size (combined type+state): 16,000,000 bytes = 15.26 MB
+  Gzip size: 7,810,954 bytes (ratio 2.0x)
+  Type-only gzip: 0.95 bits/voxel
+  Theoretical R-D total: 0.031 bits/voxel
+
+Scaled to full body:
+  Gzip combined: ~68346 GB
+  Type-only:     ~8303 GB
+  Theory R-D:    ~271 GB
