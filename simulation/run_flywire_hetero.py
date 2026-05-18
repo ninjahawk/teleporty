@@ -114,8 +114,20 @@ for j in range(N):
     Xs = X[vj][:,sj]; zs = z[vj,j]
     A = Xs.T@Xs + ridge*np.eye(len(sj)); b = Xs.T@zs
     W_hat[sj,j] = np.clip(np.linalg.solve(A,b),0,None)
+# Fallback for skipped (unobservable) neurons: a zeroed column silences the
+# neuron entirely, which distorts behavior. Instead fill the support with the
+# median per-synapse weight of the successfully-reconstructed neurons -- the
+# neuron then receives a roughly-correct TOTAL drive even without per-weight
+# accuracy. Rate-distortion: approximate total input >> zeroed input.
+fit_weights = W_hat[W_hat > 1e-9]
+median_w = np.median(fit_weights) if fit_weights.size else 0.01
+for j in skipped_idx:
+    sj = np.where(support[:,j])[0]
+    W_hat[sj, j] = median_w
+print(f"  skipped: {skipped}/{N} (filled with median weight {median_w:.4f})")
+
 pr = pearsonr(W_TRUE.flatten()[nz_mask], W_hat.flatten()[nz_mask])[0]
-print(f"  skipped: {skipped}/{N}, Pearson r = {pr:.4f}")
+print(f"  Pearson r = {pr:.4f}")
 
 # Behavioral verification
 ws, we = int(100/params.dt), int(500/params.dt); T_test = 600.0
