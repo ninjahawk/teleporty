@@ -232,6 +232,7 @@ will be needed when an actual scanner/fabricator is built.
 - `math/direction1_vascular_patency.md` — **capillary patency under hypothermic fabrication: 8× safety margin if bubble-free + pressure-regulated**
 - `math/direction1_human_projection.md` — **complete human-scale end-to-end projection: 100 GB - 1 TB spec, 1 hour fabrication, $10K marginal cost, 20-year engineering program**
 - `math/direction1_deployment_conditions.md` — **combined-stress test: pure type pools FAIL on tap, hybrid type+combo pools PASS. Pearson r=0.43 but behavioral div<3% (rate-distortion in action)**
+- `math/direction1_hub_neuron_concern.md` — **scaling caveat: Purkinje cells have |supp_j|~200k. Pool protocol assumes K>|supp|; might fail. Resolution depends on d_eff of input vectors per cell type — empirical question, mouse data exists. Not a blocker but a flagged open scaling question.**
 - `simulation/run_scan_inverse_pool.py` — **pool stimulation sweep: K=100,M=15 → r=0.99 PASS**
 - `simulation/run_tissue_distortion.py` — **2D cardiac propagation sim: tissue D-threshold = 0.05 (6× more sensitive than brain)**
 - `simulation/run_muscle_distortion.py` — **muscle force production sim: skeletal muscle D-threshold = 1.0 (20× more tolerant than cardiac)**
