@@ -33,7 +33,7 @@ I have no funding, committee approvals, or vested interest in any particular ans
 
 ## 🎯 Headline (current state)
 
-**End-to-end functional teleportation pipeline simulated and passing at N=2000 on real Drosophila biological data** (FlyWire mushroom body subset, full hub structure, max |supp|=1703), plus C. elegans (300 neurons) and synthetic networks. The N=2000 case initially failed; the failure was diagnosed to mega-hub saturation + low-degree input under-coverage and fixed by a protocol change (mixed-amplitude probe ladder + adequate coverage). All 5 behavioral tests now PASS at div ~0.011. See [megahub limitation → resolved](math/direction1_megahub_limitation.md). No physics barriers remain.
+**End-to-end functional teleportation pipeline simulated and passing on SPARSE connectomes** (mean in-degree ≲ 10) — C. elegans (300 neurons) and real Drosophila mushroom body subsets up to N=2000, all 5 behavioral tests PASS. It **fails on dense networks**: a whole-FlyWire top-5000 subset (mean in-degree 47) gives behavioral divergence ~0.68. Mammalian cortex (~7000) is far denser. The information-theoretic content is low (rate-distortion holds) but the reconstruction algorithm's accuracy (Pearson ~0.35 on real data) is insufficient for dense tissue — a real, unsolved algorithm-accuracy problem, not a physics barrier. See [density limitation](math/direction1_density_limitation.md).
 
 - Per-person info budget: **~247 GB** (bulk tissue dominates; brain functional spec is 42 KB)
 - Transmit at 1 Gbps fiber: **~33 minutes**
@@ -66,7 +66,7 @@ We went through all of them. Here's what happened.
 
 | Direction | Verdict | Why |
 |-----------|---------|-----|
-| 🟢 **1 — Functional teleportation via classical information** | **Demonstrated end-to-end at N=2000** | Pipeline passes at C. elegans + Drosophila mushroom body subset (N=2000, real data, full hub structure). Pool-stim scan, 42 KB brain spec, ~247 GB body spec, 1-hour fabrication window. |
+| 🟢 **1 — Functional teleportation via classical information** | **Demonstrated for sparse tissue; open for dense cortex** | Pipeline passes at C. elegans + Drosophila MB subsets to N=2000 (sparse). Fails on dense networks (mean in-degree 47) — reconstruction-accuracy problem. Pool-stim scan, 42 KB brain spec, ~247 GB body spec, 1-hour fabrication window. |
 | 🔴 **2 — CM tunneling of bound states** | **Closed** | Tunneling probability is exp(−10⁸) for 100 nm sphere. Decoherence wins by 30+ orders of magnitude. |
 | 🔴 **3 — Quantum Cheshire Cat** | **Closed** | Post-selection is passive — you can't force outcomes. No-communication theorem holds. |
 | 🔴 **4 — Penrose-Diósi threshold** | **Closed** | Sets hard quantum ceiling at ~50 μm even at 0 K. Human is 7 OOM too large. Confirmed independently by thermal photon emission (10⁻²³ s). |
