@@ -33,7 +33,7 @@ I have no funding, committee approvals, or vested interest in any particular ans
 
 ## 🎯 Headline (current state)
 
-**End-to-end functional teleportation pipeline simulated and passing at C. elegans scale (300 neurons) under realistic biological deployment constraints, AND at a Drosophila mushroom body subset (797 neurons, real biological hub structure).** No physics barriers remain. Remaining work is engineering scale-up.
+**End-to-end functional teleportation pipeline simulated and passing at N ≤ 800** — C. elegans (300 neurons) and a real Drosophila mushroom body subset (797 neurons). It does **not** yet pass at a larger hub-enriched real-data subset (N=2000, max |supp|=1703): mega-hubs defeat the per-neuron reconstruction. No physics barrier — the low-rank structure that should fix it is measured — but a working multi-task low-rank reconstruction is unimplemented. See [megahub limitation](math/direction1_megahub_limitation.md).
 
 - Per-person info budget: **~247 GB** (bulk tissue dominates; brain functional spec is 42 KB)
 - Transmit at 1 Gbps fiber: **~33 minutes**
@@ -66,7 +66,7 @@ We went through all of them. Here's what happened.
 
 | Direction | Verdict | Why |
 |-----------|---------|-----|
-| 🟢 **1 — Functional teleportation via classical information** | **Demonstrated end-to-end** | Pipeline passes at C. elegans scale + biological deployment stress. Pool-stim scan, 42 KB brain spec, ~247 GB body spec, 1-hour fabrication window. |
+| 🟢 **1 — Functional teleportation via classical information** | **Demonstrated at N≤800; open at N=2000** | Pipeline passes at C. elegans + Drosophila MB subset (797). Fails at N=2000 hub-enriched subset — mega-hub reconstruction unsolved. Pool-stim scan, 42 KB brain spec, ~247 GB body spec, 1-hour fabrication window. |
 | 🔴 **2 — CM tunneling of bound states** | **Closed** | Tunneling probability is exp(−10⁸) for 100 nm sphere. Decoherence wins by 30+ orders of magnitude. |
 | 🔴 **3 — Quantum Cheshire Cat** | **Closed** | Post-selection is passive — you can't force outcomes. No-communication theorem holds. |
 | 🔴 **4 — Penrose-Diósi threshold** | **Closed** | Sets hard quantum ceiling at ~50 μm even at 0 K. Human is 7 OOM too large. Confirmed independently by thermal photon emission (10⁻²³ s). |
@@ -415,7 +415,7 @@ Most of the framework is prior art: classical-information teleportation philosop
 6. **Three-organism d_eff scaling fit** (1.85 × N^0.46 from C. elegans, Mouse V1, Drosophila → human).
 7. **End-to-end pipeline demonstration** at C. elegans combining scan + compress + transmit + reconstruct + verify in one passing simulation on a real biological connectome.
 
-None of this puts a person on a transporter pad. It shows the recipe has no physics holes. The engineering gap (10⁶× current bioprinter SOTA) is real and decades away.
+None of this puts a person on a transporter pad. It shows the recipe has no physics holes. The engineering gap is real and decades away — and one piece of it (reconstructing mega-hub neurons at scale) is not just "scale up known methods" but a genuinely unsolved algorithm problem, flagged honestly in [the megahub limitation note](math/direction1_megahub_limitation.md).
 
 ---
 

@@ -10,9 +10,9 @@ Find a physically grounded mechanism for teleportation with testable predictions
 
 ## Current State (handoff snapshot — 2026-05-18)
 
-**The end-to-end functional teleportation pipeline is demonstrated at C. elegans scale under realistic biological deployment constraints.** All five "viable mechanisms" surveyed at project start: four (the quantum approaches) are closed with negative verdicts; the fifth (classical-information functional teleportation, Direction 1) is fully wired.
+**The end-to-end functional teleportation pipeline is demonstrated at N≤800** (C. elegans 300 neurons + a real Drosophila mushroom body subset of 797 neurons) **under realistic biological deployment constraints.** It does NOT yet work at N=2000 hub-enriched real-data subsets — mega-hubs (|supp|>1000) defeat the per-neuron reconstruction (see `math/direction1_megahub_limitation.md`). All five "viable mechanisms" surveyed at project start: four (the quantum approaches) are closed with negative verdicts; the fifth (classical-information functional teleportation, Direction 1) is the viable path, demonstrated at small scale, with one unsolved reconstruction-algorithm problem at larger scale.
 
-**No physics barriers remain.** Remaining work is engineering, plus one significant open empirical question (hub-neuron d_eff).
+**No physics barriers remain.** Remaining work is engineering — but one piece of that engineering (mega-hub reconstruction at scale) is genuinely unsolved in this repo, not just "scale up known methods." The low-rank structure that should make it solvable is measured; the algorithm to exploit it is not yet built.
 
 ### What's been validated
 - Scan inverse: **pool stimulation** (random or cell-type pools, ~10⁵ trials for human) recovers W well enough for behavioral PASS
@@ -24,7 +24,7 @@ Find a physically grounded mechanism for teleportation with testable predictions
 - **Real-data test (FlyWire mushroom body subset, N=797):** strong-ridge fallback for under-determined hubs gives PASS on all 5 random behavioral tests (div 0.003-0.015) even with Pearson r=0.37. Direct empirical confirmation of rate-distortion on real biological data.
 
 ### What's currently open
-1. ~~**Hub-neuron scaling**~~ — **RESOLVED 2026-05-18.** d_eff << |supp| confirmed on two real connectomes (FlyWire: d_eff 25-58 vs |supp|~252; C. elegans command neurons: d_eff 3.72 vs |supp|=45.6). Strong-ridge under-determined recovery gives Pearson r=0.31 at K=⅓·|supp|, which is behaviorally adequate per rate-distortion (r=0.43 → behavioral PASS observed previously). Engineering refinements (proper trace-norm multi-task) optional but not required for feasibility.
+1. **Mega-hub reconstruction — OPEN, top priority** (`math/direction1_megahub_limitation.md`). The pipeline PASSES at N≤800 (C. elegans + small Drosophila subset, max |supp|≤686) but FAILS at N=2000 Drosophila subset (max |supp|=1703) — behavioral div stuck at 0.13 regardless of coverage. The hub d_eff IS low (FlyWire 25-58, C. elegans 3.72), so the information exists — but the strong-ridge fallback only handles moderate hubs. Mega-hubs (|supp|>1000) need a genuine multi-task low-rank reconstruction (trace-norm-penalized, fit all hubs of a type jointly). The ALS and SVD-shrinkage attempts this session were marginal. **This is the #1 unsolved engineering problem. Not a physics barrier — low-rank structure is measured — but unimplemented.**
 2. ~~**Body bulk-tissue budget range**~~ — **EMPIRICALLY CONFIRMED 2026-05-18.** Theory R-D bound on 200³ synthetic voxel grid gives 0.031 bits/voxel → ~270 GB at full body scale (matches the body budget estimate). Gzip catastrophically over-counts (68 TB) because it's a 1D codec; a 3D-aware wavelet codec reaches theory. 100 GB – 1 TB range stands.
 3. **Multi-tissue D-threshold survey** beyond cardiac+muscle: vascular flow (predicted D ≈ 0.01 due to Hagen-Poiseuille r⁴ sensitivity), gut peristalsis, bone. Cardiac is worst-case; others mostly more tolerant. Refinement, not blocker.
 4. **Apple-scale end-to-end** on real biological data at intermediate N (10⁴–10⁵). Would use a Drosophila neuropil subset. Validates the pipeline at one real intermediate scale before claiming generalization to human.
@@ -89,7 +89,7 @@ Find a physically grounded mechanism for teleportation with testable predictions
 
 ## Priority Order for Next Session
 
-1. **Hub-neuron empirical d_eff** (`math/direction1_hub_neuron_concern.md`). Load MICrONS mouse cortex data, compute participation-ratio d_eff for the input weight VECTOR of each cell type. If max(d_eff) << max(|supp|), human-scale Purkinje scaling is fine. If not, sparse priors / group-LASSO are needed for hub neurons. **Single most important open question.** Data file may need re-downloading (gitignored; previously at `simulation/data/microns_mm3_connectome.h5`).
+1. **Mega-hub multi-task reconstruction** (`math/direction1_megahub_limitation.md`). THE top open problem. Build a proper trace-norm-penalized low-rank reconstruction: group neurons by cell type, fit all members' weight vectors jointly as B·C with r ≈ d_eff(type). FlyWire has cell-type annotations (not used yet — current tests build W from raw IDs). Singular-value-thresholding (Cai-Candès-Shen 2010) is the standard algorithm. Success criterion: behavioral PASS on the N=2000 FlyWire mushroom body subset where the current protocol gives div=0.13. The d_eff measurements prove the low-rank structure exists; the recovery algorithm is the missing piece.
 2. **Body-scan compression empirical bound**. Run a 3D-MRF compression experiment on Visible Human Project data to tighten 30 GB–1 TB → single number.
 3. **Multi-tissue D-threshold sweep**. Run sims like `run_tissue_distortion.py` for: vascular flow (Navier-Stokes through capillary network), gut peristalsis (muscle contraction waves), bone (mechanical loading). Tightens body budget further.
 4. **Apple-scale end-to-end** with pool stim at N≈10⁵ (one Drosophila neuropil from `flywire_connections_783.feather` would be a real-data intermediate scale).
@@ -118,7 +118,8 @@ Find a physically grounded mechanism for teleportation with testable predictions
 - `math/direction1_body_information_budget.md` — body component-by-component R-D (corrected arithmetic)
 - `math/direction1_vascular_patency.md` — 8× margin force-balance
 - `math/direction1_deployment_conditions.md` — combined-stress test (most honest result)
-- `math/direction1_hub_neuron_concern.md` — **OPEN caveat, next session priority**
+- `math/direction1_hub_neuron_concern.md` — hub d_eff measurements (low d_eff confirmed)
+- `math/direction1_megahub_limitation.md` — **OPEN: N=2000 real-data FAIL; mega-hub multi-task reconstruction unsolved**
 - `math/direction1_human_projection.md` — synthesis: everything end-to-end at human scale
 - `math/apple_pipeline.md` — apple proof-of-concept (older)
 - `math/direction2_cm_tunneling.md` — CLOSED
