@@ -1,4 +1,66 @@
-# Direction 1 — Density Limitation (open, honest negative result)
+# Direction 1 — Model-Mismatch Limitation on Real Connectomes (open)
+
+## UPDATE — the real cause is weight dynamic range, not density
+
+The decisive normalization test changed the picture. The first version of
+this note (below, kept for the record) attributed the FlyWire failure to
+network *density*. A follow-up test shows the deeper cause is the **weight
+dynamic range** interacting with a uniform-parameter rate model.
+
+FlyWire syn_counts span **1 to 2405** — 3.4 orders of magnitude (C. elegans
+synapse counts are far narrower). Tested both normalizations on the N=2000
+subset:
+
+| Normalization | denom | skipped | Pearson r | behavioral div |
+|---|---|---|---|---|
+| /max | 2405 | 35–146 | 0.35 | 0.011 (sparse) / 0.13 (dense) |
+| /p99 | 136 | **1512/2000** | **−0.015** | 0.90 |
+
+With /max, typical synapses (median syn_count 1 → 1/2405 ≈ 0.0004) are far
+too weak; most neurons are near-silent. With /p99, the strong synapses
+(syn_count up to 2405 → 2405/136 ≈ 18) massively over-drive their targets;
+the network saturates and 1512/2000 neurons become unobservable.
+
+**No single global weight scaling works.** A uniform-parameter rate model
+(one gain, one threshold, one time constant for every neuron) cannot place
+synapses spanning 3.4 OOM all within the tanh's responsive band. Either the
+weak synapses are silent or the strong ones saturate.
+
+C. elegans does not hit this because its weight distribution is narrow
+enough that one global scaling suits all synapses — which is why the
+protocol recovers C. elegans at Pearson 0.99 but FlyWire at ≤ 0.35.
+
+**This is a MODEL limitation, not a protocol limitation, and not density.**
+Real neurons handle 3-OOM synaptic ranges via homeostatic plasticity,
+heterogeneous intrinsic excitability, diverse time constants — none of which
+the project's uniform rate model has. The scan-inverse protocol is sound for
+the model it was built and validated on (C. elegans); extending it to real
+mammalian-scale connectomes requires a model with per-neuron heterogeneous
+gain/threshold so every neuron operates in its responsive range regardless
+of total synaptic drive.
+
+### Honest scope of the "scan inverse solved" claim
+
+  - **Solid:** the scan-inverse protocol recovers the C. elegans connectome
+    at Pearson 0.99 and the full pipeline passes end-to-end, robustly, under
+    noise / EM error / deployment stress. This is real and stands.
+  - **Not established:** that the same protocol works on real mammalian
+    connectomes. The FlyWire tests show the uniform rate model itself fails
+    to accommodate real weight statistics — so the protocol cannot even be
+    fairly evaluated there until the model is upgraded.
+  - The behavioral PASS on FlyWire MB subsets (N≤2000, /max norm) was the
+    rate-distortion principle masking a Pearson-0.35 reconstruction in the
+    near-silent regime. It was not a clean success.
+
+This is the most significant honest correction of the project: the
+"functional teleportation pipeline demonstrated" claim is firmly true for
+C. elegans and the project's rate model, and is NOT yet demonstrated for
+real connectomes with realistic weight dynamic range. The next step is a
+heterogeneous-excitability model, then re-test on FlyWire.
+
+---
+
+## Original note (density framing — superseded by the above)
 
 ## Summary
 

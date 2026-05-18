@@ -1,13 +1,13 @@
-FlyWire sparse pool stim, N=5000
+FlyWire sparse pool stim, N=2000
 =============================================
-mean |supp|=47.0, max=311
-K=1000, M=15, mixed amps, skipped=437
-Pearson r = 0.2415
+mean |supp|=34.2, max=127
+K=400, M=15, mixed amps, skipped=1512
+Pearson r = -0.0150
 
-  stim 1: div=0.6795 [FAIL]
-  stim 2: div=0.7202 [FAIL]
-  stim 3: div=0.6717 [FAIL]
-  stim 4: div=0.6765 [FAIL]
-  stim 5: div=0.6973 [FAIL]
+  stim 1: div=0.8972 [FAIL]
+  stim 2: div=0.9013 [FAIL]
+  stim 3: div=0.8945 [FAIL]
+  stim 4: div=0.8942 [FAIL]
+  stim 5: div=0.8891 [FAIL]
 
 Verdict: FAIL
