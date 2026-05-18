@@ -125,4 +125,43 @@ unfinished work, and until it is done the project's real-connectome and
 human-scale claims rest on an extrapolation from a single small organism
 whose weight statistics are unrepresentative.
 
-**Next session: implement and run the validation plan above.**
+## First implementation attempt — FAILED (calibration bug)
+
+`simulate_rate_hetero` and `calibrate_homeostatic` were implemented in
+`rate_model.py` and validated on C. elegans (`run_hetero_validation.py`).
+**The validation failed**, with a clear, diagnosed cause:
+
+  Calibration output: gain_i mean = 92.6, range [4.4, **1500**]
+  Result: 170/300 skipped, Pearson 0.19, behavioral div 1.0 — total failure.
+
+The bug is in the calibration formula `gain_i = c / std(drive_i)`. Neurons
+that are barely driven in the reference ensemble have `std(drive) ≈ 0`, so
+their gain explodes to ~1500. A gain of 1500 makes tanh a step function —
+the neuron saturates on any infinitesimal input deviation, destroying the
+dynamics.
+
+### The fix (next session)
+
+The `c / std` formula is correct in spirit but needs guards:
+
+1. **Floor the denominator:** `gain_i = c / max(std_i, std_floor)` where
+   `std_floor` ≈ the median std across neurons. This caps gain for quiet
+   neurons at a sane value instead of letting it diverge.
+2. **Bound gain to a biological range**, e.g. [0.5, 10]. Real neuronal
+   gains do not span 1500×.
+3. **Better reference ensemble:** the calibration ensemble (20 random pools
+   at amp 0.8) leaves low-degree neurons nearly silent — exactly the neurons
+   whose std collapses. The reference ensemble should drive every neuron at
+   least sometimes, e.g. include targeted probes of each neuron's inputs,
+   matching the actual pool-stim protocol's drive statistics.
+
+The conceptual model (per-neuron gain/theta, homeostatic calibration) is
+sound. The first calibration implementation was naive about the
+zero-variance edge case. This is an ordinary debugging task, not a
+conceptual problem.
+
+**Next session: fix the calibration (gain floor + bound + better reference
+ensemble), re-run `run_hetero_validation.py` until C. elegans gives
+Pearson > 0.9, then proceed to the FlyWire test.**
+
+## Original validation plan

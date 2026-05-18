@@ -1,0 +1,7 @@
+Heterogeneous model validation -- C. elegans
+==================================================
+gain_i:  mean=92.642 range=[4.384,1500.000]
+theta_i: mean=0.052 range=[0.000,0.247]
+skipped: 170/300
+Pearson r = 0.1909
+Verdict: FAIL

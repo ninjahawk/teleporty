@@ -148,6 +148,117 @@ def simulate_rate_sparse(
     return {"r": R, "r_mean": R.mean(axis=0)}
 
 
+def simulate_rate_hetero(
+    W_norm,
+    G_norm,
+    I_ext: np.ndarray,
+    T_ms: float,
+    params: RateParams,
+    gain_vec: np.ndarray,
+    theta_vec: np.ndarray,
+) -> dict:
+    """
+    Heterogeneous-excitability rate model. Each neuron i has its own gain_i
+    and threshold theta_i (homeostatic excitability). See
+    math/direction1_heterogeneous_model.md.
+
+        tau dr_i/dt = -r_i + tanh( gain_i * ( h_i - theta_i ) )
+        h_i = sum_j W_ij r_j + I_gap_i + I_ext_i
+
+    Args:
+        W_norm, G_norm : (N,N) dense or scipy.sparse
+        I_ext          : (T_steps, N)
+        params         : RateParams (gain/bias fields unused here)
+        gain_vec       : (N,) per-neuron gain
+        theta_vec      : (N,) per-neuron threshold
+
+    Returns dict: r (T_steps, N), r_mean (N,)
+    """
+    import scipy.sparse as sp
+    N = W_norm.shape[0]
+    T_steps = int(T_ms / params.dt)
+    dt = params.dt
+
+    W = W_norm * params.w_chem
+    G = G_norm * params.w_gap
+    if sp.issparse(W):
+        Wt = sp.csr_matrix(W).T.tocsr()
+        Gm = sp.csr_matrix(G)
+        G_rowsum = np.asarray(Gm.sum(axis=1)).flatten()
+        chem = lambda r: Wt @ r
+        gap = lambda r: (Gm @ r) - G_rowsum * r
+    else:
+        Wt = np.asarray(W).T
+        Gm = np.asarray(G)
+        G_rowsum = Gm.sum(axis=1)
+        chem = lambda r: Wt @ r
+        gap = lambda r: Gm @ r - G_rowsum * r
+
+    R = np.zeros((T_steps, N))
+    r = np.zeros(N)
+    inv_tau = dt / params.tau
+    for t in range(T_steps):
+        I_in = I_ext[t] if I_ext is not None else 0.0
+        h = chem(r) + gap(r) + I_in
+        dr = inv_tau * (-r + np.tanh(gain_vec * (h - theta_vec)))
+        r = np.clip(r + dr, 0.0, 1.0)
+        R[t] = r
+    return {"r": R, "r_mean": R.mean(axis=0)}
+
+
+def calibrate_homeostatic(W_norm, G_norm, params, ref_inputs, c=1.5,
+                          n_rounds=5, gain0=2.5):
+    """
+    Homeostatic calibration of per-neuron gain_i, theta_i.
+
+    Fixed-point iteration (math/direction1_heterogeneous_model.md):
+      theta_i = mean total drive to neuron i across the reference ensemble
+      gain_i  = c / std(total drive to neuron i)
+    Drive depends on parameters, so iterate to convergence.
+
+    Args:
+        ref_inputs : list of (T_steps, N) external-input arrays defining the
+                     reference stimulus ensemble used to estimate drive stats
+        c          : target responsive-band constant (~1-2)
+        n_rounds   : fixed-point iterations
+        gain0      : initial uniform gain
+
+    Returns (gain_vec, theta_vec).
+    """
+    import scipy.sparse as sp
+    N = W_norm.shape[0]
+    gain_vec = np.full(N, gain0)
+    theta_vec = np.zeros(N)
+
+    W = W_norm * params.w_chem
+    G = G_norm * params.w_gap
+    if sp.issparse(W):
+        Wt = sp.csr_matrix(W).T.tocsr(); Gm = sp.csr_matrix(G)
+        G_rowsum = np.asarray(Gm.sum(axis=1)).flatten()
+    else:
+        Wt = np.asarray(W).T; Gm = np.asarray(G)
+        G_rowsum = Gm.sum(axis=1)
+
+    for rnd in range(n_rounds):
+        drive_samples = []  # collect h_i values across the ensemble
+        for I_ext in ref_inputs:
+            T_steps = I_ext.shape[0]
+            r = np.zeros(N)
+            inv_tau = params.dt / params.tau
+            for t in range(T_steps):
+                h = (Wt @ r) + (Gm @ r - G_rowsum * r) + I_ext[t]
+                # record drive in the second half (steady-ish)
+                if t > T_steps // 2:
+                    drive_samples.append(h.copy())
+                dr = inv_tau * (-r + np.tanh(gain_vec * (h - theta_vec)))
+                r = np.clip(r + dr, 0.0, 1.0)
+        D = np.array(drive_samples)            # (n_samples, N)
+        theta_vec = D.mean(axis=0)
+        sigma = D.std(axis=0)
+        gain_vec = c / np.maximum(sigma, 1e-3)
+    return gain_vec, theta_vec
+
+
 def make_tap_input(N: int, neuron_names: list, T_ms: float, dt: float,
                    onset_ms: float = 50.0, duration_ms: float = 20.0,
                    amplitude: float = 3.0) -> np.ndarray:
