@@ -1,0 +1,8 @@
+Pool scan inverse -- scaling on synthetic networks
+=======================================================
+    N mean|supp|  K_pools    M   trials  Pearson     frob
+  300      12.07       97   15     1455   0.9942   0.0863
+  600      23.95      192   23     2880   0.9940   0.0871
+ 1000      40.09      321   40     4815   0.9874   0.1256
+
+K_pools / mean|supp_j| ratio held at 8.
