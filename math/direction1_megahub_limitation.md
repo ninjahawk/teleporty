@@ -122,6 +122,46 @@ problem is an **observability/protocol** issue, fully within engineering
 scope — not a fundamental reconstruction-algorithm gap as the first draft
 of this note feared.
 
+## Two observability failure modes (`run_saturation_analysis.py`)
+
+A controlled synthetic sweep (neurons spanning in-degree 5–400, probe
+amplitude 0.05–3.0) shows observability is non-monotonic in amplitude and
+depends strongly on in-degree:
+
+| In-degree | Best amplitude | Max observable fraction |
+|---|---|---|
+| ~8   | 3.0 (highest) | 20% |
+| ~30  | 1.5 | 56% |
+| ~100 | 0.4 | 100% |
+| ~300 | 0.1 (lowest) | 100% |
+
+Two distinct failure modes:
+
+1. **High in-degree → saturation.** A neuron with 300 inputs integrates so
+   much drive that it pins at rate ≈ 1.0 unless the amplitude is very low
+   (0.1). This is the mega-hub failure. Fix: low-amplitude probes.
+
+2. **Low in-degree → under-drive.** A neuron with 8 inputs is observable only
+   20% of the time even at the highest amplitude. Its few presynaptic
+   neurons rarely land in a random pool of M=15, so it is seldom driven
+   above the EPS floor. This is NOT a saturation problem — it's the
+   *input-coverage* problem: a neuron is observable only when its SUPPORT
+   SET is sampled, which is harder than the neuron itself being in a pool.
+
+The diagnostic reconciles with this: of the 146 skipped neurons at N=2000,
+~2 are saturated mega-hubs (high influence — fixing them recovers 0.10 of
+divergence) and ~144 are under-driven low-degree neurons (low influence —
+fixing all of them adds nothing beyond the 2 hubs). The behavioral fix is
+the mega-hubs; the low-degree skips are behaviorally negligible but they
+DO drag down the bulk Pearson (0.24–0.29 on FlyWire).
+
+**Refined coverage rule:** the earlier K·M ≥ 3N rule ensures each *neuron*
+lands in pools. The stronger requirement is that each neuron's *support set*
+is collectively sampled. For low-degree neurons this needs either larger M
+(more inputs covered per pool) or targeted probes that hit a chosen
+neuron's specific inputs. The mixed-amplitude ladder addresses the
+saturation mode; the input-coverage mode needs larger M or targeted probes.
+
 ## Honest status (final)
 
   - Pipeline demonstrated at N ≤ 800 (C. elegans + Drosophila MB subset).

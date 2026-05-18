@@ -1,0 +1,17 @@
+Saturation vs in-degree analysis
+==================================================
+Observable fraction by in-degree bin:
+   amp  d~    8  d~   30  d~  100  d~  300
+  0.05       3%       6%      39%      99%
+  0.10       5%      14%      80%     100%
+  0.20      11%      33%      99%     100%
+  0.40      18%      49%     100%      99%
+  0.80      19%      54%      99%      98%
+  1.50      20%      56%      99%      98%
+  3.00      20%      56%      99%      98%
+
+Best amplitude per in-degree bin:
+  in-degree ~8: best amp = 3.00
+  in-degree ~30: best amp = 1.50
+  in-degree ~100: best amp = 0.40
+  in-degree ~300: best amp = 0.10
