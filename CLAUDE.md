@@ -228,6 +228,7 @@ will be needed when an actual scanner/fabricator is built.
 - `math/direction1_body_information_budget.md` — **full body (non-neural) rate-distortion budget: 3–700 GB (revised w/ tissue D=0.05)**
 - `math/direction1_scan_inverse_pool.md` — **pool-based scan inverse: 10⁶ trials for human (vs 10¹² per-neuron); higher fidelity than per-neuron**
 - `math/direction1_vascular_patency.md` — **capillary patency under hypothermic fabrication: 8× safety margin if bubble-free + pressure-regulated**
+- `math/direction1_human_projection.md` — **complete human-scale end-to-end projection: 3.5 GB spec, 1 hour fabrication, $10K marginal cost, 20-year engineering program**
 - `simulation/run_scan_inverse_pool.py` — **pool stimulation sweep: K=100,M=15 → r=0.99 PASS**
 - `simulation/run_tissue_distortion.py` — **2D cardiac propagation sim: tissue D-threshold = 0.05 (6× more sensitive than brain)**
 - `simulation/run_muscle_distortion.py` — **muscle force production sim: skeletal muscle D-threshold = 1.0 (20× more tolerant than cardiac)**
