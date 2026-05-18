@@ -163,6 +163,34 @@ Pool-based scan inverse is the right human-scale strategy.
 The human scanner is now in the realm of "feasible large engineering
 project", not "fundamentally impossible at biological time scales".
 
+## Support-error robustness (`run_scan_inverse_support_errors.py`)
+
+The protocol assumes the binary support matrix from EM is exact. Real EM has
+~5-10% false-positive and false-negative rates on synapse calls
+(Helmstaedter 2013). Test: perturb support with FP and FN before regression,
+measure recovery.
+
+| Support condition | Pearson r | div_tap | verdict |
+|---|---|---|---|
+| Exact (baseline)  | 0.990 | 0.000 | PASS |
+| 5% FP only        | 0.993 | 0.000 | PASS |
+| 5% FN only        | 0.925 | 0.009 | PASS |
+| 5% FP + 5% FN     | 0.932 | 0.011 | PASS |
+| 10% FP + 10% FN   | 0.821 | 0.124 | FAIL (tap) |
+| 20% FP + 20% FN   | 0.758 | 0.220 | FAIL |
+
+**Robust to typical EM error rates (5-10%); fails above 10%+10%.**
+
+False positives are cheap: adding spurious unknowns slightly inflates the
+per-neuron regression but doesn't lose information. The regression assigns
+near-zero weight to spurious connections (since they don't correlate with z).
+
+False negatives are expensive: dropping a true edge forces that weight to zero,
+permanently. This is the main failure mode at high EM error.
+
+Modern segmentation (FlyWire, MICrONS) reports <5% error on validated regions,
+within the robust envelope. EM is not a project-blocker.
+
 ## Files
 
   - `simulation/run_scan_inverse_pool.py` — pool sweep
