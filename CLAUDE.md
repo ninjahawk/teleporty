@@ -10,11 +10,14 @@ Find a physically grounded mechanism for teleportation with testable predictions
 
 ## Current State (handoff snapshot — 2026-05-18)
 
-**The end-to-end functional teleportation pipeline is solidly demonstrated for C. elegans** (N=300) — the connectome and rate model the project was built and validated on: scan-inverse recovers W at Pearson 0.99, full pipeline passes end-to-end under noise / EM error / deployment stress.
+**The end-to-end functional teleportation pipeline is demonstrated for C. elegans AND for a real dense Drosophila connectome subset.**
 
-**It is NOT yet demonstrated for real mammalian-scale connectomes.** FlyWire (Drosophila) tests revealed a MODEL limitation: FlyWire synapse counts span 1–2405 (3.4 orders of magnitude). The project's uniform-parameter rate model (one gain/threshold/time-constant for all neurons) cannot place synapses of such varied strength all in the responsive regime — /max normalization leaves typical synapses near-silent (Pearson 0.35); /p99 saturates the strong ones (Pearson −0.02). No single scaling works. The FlyWire MB "PASSes" at N≤2000 were the rate-distortion principle masking a weak (0.35) reconstruction. See `math/direction1_density_limitation.md`. This is the most significant honest correction of the project: the protocol is sound for the C. elegans model; extending to real connectomes needs a heterogeneous-excitability model first.
+- C. elegans (N=300): scan-inverse recovers W at Pearson 0.99, full pipeline passes end-to-end under noise / EM error / deployment stress.
+- FlyWire whole-connectome top-2000 (mean in-degree 34, dense, hub-heavy): the uniform rate model failed catastrophically here (behavioral div 0.68) because real synapse weights span 3.4 orders of magnitude. A **heterogeneous-excitability model** (per-neuron gain/threshold, homeostatic response-matching calibration) resolves it — all 5 behavioral tests PASS (div 0.032–0.050). See `math/direction1_heterogeneous_model.md` and `direction1_density_limitation.md`.
 
-All five "viable mechanisms" surveyed at project start: four (quantum approaches) closed with negative verdicts; the fifth (Direction 1) is the viable path, with the classical-information / rate-distortion / fabricator analysis intact, the scan-inverse demonstrated for C. elegans, and the real-connectome extension blocked on a model upgrade.
+Honest caveats: the FlyWire PASS is marginal (one stimulus at div 0.0498), Pearson r is only 0.54 (behavioral PASS via the rate-distortion principle), and 71/2000 neurons use an approximate degree-scaled fallback. It is a real PASS on a real dense connectome, not a comfortable one.
+
+All five "viable mechanisms" surveyed at project start: four (quantum approaches) closed with negative verdicts; the fifth (Direction 1, classical-information functional teleportation) is the viable path — classical-information / rate-distortion / fabricator analysis intact, scan-inverse demonstrated on C. elegans (Pearson 0.99) and on a real dense Drosophila connectome (heterogeneous model).
 
 **No physics barriers remain.** Remaining work is engineering — but one piece of that engineering (mega-hub reconstruction at scale) is genuinely unsolved in this repo, not just "scale up known methods." The low-rank structure that should make it solvable is measured; the algorithm to exploit it is not yet built.
 
@@ -29,13 +32,20 @@ All five "viable mechanisms" surveyed at project start: four (quantum approaches
 
 ### What's currently open
 
-**THE top open problem — heterogeneous-excitability model calibration.**
-See the "Priority Order" section below and `math/direction1_heterogeneous_model.md`.
-The uniform rate model cannot handle real connectome weight statistics
-(FlyWire spans 3.4 OOM). A per-neuron gain/threshold model is implemented
-(`simulate_rate_hetero`) but its homeostatic calibration is unsolved — 3
-iterations reached at best Pearson 0.60 on C. elegans (need >0.9). This
-gates all real-connectome / human-scale claims.
+**Heterogeneous-excitability model — RESOLVED.** The calibration is solved
+(response-matching: tune each neuron's gain/theta so its firing-rate
+distribution hits a target mean/std). Validated: C. elegans Pearson 0.975,
+FlyWire dense N=2000 all-5-PASS. See `math/direction1_heterogeneous_model.md`.
+
+**Remaining open work** (refinements, not blockers):
+- The FlyWire PASS is marginal (Pearson 0.54, one stim at 0.0498). Larger
+  or denser networks may need better reconstruction accuracy — more probe
+  trials, or the multi-task low-rank fit (`run_megahub_svt.py` exists).
+- 71/2000 FlyWire neurons remain unobservable and use an approximate
+  degree-scaled fallback; a probe redesign to make them observable would
+  remove that approximation.
+- Scaling beyond N=2000 on real data (full Drosophila neuropil, mouse
+  cortex column) — tractable now with the sparse simulator.
 
 Resolved this session (no longer open):
 - Mega-hub reconstruction at N=2000 — was diagnosed (hub saturation →

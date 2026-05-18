@@ -1,4 +1,44 @@
-# Direction 1 — Model-Mismatch Limitation on Real Connectomes (open)
+# Direction 1 — Model-Mismatch Limitation on Real Connectomes (RESOLVED)
+
+## RESOLUTION (top of file — see history below)
+
+The model-mismatch limitation is resolved. The heterogeneous-excitability
+model (`simulate_rate_hetero` + response-matching `calibrate_homeostatic`,
+`math/direction1_heterogeneous_model.md`) was implemented, validated on
+C. elegans (Pearson 0.975), and tested on the FlyWire dense network that
+the uniform model failed catastrophically on:
+
+| Model | FlyWire N=2000 dense (mean \|supp\|=34) | verdict |
+|---|---|---|
+| Uniform rate model | behavioral div ~0.68 | catastrophic FAIL |
+| **Heterogeneous model** | **behavioral div 0.032–0.050, all 5 PASS** | **PASS** |
+
+Three ingredients made it work:
+  1. Per-neuron gain/theta, calibrated by response-matching (each neuron
+     homeostatically tuned to rest at an observable, modulable operating
+     point) — resolves the weight-dynamic-range problem.
+  2. Calibration on a probe-amplitude-matched reference ensemble.
+  3. Degree-scaled fallback for the residual unobservable neurons (fill
+     their support with the mean per-synapse weight, so total drive scales
+     with in-degree).
+
+Honest caveats on this PASS:
+  - It is marginal — one stimulus at div 0.0498 vs the 0.05 threshold.
+  - Pearson r is only 0.54 — structural weight recovery is moderate;
+    the behavioral PASS rests on the rate-distortion principle.
+  - 71/2000 neurons remain unobservable and use the approximate fallback.
+  - This is a real PASS on a real dense hub-heavy connectome, but not a
+    comfortable one. Larger/denser networks may need the reconstruction
+    accuracy improved further (more probe trials, or the multi-task
+    low-rank fit).
+
+Net: the FlyWire failure was a MODEL limitation (uniform excitability),
+now fixed. The original "density limitation" framing below is superseded —
+density was a symptom; the disease was the uniform model, and it is cured.
+
+---
+
+## (Historical) Direction 1 — Model-Mismatch Limitation on Real Connectomes
 
 ## UPDATE — the real cause is weight dynamic range, not density
 

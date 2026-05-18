@@ -33,9 +33,9 @@ I have no funding, committee approvals, or vested interest in any particular ans
 
 ## 🎯 Headline (current state)
 
-**End-to-end functional teleportation pipeline solidly demonstrated for C. elegans** (300 neurons) — the connectome and rate model the project was built on. Scan-inverse recovers the connectome at Pearson 0.99; the full pipeline passes end-to-end under noise, EM error, and deployment stress.
+**End-to-end functional teleportation pipeline demonstrated for C. elegans and for a real dense Drosophila connectome.** Scan-inverse recovers the C. elegans connectome at Pearson 0.99; the full pipeline passes under noise, EM error, and deployment stress.
 
-**Real mammalian-scale connectomes are NOT yet demonstrated.** Tests on the FlyWire Drosophila connectome exposed a *model* limitation: real synapse weights span 3.4 orders of magnitude (syn_count 1–2405), and the project's uniform-parameter rate model cannot put weak and strong synapses both in the responsive regime under any single normalization. This needs a heterogeneous-excitability model (per-neuron gain/threshold) before the protocol can be fairly tested on real connectomes. The classical-information / rate-distortion / fabricator analysis is intact; the scan-inverse is proven for C. elegans; the real-connectome extension is blocked on a model upgrade. See [model-mismatch limitation](math/direction1_density_limitation.md). No physics barriers — but an honest, unfinished engineering/modeling gap.
+Tests on the FlyWire Drosophila connectome first exposed a *model* limitation — real synapse weights span 3.4 orders of magnitude, and a uniform-parameter rate model can't keep weak and strong synapses both responsive. The fix: a **heterogeneous-excitability model** (per-neuron gain/threshold, homeostatically calibrated by response-matching). With it, the dense FlyWire whole-connectome top-2000 subset — where the uniform model failed catastrophically (behavioral divergence 0.68) — passes all 5 behavioral tests (div 0.032–0.050). The PASS is real but marginal (one stimulus at 0.0498, Pearson 0.54 — behavioral equivalence via the rate-distortion principle). See [model-mismatch → resolved](math/direction1_density_limitation.md) and [heterogeneous model](math/direction1_heterogeneous_model.md). No physics barriers.
 
 - Per-person info budget: **~247 GB** (bulk tissue dominates; brain functional spec is 42 KB)
 - Transmit at 1 Gbps fiber: **~33 minutes**
@@ -68,7 +68,7 @@ We went through all of them. Here's what happened.
 
 | Direction | Verdict | Why |
 |-----------|---------|-----|
-| 🟢 **1 — Functional teleportation via classical information** | **Demonstrated for C. elegans; real connectomes need a model upgrade** | Scan-inverse + full pipeline pass at Pearson 0.99 on C. elegans. FlyWire tests exposed a uniform-rate-model limitation (real weights span 3.4 OOM). 42 KB brain spec, ~247 GB body spec, 1-hour fabrication window. |
+| 🟢 **1 — Functional teleportation via classical information** | **Demonstrated for C. elegans + a real dense Drosophila connectome** | Scan-inverse + pipeline pass on C. elegans (Pearson 0.99) and FlyWire dense N=2000 (heterogeneous-excitability model). 42 KB brain spec, ~247 GB body spec, 1-hour fabrication window. |
 | 🔴 **2 — CM tunneling of bound states** | **Closed** | Tunneling probability is exp(−10⁸) for 100 nm sphere. Decoherence wins by 30+ orders of magnitude. |
 | 🔴 **3 — Quantum Cheshire Cat** | **Closed** | Post-selection is passive — you can't force outcomes. No-communication theorem holds. |
 | 🔴 **4 — Penrose-Diósi threshold** | **Closed** | Sets hard quantum ceiling at ~50 μm even at 0 K. Human is 7 OOM too large. Confirmed independently by thermal photon emission (10⁻²³ s). |
