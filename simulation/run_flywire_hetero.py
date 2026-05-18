@@ -64,9 +64,12 @@ print("Calibrating heterogeneous model...")
 t0 = time.time()
 rng = np.random.default_rng(7)
 ref = []
-for _ in range(20):
+for _ in range(24):
     pool = rng.choice(N, size=M, replace=False)
-    I_r = np.zeros((T_probe, N)); I_r[:, pool] = 0.5
+    # calibration ensemble must match the probe-amplitude range, else
+    # neurons calibrated for a gentle ensemble saturate under the real probe
+    amp = rng.choice(AMPS)
+    I_r = np.zeros((T_probe, N)); I_r[:, pool] = amp
     ref.append(I_r)
 gain_vec, theta_vec = calibrate_homeostatic(W_norm, G_norm, params, ref, n_rounds=8)
 print(f"  gain: mean={gain_vec.mean():.2f} range=[{gain_vec.min():.2f},{gain_vec.max():.2f}]")
@@ -101,12 +104,12 @@ x_safe = (X<SAT_HI)&(X>SAT_LO)|(X==0); valid &= x_safe
 z = (np.arctanh(np.clip(targ,-0.95,0.95)) / gain_vec[np.newaxis,:]
      + theta_vec[np.newaxis,:] - Ie)
 W_hat = np.zeros((N,N))
-skipped = 0
+skipped = 0; skipped_idx = []
 for j in range(N):
     sj = np.where(support[:,j])[0]
     if len(sj)==0: continue
     vj = valid[:,j]
-    if vj.sum() < 5: skipped += 1; continue
+    if vj.sum() < 5: skipped += 1; skipped_idx.append(j); continue
     ridge = 0.5 if vj.sum() < len(sj)+3 else 1e-3
     Xs = X[vj][:,sj]; zs = z[vj,j]
     A = Xs.T@Xs + ridge*np.eye(len(sj)); b = Xs.T@zs
@@ -132,6 +135,23 @@ for t in range(5):
     print(f"  stim {t+1}: div = {d:.4f}  [{'PASS' if d<0.05 else 'FAIL'}]")
 all_pass = all(d<0.05 for d in divs)
 print(f"\n*** {'PASS' if all_pass else 'FAIL'} on FlyWire N={N} (heterogeneous model) ***")
+
+# Diagnostic: is the residual divergence the skipped neurons?
+if not all_pass and skipped_idx:
+    W_fix = np.clip(W_hat/params.w_chem, 0, None)
+    for j in skipped_idx:
+        W_fix[:, j] = W_TRUE[:, j] / params.w_chem
+    W_fix_sp = sp.csr_matrix(W_fix)
+    rng_d = np.random.default_rng(99)
+    dd = []
+    for t in range(5):
+        stim = rng_d.choice(N, size=10, replace=False)
+        I_t = np.zeros((int(T_test/params.dt), N)); I_t[:, stim] = 3.0
+        r0 = simulate_rate_hetero(W_norm, G_norm, I_t, T_test, params, gain_vec, theta_vec)["r"][ws:we].flatten()
+        rh = simulate_rate_hetero(W_fix_sp, G_norm, I_t, T_test, params, gain_vec, theta_vec)["r"][ws:we].flatten()
+        dd.append(cdiv(r0, rh))
+    print(f"  DIAGNOSTIC: W_TRUE for {len(skipped_idx)} skipped cols -> "
+          f"div_mean {np.mean(dd):.4f} [{'PASS' if all(d<0.05 for d in dd) else 'FAIL'}]")
 
 with open("simulation/results/flywire_hetero.txt","w",encoding="utf-8") as f:
     f.write(f"FlyWire heterogeneous-model pool stim, N={N}\n"+"="*50+"\n")
