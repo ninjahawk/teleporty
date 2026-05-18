@@ -1,0 +1,9 @@
+Scan Inverse v2 -- tonic SS probes, per-class isolation
+============================================================
+K_total = 15 (3 classes x 5 amps)
+
+G support+all-tonic       frob=0.7195  r=0.5443  div_tap=0.0032  div_chem=0.0001  PASS
+H per-class tonic         frob=0.8755  r=0.2582  div_tap=0.0093  div_chem=0.4370  FAIL
+I H + rel-err rescale     frob=1.4590  r=0.1842  div_tap=0.0156  div_chem=0.1346  FAIL
+
+Best: G support+all-tonic

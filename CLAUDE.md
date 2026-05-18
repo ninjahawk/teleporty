@@ -89,21 +89,32 @@ Current bioprinting state (2025): ~100 μm resolution, ~10⁶ cells/min. Require
 - Compression: 70× ratio (10 KB spec for C. elegans, vs 700 KB raw).
 - Transmit: ~80 μs over Wifi.
 
-**Scan inverse problem — PARTIAL (simulation/run_scan_inverse_problem.py):**
-Six approaches tested for recovering a unified W from activity recordings:
-- Combined ridge, weighted blend, iterative refinement, modular variants: all fail (r ≤ 0.11).
-- Support-aware combined regression (D): r = 0.72, chem div = 0.056 (just over 5% threshold), tap div = 0.57.
-- Knowing the binary topology (from a separate structural EM scan) cuts unknowns from N² to ~12 per neuron — this is the single most important lever.
-- Remaining bottleneck: small-signal circuits (tap weights are 27× smaller than mean) get washed out under joint regression. This is a measurement / observability problem, not an information-theoretic one.
+**Scan inverse problem — SOLVED at C. elegans scale at biological noise (simulation/run_scan_inverse_v4.py + math/direction1_scan_inverse_solved.md):**
 
-**Updated picture: the binding constraints are now TWO problems, not one.**
+Protocol: **per-neuron tonic optogenetic perturbation** (N × 3 amplitudes × n_reps trials) + **support-aware ridge regression** on steady-state activity. Two key insights:
+1. **Tonic steady-state probes** kill the numerical-difference noise of pulsed protocols (the τ/dt amplification of (r_{t+1}−r_t) noise was destroying tap-circuit small weights).
+2. **Per-neuron stim** (rather than per-class) gives every column of W informative data, so held-out behaviors (thermo, nociception) reconstruct correctly.
+
+Results, evaluated on 6 stimulus tests (tap, chem at two amplitudes each, plus held-out thermo and nociception — held out = not in probe set):
+
+| Rate noise | Verdict | Pearson r | Notes |
+|---|---|---|---|
+| 0%   | PASS  | 0.992 | all 6 div < 0.002 |
+| 1%   | PASS  | 0.923 | biological floor; all 6 div < 0.014 |
+| 2%   | FAIL  | 0.78  | only tap fails (div_tap ≈ 0.10) at n_reps=10; PASS at n_reps=100 |
+| 5%   | FAIL  | 0.85  | tap plateau at div ≈ 0.78 — clipping bias, not variance |
+
+Tap-circuit weights are 27× smaller than global mean → first to break under noise.
+
+**Updated picture: ONE remaining barrier, not two.**
 1. **Fabricator** (engineering): 10¹⁰ cells/s, 10⁷ nozzles. No physics barrier.
-2. **Scan inverse problem** (algorithm): recovering a unified sparse W that simultaneously reproduces all behaviors. Open at C. elegans scale; tap circuit remains a blocker even with structural support known.
+2. ~~Scan inverse problem~~: solved at C. elegans scale at 1% biological noise.
 
 **Open questions / next steps:**
-1. Scan inverse problem: better stimulus design (frequency-rich, behavior-class-specific high-amplitude probes), or circuit-decomposition reconstruction (different W slices per functional module).
-2. Body information budget: extend d_eff / rate-distortion framework to non-neural somatic cells. Is the body really 1–2 orders of magnitude harder than the brain, or more?
+1. Body information budget: extend d_eff / rate-distortion framework to non-neural somatic cells. Is the body really 1–2 orders of magnitude harder than the brain, or more? (Direction 1 non-neural extension.)
+2. Scan inverse scaling: protocol requires N × 3 × n_reps = 9k trials for C. elegans. For human (N=86×10⁹) this is 2.6×10¹² trials — not serially feasible. Open: parallel optogenetic probing / sparse-population disambiguation.
 3. Vascular lumen patency: simulate 8 μm capillary lumen collapse dynamics under hypothermic fabrication. The 60-min window assumes immediate perfusion; verify this engineering assumption holds.
+4. Direction 4 (Penrose-Diósi): set the hard quantum ceiling before going deeper on quantum directions.
 
 ### Direction 2: Center-of-Mass Tunneling of Macroscopic Bound States
 **Status: Not started.** Levitated nanoparticle experiments are measuring this now. The scaling theory (tunneling amplitude vs. mass, barrier geometry, decoherence rate) is missing.
@@ -118,9 +129,9 @@ Six approaches tested for recovering a unified W from activity recordings:
 **Status: Not started.** Most speculative. Do last.
 
 ## Priority Order
-1. **Scan inverse problem** — close the C. elegans gap (current best: r=0.72, tap div=0.57). Next attacks: frequency-rich probes, circuit decomposition, lasso/sparse priors on the support.
-2. **Direction 1 body information budget** — quantify the non-neural piece.
-3. **Direction 4 (Penrose-Diósi)** — sets the hard quantum ceiling before going deeper on quantum directions.
+1. **Direction 1 body information budget** — quantify the non-neural piece. Is the body really 1–2 orders of magnitude harder than the brain?
+2. **Direction 4 (Penrose-Diósi)** — sets the hard quantum ceiling before going deeper on quantum directions.
+3. **Scan inverse problem human-scale** — current protocol needs 2.6×10¹² trials. Find a parallel / population-decoded variant.
 4. **Direction 2 (CM tunneling)** — real ongoing experiments, missing scaling theory.
 5. **Directions 3 and 5** — lower priority.
 
@@ -140,7 +151,12 @@ Six approaches tested for recovering a unified W from activity recordings:
 - `simulation/run_mouse_deff.py` — Mouse V1 d_eff + three-organism scaling law
 - `simulation/run_generative_model_targeted_pulse.py` — per-class K=1 generative model result
 - `simulation/run_teleportation_pipeline.py` — **end-to-end pipeline: scan → compress → transmit → reconstruct → verify + fabricator projection**
-- `simulation/run_scan_inverse_problem.py` — **unified-W scan reconstruction (6 approaches, support-aware best)**
+- `simulation/run_scan_inverse_problem.py` — v1: unified-W scan reconstruction (6 approaches, support-aware best, FAIL)
+- `simulation/run_scan_inverse_v2.py` — v2: tonic SS probes (PASS zero-noise, FAIL on held-out classes)
+- `simulation/run_scan_inverse_v2_robust.py` — robustness check; revealed v2 noise failures
+- `simulation/run_scan_inverse_v3.py` — v3: per-neuron probes (PASS all held-out at zero noise)
+- `simulation/run_scan_inverse_v4.py` — **v4: per-neuron + n_reps averaging (PASS at 1% biological noise)**
+- `simulation/run_scan_inverse_nreps_sweep.py` — n_reps requirements at 2%/5% noise
 - `simulation/run_circuit_diagnostic.py` — gap junction ablation + weight analysis
 - `simulation/rate_model.py` — firing rate model (tanh, not LIF)
 - `simulation/load_connectome.py` — Cook et al. 2019 loader
@@ -151,6 +167,7 @@ Six approaches tested for recovering a unified W from activity recordings:
 - `math/direction1_scanner_revised.md` — compressed sensing reframe of scanner problem
 - `math/apple_pipeline.md` — apple proof-of-concept teleportation pipeline model
 - `math/direction1_fabricator.md` — **human-scale fabricator: resolution, throughput, Krogh+DHCA vascular constraint**
+- `math/direction1_scan_inverse_solved.md` — **scan inverse problem solved at C. elegans scale + 1% biological noise**
 
 ### Data (gitignored, too large for GitHub)
 - `simulation/data/SI5_connectome_adjacency.xlsx` — C. elegans Cook 2019
