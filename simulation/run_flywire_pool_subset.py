@@ -86,7 +86,9 @@ AMPS = [0.4, 0.8, 1.5]; N_REPS = 3; NOISE = 0.01
 ratio = params.tau/params.dt
 
 M = max(15, int(mean_supp * 0.5))
-K_pools = max(75, int(8 * mean_supp), int(np.ceil(3.0 * N / M)))  # K*M/N >= 3 coverage
+# coverage multiplier from env (default 1.0 -> fast failing run for diagnostic)
+COV = float(os.environ.get('FLYWIRE_COV', '1.0'))
+K_pools = max(75, int(8 * mean_supp), int(np.ceil(COV * N / M)))
 print(f"\nPool stim: K_pools = {K_pools}, M = {M}, total trials = {K_pools*len(AMPS)*N_REPS}")
 
 t0 = time.time()
@@ -118,12 +120,17 @@ z = np.arctanh(np.clip(targ,-0.95,0.95))/params.gain - I_gap - Ie
 W_hat = np.zeros((N,N))
 skipped = 0
 under_det = 0
+skipped_idx = []
+megahub_idx = []
 for j in range(N):
     sj = np.where(support[:,j])[0]
     if len(sj)==0: continue
+    if len(sj) > 500:
+        megahub_idx.append(j)
     vj = valid[:,j]
     if vj.sum() < 5:   # too few observations even with strong ridge
         skipped += 1
+        skipped_idx.append(j)
         continue
     if vj.sum() < len(sj)+3:
         under_det += 1
@@ -135,6 +142,7 @@ for j in range(N):
     W_hat[sj,j] = np.clip(np.linalg.solve(A,b),0,None)
 print(f"  Under-determined neurons (strong ridge applied): {under_det}/{N}")
 print(f"  Fit: {time.time()-t0:.1f}s, skipped (under-det): {skipped}/{N} neurons")
+print(f"  Mega-hubs (|supp|>500): {len(megahub_idx)}")
 
 pr = pearsonr(W_TRUE.flatten()[nz_mask], W_hat.flatten()[nz_mask])[0]
 frob = np.linalg.norm(W_hat - W_TRUE)/np.linalg.norm(W_TRUE)
@@ -160,6 +168,57 @@ for t in range(5):
     print(f"  stim {t+1}: div = {d:.4f}  [{'PASS' if d<0.05 else 'FAIL'}]")
 all_pass = all(d<0.05 for d in divs)
 print(f"\n*** {'PASS' if all_pass else 'FAIL'} on real Drosophila subset (N={N}) ***")
+
+# === DIAGNOSTIC: isolate the failure cause ===
+if not all_pass:
+    print(f"\n--- DIAGNOSTIC: isolating failure cause ---")
+    def behav(W_test):
+        Wn_t = np.clip(W_test/params.w_chem, 0, None)
+        rng_d = np.random.default_rng(99)
+        ds = []
+        for t in range(5):
+            stim_idx = rng_d.choice(N, size=10, replace=False)
+            I_t = np.zeros((int(T_test/params.dt), N)); I_t[:, stim_idx] = 3.0
+            r0 = simulate_rate(W_norm, G_norm, I_t, T_test, params)["r"][ws:we].flatten()
+            rh = simulate_rate(Wn_t, G_norm, I_t, T_test, params)["r"][ws:we].flatten()
+            ds.append(cdiv(r0, rh))
+        return ds
+
+    # (A) substitute W_TRUE for skipped columns
+    W_fix_skip = W_hat.copy()
+    for j in skipped_idx:
+        W_fix_skip[:, j] = W_TRUE[:, j]
+    d_skip = behav(W_fix_skip)
+    print(f"  (A) W_TRUE for {len(skipped_idx)} skipped cols:  div_mean = {np.mean(d_skip):.4f}  "
+          f"[{'PASS' if all(d<0.05 for d in d_skip) else 'FAIL'}]")
+
+    # (B) substitute W_TRUE for mega-hub columns
+    W_fix_hub = W_hat.copy()
+    for j in megahub_idx:
+        W_fix_hub[:, j] = W_TRUE[:, j]
+    d_hub = behav(W_fix_hub)
+    print(f"  (B) W_TRUE for {len(megahub_idx)} mega-hub cols:  div_mean = {np.mean(d_hub):.4f}  "
+          f"[{'PASS' if all(d<0.05 for d in d_hub) else 'FAIL'}]")
+
+    # (C) substitute W_TRUE for BOTH
+    W_fix_both = W_hat.copy()
+    for j in set(skipped_idx) | set(megahub_idx):
+        W_fix_both[:, j] = W_TRUE[:, j]
+    d_both = behav(W_fix_both)
+    print(f"  (C) W_TRUE for skipped+megahub:        div_mean = {np.mean(d_both):.4f}  "
+          f"[{'PASS' if all(d<0.05 for d in d_both) else 'FAIL'}]")
+
+    with open("simulation/results/flywire_diagnostic.txt", "w", encoding="utf-8") as f:
+        f.write(f"FlyWire N={N} failure diagnostic\n"+"="*45+"\n")
+        f.write(f"Baseline div_mean: {np.mean(divs):.4f} (FAIL)\n")
+        f.write(f"Skipped neurons: {len(skipped_idx)}, mega-hubs: {len(megahub_idx)}\n\n")
+        f.write(f"(A) W_TRUE for skipped:        {np.mean(d_skip):.4f}  "
+                f"{'PASS' if all(d<0.05 for d in d_skip) else 'FAIL'}\n")
+        f.write(f"(B) W_TRUE for mega-hubs:      {np.mean(d_hub):.4f}  "
+                f"{'PASS' if all(d<0.05 for d in d_hub) else 'FAIL'}\n")
+        f.write(f"(C) W_TRUE for skipped+hubs:   {np.mean(d_both):.4f}  "
+                f"{'PASS' if all(d<0.05 for d in d_both) else 'FAIL'}\n")
+    print(f"  Saved: simulation/results/flywire_diagnostic.txt")
 
 with open("simulation/results/flywire_pool_subset.txt", "w", encoding="utf-8") as f:
     f.write(f"Pool stim on FlyWire neuropil subset\n"+"="*55+"\n")
