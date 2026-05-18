@@ -115,21 +115,20 @@ for j in range(N):
     A = Xs.T@Xs + ridge*np.eye(len(sj)); b = Xs.T@zs
     W_hat[sj,j] = np.clip(np.linalg.solve(A,b),0,None)
 # Fallback for skipped (unobservable) neurons: a zeroed column silences the
-# neuron, distorting behavior. Fill the support so the neuron's TOTAL input
-# drive matches the typical total drive of successfully-fit neurons.
-# FlyWire weights are heavy-tailed -- a neuron's drive is dominated by its
-# few strong synapses, so matching the per-synapse MEDIAN is far too weak;
-# match the column SUM instead. Rate-distortion: roughly-correct total
-# input >> zeroed input.
-fit_cols = [j for j in range(N) if j not in set(skipped_idx)
-            and support[:,j].sum() > 0 and W_hat[:,j].sum() > 1e-9]
-col_sums = np.array([W_hat[:,j].sum() for j in fit_cols])
-target_sum = np.median(col_sums) if col_sums.size else 0.1
+# neuron, distorting behavior. Skipped neurons are atypical -- mostly
+# high-degree hubs that saturate under probing -- so a fixed total drive
+# under-serves them. Fill the support with the MEAN per-synapse weight of
+# successfully-fit neurons, so the total drive scales with the neuron's own
+# in-degree (a hub with 127 inputs gets ~127x the per-synapse weight).
+fit_weights = W_hat[W_hat > 1e-9]
+mean_w = np.mean(fit_weights) if fit_weights.size else 0.01
+skip_set = set(skipped_idx)
 for j in skipped_idx:
     sj = np.where(support[:,j])[0]
     if len(sj) > 0:
-        W_hat[sj, j] = target_sum / len(sj)
-print(f"  skipped: {skipped}/{N} (filled to match median column sum {target_sum:.4f})")
+        W_hat[sj, j] = mean_w
+print(f"  skipped: {skipped}/{N} (filled with mean per-synapse weight {mean_w:.4f}, "
+      f"degree-scaled total)")
 
 pr = pearsonr(W_TRUE.flatten()[nz_mask], W_hat.flatten()[nz_mask])[0]
 print(f"  Pearson r = {pr:.4f}")

@@ -2,12 +2,12 @@ FlyWire heterogeneous-model pool stim, N=2000
 ==================================================
 mean|supp|=34.2 max=127, norm=max
 gain mean=10.84, K=400, skipped=71
-Pearson r = 0.5357
+Pearson r = 0.5350
 
-  stim 1: div=0.0533 [FAIL]
-  stim 2: div=0.0421 [PASS]
-  stim 3: div=0.0487 [PASS]
-  stim 4: div=0.0349 [PASS]
-  stim 5: div=0.0416 [PASS]
+  stim 1: div=0.0542 [FAIL]
+  stim 2: div=0.0431 [PASS]
+  stim 3: div=0.0496 [PASS]
+  stim 4: div=0.0358 [PASS]
+  stim 5: div=0.0421 [PASS]
 
 Verdict: FAIL
