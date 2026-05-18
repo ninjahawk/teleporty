@@ -456,6 +456,41 @@ of state distortion).
 
 **Best-current-estimate body total: ~3 × 10¹² – 10¹³ bits ≈ 100 GB – 1 TB.**
 
+### Final body budget integrating all tissues (`simulation/make_tissue_D_summary.py`)
+
+Combining the empirical and analytical D-thresholds with body-volume fractions:
+
+| Tissue | Vol frac | D | Bits/block |
+|---|---|---|---|
+| Vasculature | 5% | 0.001 | 4.98 |
+| Cardiac muscle | 0.5% | 0.05 | 2.16 |
+| Brain (neural) | 2% | 0.30 | 0.87 |
+| Smooth muscle (est.) | 5% | 0.30 | 0.87 |
+| Epithelia/glands | 20% | 0.30 | 0.87 |
+| Skeletal muscle | 30% | 1.00 | 0 |
+| Bone/connective/fat | 35% | 1.00 | 0 |
+
+Volume-weighted avg state bits: **0.063 bits/block**
+
+Adding the 3 bits/block type label and the 5.6 × 10¹¹ independent blocks:
+
+  State bits (volume-weighted): 35 GB
+  Type labels (3 bits/block × 5.6×10¹¹ blocks): 210 GB
+  Bulk tissue total: **245 GB**
+  + Adaptive immunity (1 GB)
+  + Other (vasc topology, epigenome, genome variants): ~0.2 GB
+  **Grand total: ~247 GB per person**
+
+This pins down the previous 100 GB – 1 TB range to a point estimate.
+The type-label term (210 GB) dominates state-distortion (35 GB), which
+means tissue D-thresholds don't drive the budget much — the dominant
+cost is just naming what tissue type each voxel is.
+
+Cross-check: a high-resolution body MRI is ~1-10 GB lossy. Our voxel
+grid is at 10 μm (vs MRI ~1 mm), so 1000× more voxels → 1-10 TB raw.
+Compressed to 247 GB at functional distortion is consistent with the
+medical-imaging factor 50-500× compression range.
+
 ### Empirical confirmation (`simulation/run_body_compression.py`)
 
 Built a synthetic 200×200×200 = 8M voxel grid with 8 tissue types in

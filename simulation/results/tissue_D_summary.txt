@@ -1,0 +1,16 @@
+Tissue D-threshold summary
+==================================================
+
+Tissue                            D   Vol frac  Bits/block
+------------------------------------------------------------
+Vasculature                   0.001       0.05        4.98
+Cardiac muscle                0.050       0.01        2.16
+Brain (neural)                0.300       0.02        0.87
+Smooth muscle (est.)          0.300       0.05        0.87
+Epithelia/glands              0.300       0.20        0.87
+Skeletal muscle               1.000       0.30        0.00
+Bone/connective/fat           1.000       0.35        0.00
+
+Volume-weighted avg state bits: 0.507
+Body budget (state + type labels): ~245 GB
+Plus immunity + misc: ~247 GB total

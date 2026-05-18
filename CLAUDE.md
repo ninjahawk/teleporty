@@ -16,7 +16,7 @@ Find a physically grounded mechanism for teleportation with testable predictions
 
 ### What's been validated
 - Scan inverse: **pool stimulation** (random or cell-type pools, ~10⁵ trials for human) recovers W well enough for behavioral PASS
-- Body information budget: **100 GB – 1 TB** per person (bulk tissue dominates; brain is 42 KB, negligible)
+- Body information budget: **~247 GB per person** (7-tissue stratified, vol-weighted; was 100 GB – 1 TB range, now pinpointed)
 - Tissue distortion thresholds: cardiac D=0.05 (worst case), skeletal muscle D=1.0 (CLT-friendly), mixed body avg ~0.3
 - Vascular patency: 8× safety margin during 60-min hypothermic fabrication
 - Full pipeline PASS at 1% Ca²⁺ imaging noise + 5% FP + 5% FN EM errors + cell-type pool structure, **when** hybrid pools (type drivers + ~50 multi-type combinations) are used
@@ -62,10 +62,10 @@ Find a physically grounded mechanism for teleportation with testable predictions
 | Component | Bits | Size |
 |---|---|---|
 | Brain (functional, rate-distortion) | 3.4 × 10⁵ | 42 KB |
-| Bulk tissue (tissue-stratified D) | 2 × 10¹² – 10¹³ | 30 GB – 1 TB |
+| Bulk tissue (7-tissue stratified D, vol-weighted) | 2 × 10¹² | **~245 GB** |
 | Adaptive immunity (TCR/BCR repertoire) | 10¹⁰ | 1 GB |
 | Vasculature, epigenome, genome, microbiome, dynamic | <2 × 10⁹ | <200 MB |
-| **Total** | **~10¹² – 10¹³** | **~100 GB – 1 TB** |
+| **Total** | **~2 × 10¹²** | **~247 GB** |
 
 ### Cost / timeline
 - Marginal cost per teleport: ~$10K
