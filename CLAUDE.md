@@ -117,14 +117,14 @@ Component-by-component rate-distortion analysis of all non-neural systems.
 | Component | Bits (functional) | Size |
 |---|---|---|
 | Brain functional spec | 3.4 × 10⁵ | 42 KB |
-| Bulk tissue (voxel + tissue) | 10¹⁰–10¹² | 1–275 GB |
+| Bulk tissue (voxel + tissue, at D=0.05 cardiac threshold) | 2.5×10¹⁰–2.5×10¹² | 3–700 GB |
 | Adaptive immunity (TCR/BCR) | 10¹⁰ | 1 GB |
 | Vasculature (extra) | 10⁹ | 125 MB |
 | Per-person genome variants | 10⁸ | 12 MB |
 | Epigenome (functional) | 3 × 10⁸ | 40 MB |
 | Microbiome composition | 10⁵ | 15 KB |
 | Per-person dynamic state | 10³ | 100 B |
-| **Total (functional)** | **10¹⁰–10¹² bits** | **1–275 GB** |
+| **Total (functional, w/ tissue D=0.05)** | **2.5×10¹⁰–2.5×10¹² bits** | **3–700 GB** |
 
 Key finding: body is **5–7 orders of magnitude larger than the brain** in
 information (despite the brain being ~200× denser per cell), but fits on a
@@ -189,7 +189,8 @@ consumer SSD. At 1 Gbps consumer fiber, full human upload = 800 s.
 - `math/apple_pipeline.md` — apple proof-of-concept teleportation pipeline model
 - `math/direction1_fabricator.md` — **human-scale fabricator: resolution, throughput, Krogh+DHCA vascular constraint**
 - `math/direction1_scan_inverse_solved.md` — **scan inverse problem solved at C. elegans scale + 1% biological noise**
-- `math/direction1_body_information_budget.md` — **full body (non-neural) rate-distortion budget: 1–275 GB**
+- `math/direction1_body_information_budget.md` — **full body (non-neural) rate-distortion budget: 3–700 GB (revised w/ tissue D=0.05)**
+- `simulation/run_tissue_distortion.py` — **2D cardiac propagation sim: tissue D-threshold = 0.05 (6× more sensitive than brain)**
 
 ### Data (gitignored, too large for GitHub)
 - `simulation/data/SI5_connectome_adjacency.xlsx` — C. elegans Cook 2019

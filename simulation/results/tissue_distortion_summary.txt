@@ -1,0 +1,19 @@
+Tissue distortion threshold sweep (2D Aliev-Panfilov)
+============================================================
+NX x NY = 60 x 60, T = 200.0 ms, dt = 0.02 ms
+Baseline v_cv = 0.000
+
+     D    dv_rel   act_frac    arr_err  pass
+  0.00    0.0000     1.0000     0.0000  PASS
+  0.01    0.0000     1.0000     0.0177  PASS
+  0.03    0.0000     0.9867     0.0323  PASS
+  0.05    0.0000     0.9567     0.0437  PASS
+  0.10    0.0000     0.8933     0.0665  FAIL
+  0.15    0.0000     0.8800     0.0988  FAIL
+  0.20    0.0000     0.8700     0.1382  FAIL
+  0.30    0.0000     0.8400     0.1623  FAIL
+  0.40    0.0000     0.8000     0.2107  FAIL
+  0.50    0.0000     0.7267     0.2479  FAIL
+
+Tissue D-threshold: 0.050
+Brain D-threshold:  0.30

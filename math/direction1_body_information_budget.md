@@ -344,6 +344,56 @@ redundant under cell-type+position compression.
 
 ---
 
+## D-threshold validation (`simulation/run_tissue_distortion.py`)
+
+A 2D Aliev-Panfilov cardiac sheet (60×60, dt=0.02 ms, T=200 ms) was perturbed
+by adding multiplicative Gaussian noise to each cell-pair gap-junction coupling
+strength, with relative variance D. Functional metrics:
+  - Activation fraction (relative to baseline)
+  - Median arrival-time error (relative)
+
+| D | activation fraction | arrival error | verdict |
+|---|---|---|---|
+| 0.01 | 1.00  | 0.018 | PASS |
+| 0.03 | 0.99  | 0.032 | PASS |
+| 0.05 | 0.96  | 0.044 | PASS (last) |
+| 0.10 | 0.89  | 0.067 | FAIL |
+| 0.30 | 0.84  | 0.162 | FAIL |
+
+**Tissue D-threshold = 0.05**, compared to brain D-threshold = 0.30.
+
+**Tissue is ~6× more sensitive to weight (coupling) distortion than the brain.**
+
+This makes biological sense: cardiac conduction depends on a precisely tuned
+balance between excitation and recovery; small coupling heterogeneity creates
+conduction blocks, re-entry, or wavefront distortion (the substrate for
+arrhythmia in real hearts). The brain's tanh-saturating, redundant connectome
+is much more error-tolerant.
+
+### Bit-budget revision
+
+Gaussian rate-distortion: R(D) = (1/2) log₂(σ²/D).
+
+  At D = 0.30: R = 0.87 bits per independent block (brain)
+  At D = 0.05: R = 2.16 bits per independent block (tissue)
+
+Ratio: **2.5× more bits per voxel for bulk tissue.** Revised bulk-tissue
+budget:
+
+| Component | Old (D=0.30) | Revised (D=0.05) |
+|---|---|---|
+| Bulk tissue | 10¹⁰–10¹² bits | 2.5 × 10¹⁰ – 2.5 × 10¹² bits |
+| Total functional spec | ~10¹⁰–10¹² | ~2.5 × 10¹⁰ – 2.5 × 10¹² |
+
+Still 1 GB – 1 TB. **Qualitative conclusion unchanged**: body fits on consumer
+storage; transmission is not the bottleneck; fabricator remains the only
+barrier.
+
+Caveat: the D-threshold may be tissue-type-specific. Cardiac is unusually
+sensitive (it conducts electrical waves). Connective tissue, fat, and bone
+likely tolerate much higher D. A finer breakdown by tissue would reduce the
+total budget further. The 2.5× factor here is a conservative upper bound.
+
 ## Open questions
 
 1. **The bulk tissue uncertainty range (10¹⁰–10¹² bits) is 2 orders of
@@ -351,6 +401,7 @@ redundant under cell-type+position compression.
    (a) An empirical 3D-MRF compression experiment on a real body scan (Visible
        Human Project or similar)
    (b) A theoretical bound on tissue correlation length ξ.
+   (c) Tissue-type-specific D-thresholds (cardiac vs muscle vs bone).
 
 2. **Per-cell precision for hepatocytes:** liver zonation matters for function.
    Voxel encoding may need finer resolution (~5 μm) within the liver. Effect
