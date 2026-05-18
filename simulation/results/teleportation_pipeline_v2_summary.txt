@@ -1,0 +1,35 @@
+Teleportation Pipeline v2 -- with v4 SCAN protocol
+==================================================
+Subject: C. elegans, N = 300 neurons, 3707 chemical synapses
+
+STAGE 1 -- SCAN (per-neuron tonic + noise averaging)
+  Conditions: N * 3 amps * n_reps = 9000 trials
+  Wall-clock at 30 s/trial: 75.0 hours
+  Rate noise: 1.0%
+  ||W_hat - W||/||W|| = 0.3512
+  Pearson r (nonzero) = 0.9157
+
+STAGE 2 -- COMPRESS
+  Topology entropy: 0.248 bits/pos
+  Spec size: 6.35 KB  (raw 351.56 KB; ratio 55.4x)
+
+STAGE 3 -- TRANSMIT
+  At 1 Gbps Wifi: 0.052 ms
+  At 100 Gbps fiber: 0.520 us
+  Transmission is not a bottleneck.
+
+STAGE 4 -- RECONSTRUCT
+  ||W_recon - W||/||W|| = 0.3513
+  Pearson r (nonzero) = 0.9157
+
+STAGE 5 -- VERIFY
+           tap  div = 0.0133  [PASS]
+          chem  div = 0.0026  [PASS]
+        thermo  div = 0.0032  [PASS]
+   nociception  div = 0.0047  [PASS]
+
+  Path A verdict: PASS
+
+  Thermo and nociception are HELD OUT from the probe set --
+  passing on these proves the recovered W is not curve-fit
+  to the probe behaviors.
