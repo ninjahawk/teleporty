@@ -21,7 +21,7 @@ All five "viable mechanisms" surveyed at project start: four (quantum approaches
 
 **No physics barriers remain.** Remaining work is engineering and scale-up. The two limitations found this session (mega-hub saturation; uniform-model weight-range mismatch) were both diagnosed and FIXED — mega-hubs via mixed-amplitude probes, the model mismatch via the heterogeneous-excitability model. What's left is pushing to larger real connectomes and tightening reconstruction accuracy — refinement, not unknowns.
 
-**IN PROGRESS at handoff:** a FlyWire N=5000 run with the heterogeneous model was launched (background task `b6zifgr0x`, ~20 min). N=5000 is where the uniform model failed catastrophically (div 0.68); this tests whether the heterogeneous model holds at 2.5× the validated scale. Check `simulation/results/flywire_hetero.txt` for the result, or re-run `FLYWIRE_N_CAP=5000 FLYWIRE_REPS=10 python simulation/run_flywire_hetero.py`.
+**FlyWire N=5000 (heterogeneous model): PASS.** The dense whole-connectome top-5000 subset (mean in-degree 47) — exactly where the uniform model failed catastrophically (div 0.68) — passes all 5 behavioral tests at div 0.028–0.032, comfortably under the 0.05 threshold (more comfortably than N=2000's marginal 0.045). The heterogeneous model's real-connectome capability holds at 2.5× the validated scale. Pearson r=0.46 (lower than N=2000's 0.54, but behavioral div is *lower* — more neurons → population-behavioral errors average out, rate-distortion). 200/5000 neurons use the degree-scaled fallback.
 
 ### What's been validated
 - Scan inverse: **pool stimulation** (random or cell-type pools, ~10⁵ trials for human) recovers W well enough for behavioral PASS
@@ -122,22 +122,17 @@ Lower-priority / out of scope:
 
 ## Priority Order for Next Session
 
-0. **FIRST: read the N=5000 result.** A FlyWire N=5000 heterogeneous-model run
-   was in progress at handoff (`simulation/results/flywire_hetero.txt`). If it
-   PASSED, the real-connectome capability holds at 2.5× the validated scale —
-   update CLAUDE.md/README accordingly. If it FAILED, diagnose (likely the
-   skipped-neuron fallback or reconstruction accuracy) before scaling further.
+1. **Scale to a full Drosophila neuropil / larger (N≈10⁴–10⁵).** FlyWire
+   passes at N=2000 and N=5000 with the heterogeneous model; the next test
+   is a full neuropil. Tractable with `simulate_rate_sparse`. The biggest
+   real-data test available short of mouse cortex.
 
-1. **Improve reconstruction accuracy.** The FlyWire N=2000 PASS is marginal
-   (Pearson 0.54, one stim at 0.0498). Levers: (a) more pool trials / higher K
-   coverage; (b) the multi-task low-rank fit (`run_megahub_svt.py` — apply per
-   cell type, FlyWire has type annotations not yet used); (c) better probe
-   design so fewer neurons need the degree-scaled fallback (currently 71/2000).
-   Higher Pearson → comfortable PASS margin → confidence at larger scales.
-
-2. **Scale to a full Drosophila neuropil (N≈10⁴–10⁵).** Now tractable with
-   `simulate_rate_sparse` + the heterogeneous model. The biggest real-data
-   test available short of mouse cortex.
+2. **Improve reconstruction accuracy** (raise Pearson from ~0.5). Behavioral
+   div already passes comfortably at N=5000, but higher Pearson gives margin.
+   Levers: more pool trials / higher K; the multi-task low-rank fit
+   (`run_megahub_svt.py`, apply per cell type — FlyWire has type annotations
+   not yet used); better probe design so fewer neurons need the degree-scaled
+   fallback (200/5000 at N=5000).
 
 3. **Body-side refinements** (lower priority, not blockers):
    - Body-scan compression empirical bound on Visible Human data (tighten

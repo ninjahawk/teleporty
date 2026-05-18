@@ -8,10 +8,16 @@ model (`simulate_rate_hetero` + response-matching `calibrate_homeostatic`,
 C. elegans (Pearson 0.975), and tested on the FlyWire dense network that
 the uniform model failed catastrophically on:
 
-| Model | FlyWire N=2000 dense (mean \|supp\|=34) | verdict |
-|---|---|---|
-| Uniform rate model | behavioral div ~0.68 | catastrophic FAIL |
-| **Heterogeneous model** | **behavioral div 0.032–0.050, all 5 PASS** | **PASS** |
+| Model | FlyWire dense subset | behavioral div | verdict |
+|---|---|---|---|
+| Uniform rate model | N=5000 (mean \|supp\|=47) | ~0.68 | catastrophic FAIL |
+| **Heterogeneous model** | N=2000 (mean \|supp\|=34) | 0.032–0.050 | **PASS** (marginal) |
+| **Heterogeneous model** | N=5000 (mean \|supp\|=47) | 0.028–0.032 | **PASS** (comfortable) |
+
+The heterogeneous model passes at BOTH scales, and N=5000 is the *more*
+comfortable PASS — larger networks average behavioral error over more
+neurons (Pearson r is 0.46 at N=5000 vs 0.54 at N=2000, yet div is lower).
+The real-connectome capability holds across a 2.5× scale range.
 
 Three ingredients made it work:
   1. Per-neuron gain/theta, calibrated by response-matching (each neuron
